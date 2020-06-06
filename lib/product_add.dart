@@ -16,13 +16,45 @@ class _ProductAddsState extends State<ProductAdds> {
 
   File _image;
   final picker = ImagePicker();
+  var pickedFile;
+    Future _showPhotoLibrary(bool isCamera) async {
+      if(isCamera) {
+         pickedFile = await picker.getImage(source: ImageSource.camera);
+      }else{
+        pickedFile = await picker.getImage(source: ImageSource.gallery);
+      }
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+  }
 
-  Future getImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.camera);
-
-    setState(() {
-      _image = File(pickedFile.path);
-    });
+  void _showOptions(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return Container(
+              height: 150,
+              child: Column(children: <Widget>[
+                ListTile(
+                    onTap: () {
+                      Navigator.pop(context);
+                      _showPhotoLibrary(true);
+                    },
+                    leading: Icon(Icons.photo_camera),
+                    title: Text("Take a picture from camera")
+                ),
+                ListTile(
+                    onTap: () {
+                      Navigator.pop(context);
+                      _showPhotoLibrary(false);
+                    },
+                    leading: Icon(Icons.photo_library),
+                    title: Text("Choose from photo library")
+                )
+              ])
+          );
+        }
+    );
 
 }
 
@@ -62,13 +94,13 @@ class _ProductAddsState extends State<ProductAdds> {
         )));
   }
 
-  Widget getAddImage() {
+  Widget getAddImage(context) {
     return Container(
       width: double.infinity,
       height: 150.0,
       child: Center(
         child: RaisedButton.icon(
-          onPressed:getImage,
+          onPressed:()=>{_showOptions(context)},
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(5.0))),
           label: Text(
@@ -100,7 +132,7 @@ class _ProductAddsState extends State<ProductAdds> {
         height: 150.0,
         child: Center(
           child:  _image == null
-              ? getAddImage()
+              ? getAddImage(context)
               : Image.file(_image),
         ),
         decoration: BoxDecoration(
