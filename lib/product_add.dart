@@ -1,9 +1,11 @@
+import 'dart:io';
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:popwoot/ui/theme.dart';
 import 'package:popwoot/ui/widgets/text_widget.dart';
 import 'package:popwoot/ui/widgets/textfield_widget.dart';
+
 
 class ProductAdds extends StatefulWidget {
   @override
@@ -11,6 +13,21 @@ class ProductAdds extends StatefulWidget {
 }
 
 class _ProductAddsState extends State<ProductAdds> {
+
+  File _image;
+  final picker = ImagePicker();
+
+  Future getImage() async {
+    final pickedFile = await picker.getImage(source: ImageSource.camera);
+
+    setState(() {
+      _image = File(pickedFile.path);
+    });
+
+}
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,7 +56,7 @@ class _ProductAddsState extends State<ProductAdds> {
         body: SingleChildScrollView(
             child: Column(
           children: <Widget>[
-            getAddImage(),
+            getAddListImage(),
             getEditBox(),
           ],
         )));
@@ -51,9 +68,7 @@ class _ProductAddsState extends State<ProductAdds> {
       height: 150.0,
       child: Center(
         child: RaisedButton.icon(
-          onPressed: () {
-            print('Button Clicked.');
-          },
+          onPressed:getImage,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(5.0))),
           label: Text(
@@ -76,6 +91,25 @@ class _ProductAddsState extends State<ProductAdds> {
           end: Alignment.bottomCenter,
         )
       )
+    );
+  }
+
+  Widget getAddListImage() {
+    return Container(
+        width: double.infinity,
+        height: 150.0,
+        child: Center(
+          child:  _image == null
+              ? getAddImage()
+              : Image.file(_image),
+        ),
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors:[Colors.deepOrange[300],Colors.white],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            )
+        )
     );
   }
 
