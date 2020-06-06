@@ -23,10 +23,6 @@ class _HomeState extends State<Home> {
     ));
 
 
-/*
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));
-*/
-
     return Scaffold(
         appBar: AppBar(
           titleSpacing: 2.0,

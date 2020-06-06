@@ -3,19 +3,19 @@ import 'package:popwoot/ui/navigation/drawer_navigation.dart';
 
 import '../theme.dart';
 
-class AddProduct extends StatefulWidget {
+class AddCategory extends StatefulWidget {
   @override
-  _AddProductState createState() => _AddProductState();
+  _AddCategoryState createState() => _AddCategoryState();
 }
 
-class _AddProductState extends State<AddProduct> {
+class _AddCategoryState extends State<AddCategory> {
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
       appBar: AppBar(
         titleSpacing: 2.0,
         title: Text(
-          "Add Product",
+          "Add Category",
           style: TextStyle(
             letterSpacing: 1.0,
             fontSize: 22.0,

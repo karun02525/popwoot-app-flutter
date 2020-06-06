@@ -21,11 +21,11 @@ class NavigationDrawer extends StatelessWidget {
                       ))
               ),
 
-              CustomListTile(Icons.add_circle,"Category",()=>{}),
+              CustomListTile(Icons.home,"Home",()=>{Navigator.pushNamed(context, '/home')}),
               Divider(color: Colors.grey),
-              CustomListTile(Icons.add_circle_outline,"Sub Category",()=>{}),
+              CustomListTile(Icons.add_circle_outline,"Add Category",()=>{Navigator.pushNamed(context, '/add_category')}),
               Divider(color: Colors.grey),
-              CustomListTile(Icons.settings,"Setting",()=>{}),
+              CustomListTile(Icons.playlist_add,"Add Product ",()=>{Navigator.pushNamed(context, '/add_product')}),
               Divider(color: Colors.grey),
               CustomListTile(Icons.verified_user,"Security",()=>{}),
               Divider(color: Colors.grey),
@@ -43,7 +43,7 @@ class NavigationDrawer extends StatelessWidget {
 Widget getProfileImage(){
   return Container(
     width: 100,
-    height: 100,
+    height: 80,
     margin: EdgeInsets.only(top: 30.0,bottom: 10),
     decoration: BoxDecoration(
         shape: BoxShape.circle,

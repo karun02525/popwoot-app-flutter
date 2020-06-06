@@ -34,6 +34,7 @@ class _ScannerState extends State<Scanner> {
         appBar: AppBar(
           backgroundColor: Colors.white,
           brightness: Brightness.light,
+          centerTitle: true,
           title: Text(
             "Scanner",
             style: TextStyle(

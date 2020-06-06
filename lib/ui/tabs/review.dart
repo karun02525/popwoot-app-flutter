@@ -30,6 +30,7 @@ class _ReviewState extends State<Review> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         brightness: Brightness.light,
+        centerTitle: true,
         title: Text(
           "Search & Review",
           style: TextStyle(
