@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:popwoot/product_add.dart';
-import 'package:popwoot/ui/mains.dart';
 import 'package:popwoot/ui/product/add_category.dart';
 import 'package:popwoot/ui/product/add_product.dart';
 import 'package:popwoot/ui/shared/global.dart';
@@ -13,7 +12,7 @@ void main() {
     theme: ThemeData(
         primaryColor: Global.appColor, accentColor: Colors.blue),
     debugShowCheckedModeBanner: false,
-    home: ListScrolls(),
+    home: ProductAdds(),
     routes: {
       '/home':(context) => TabBottomController(),
       '/add_category':(context) => AddCategory(),
