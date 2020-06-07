@@ -119,6 +119,8 @@ class _ProductAddsState extends State<ProductAdds> {
         ),
       ),
       decoration: BoxDecoration(
+          border: Border.all(color: Colors.blueAccent,),
+          borderRadius: BorderRadius.circular(20.0),
         gradient: LinearGradient(
           colors:[Colors.deepOrange[300],Colors.white],
           begin: Alignment.topCenter,
