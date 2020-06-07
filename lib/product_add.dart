@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:popwoot/ui/mains.dart';
 import 'package:popwoot/ui/theme.dart';
 import 'package:popwoot/ui/widgets/text_widget.dart';
 import 'package:popwoot/ui/widgets/textfield_widget.dart';
@@ -88,6 +89,7 @@ class _ProductAddsState extends State<ProductAdds> {
         body: SingleChildScrollView(
             child: Column(
           children: <Widget>[
+            getAddImage(context),
             getAddListImage(),
             getEditBox(),
           ],
@@ -130,11 +132,7 @@ class _ProductAddsState extends State<ProductAdds> {
     return Container(
         width: double.infinity,
         height: 150.0,
-        child: Center(
-          child:  _image == null
-              ? getAddImage(context)
-              : Image.file(_image),
-        ),
+        child:ListScrolls(),
         decoration: BoxDecoration(
             gradient: LinearGradient(
               colors:[Colors.deepOrange[300],Colors.white],
