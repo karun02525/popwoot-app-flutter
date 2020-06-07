@@ -17,6 +17,10 @@ class _ProductAddsState extends State<ProductAdds> {
   final GlobalKey<AnimatedListState> _key = GlobalKey();
   ScrollController _scrollController = new ScrollController();
 
+  final categoryNameController= TextEditingController();
+  final categoryDescController= TextEditingController();
+  final categoryUrlController= TextEditingController();
+
   List<File> _items = [];
   File _image;
   final picker = ImagePicker();
@@ -33,35 +37,6 @@ class _ProductAddsState extends State<ProductAdds> {
     });
   }
 
-  void _showOptions(BuildContext context) {
-    if(_items.length>1) {
-      Global.toast("You can not upload more than 5 photos.");
-    }else {
-      showModalBottomSheet(
-          context: context,
-          builder: (context) {
-            return Container(
-                height: 150,
-                child: Column(children: <Widget>[
-                  ListTile(
-                      onTap: () {
-                        Navigator.pop(context);
-                        _showPhotoLibrary(true);
-                      },
-                      leading: Icon(Icons.photo_camera),
-                      title: Text("Take a picture from camera")),
-                  ListTile(
-                      onTap: () {
-                        Navigator.pop(context);
-                        _showPhotoLibrary(false);
-                      },
-                      leading: Icon(Icons.photo_library),
-                      title: Text("Choose from photo library"))
-                ]));
-          });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,7 +44,24 @@ class _ProductAddsState extends State<ProductAdds> {
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: FloatingActionButton.extended(
           backgroundColor: Theme.of(context).primaryColor,
-          onPressed: () {},
+          onPressed: () {
+
+            if(categoryNameController.text.isEmpty){
+               Global.toast("Please enter category Name");
+            }else if(categoryDescController.text.isEmpty){
+              Global.toast("Please enter  category description");
+            }else if(_items.length==0){
+              Global.toast("Please upload at least one photo");
+            }else {
+               Global.toast("Ok.........");
+              debugPrint("Name: " + categoryNameController.text);
+              debugPrint("Desc: " + categoryDescController.text);
+              debugPrint("Url: " + categoryUrlController.text);
+              _items.forEach((element) {
+                debugPrint("URL Image Path: " + element.toString());
+              });
+            }
+          },
           isExtended: true,
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           icon: Icon(Icons.playlist_add),
@@ -182,22 +174,24 @@ class _ProductAddsState extends State<ProductAdds> {
           TextWidget('Category Name'),
           TextFieldWidget(
             hintText: 'Enter category name',
+              controller: categoryNameController
           ),
           TextWidget('Category Description'),
           TextFieldWidget(
             minLine: 3,
             hintText: 'Enter category description',
+              controller: categoryDescController
           ),
           TextWidget('Category urls'),
           TextFieldWidget(
             hintText: 'Enter category urls',
+              controller: categoryUrlController
           ),
         ],
       ),
     );
   }
   //-----------------
-
   Widget _buildItem(File item, Animation<double> animation, int index) {
     return SizeTransition(
       sizeFactor: animation,
@@ -239,7 +233,6 @@ class _ProductAddsState extends State<ProductAdds> {
       ),
     );
   }
-
   void removeItem(int index) {
     setState(() {
     File removeItem = _items.removeAt(index);
@@ -249,7 +242,6 @@ class _ProductAddsState extends State<ProductAdds> {
     _key.currentState.removeItem(index, builder);
     });
   }
-
   void _addItem() {
     setState(() {
       int i = _items.length > 0 ? _items.length : 0;
@@ -260,7 +252,34 @@ class _ProductAddsState extends State<ProductAdds> {
         duration: const Duration(milliseconds: 1500), curve: Curves.easeOut);
 
   }
-
+  void _showOptions(BuildContext context) {
+    if(_items.length>4) {
+      Global.toast("You can not upload more than 5 photos.");
+    }else {
+      showModalBottomSheet(
+          context: context,
+          builder: (context) {
+            return Container(
+                height: 150,
+                child: Column(children: <Widget>[
+                  ListTile(
+                      onTap: () {
+                        Navigator.pop(context);
+                        _showPhotoLibrary(true);
+                      },
+                      leading: Icon(Icons.photo_camera),
+                      title: Text("Take a picture from camera")),
+                  ListTile(
+                      onTap: () {
+                        Navigator.pop(context);
+                        _showPhotoLibrary(false);
+                      },
+                      leading: Icon(Icons.photo_library),
+                      title: Text("Choose from photo library"))
+                ]));
+          });
+    }
+  }
   void zoomImage(File list){
     showGeneralDialog(
         context: context,

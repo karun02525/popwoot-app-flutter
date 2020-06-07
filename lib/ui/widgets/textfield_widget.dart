@@ -6,11 +6,13 @@ class TextFieldWidget extends StatelessWidget {
   final String hintText;
   int minLine=0;
   final Function onChanged;
+  final TextEditingController controller;
 
   TextFieldWidget({
    this.hintText,
    this.minLine,
-   this.onChanged
+   this.onChanged,
+   this.controller,
 });
 
 
@@ -18,6 +20,7 @@ class TextFieldWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextField(
        maxLines: minLine,
+        controller: controller,
         decoration: InputDecoration(
          hintText: hintText,
             border: OutlineInputBorder(
