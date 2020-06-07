@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:ui';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -24,9 +23,9 @@ class _ProductAddsState extends State<ProductAdds> {
   var pickedFile;
   Future _showPhotoLibrary(bool isCamera) async {
     if (isCamera) {
-      pickedFile = await picker.getImage(source: ImageSource.camera);
+      pickedFile = await picker.getImage(source: ImageSource.camera, maxHeight: 480, maxWidth: 640);
     } else {
-      pickedFile = await picker.getImage(source: ImageSource.gallery);
+      pickedFile = await picker.getImage(source: ImageSource.gallery, maxHeight: 480, maxWidth: 640);
     }
     setState(() {
       _image = File(pickedFile.path);
@@ -35,7 +34,7 @@ class _ProductAddsState extends State<ProductAdds> {
   }
 
   void _showOptions(BuildContext context) {
-    if(_items.length>4) {
+    if(_items.length>1) {
       Global.toast("You can not upload more than 5 photos.");
     }else {
       showModalBottomSheet(
@@ -164,7 +163,12 @@ class _ProductAddsState extends State<ProductAdds> {
         shrinkWrap: true,
         initialItemCount: _items.length,
         itemBuilder: (context, index, animation) {
-          return _buildItem(_items.reversed.toList()[index], animation, index);
+          return  GestureDetector(
+              onTap:(){
+                zoomImage(_items[index]);
+              } ,
+              child:_buildItem(_items[index], animation, index)
+          );
         });
   }
 
@@ -237,11 +241,13 @@ class _ProductAddsState extends State<ProductAdds> {
   }
 
   void removeItem(int index) {
+    setState(() {
     File removeItem = _items.removeAt(index);
     AnimatedListRemovedItemBuilder builder = (context, animation) {
       return _buildItem(removeItem, animation, index);
     };
     _key.currentState.removeItem(index, builder);
+    });
   }
 
   void _addItem() {
@@ -252,6 +258,48 @@ class _ProductAddsState extends State<ProductAdds> {
         });
     _scrollController.animateTo(0.0,
         duration: const Duration(milliseconds: 1500), curve: Curves.easeOut);
+
+  }
+
+  void zoomImage(File list){
+    showGeneralDialog(
+        context: context,
+        barrierDismissible: true,
+        barrierLabel: MaterialLocalizations.of(context)
+            .modalBarrierDismissLabel,
+        barrierColor: Colors.black45,
+        transitionDuration: const Duration(milliseconds: 900),
+        pageBuilder: (BuildContext buildContext,
+            Animation animation,
+            Animation secondaryAnimation) {
+          return Center(
+            child: Container(
+             // width: MediaQuery.of(context).size.width - 40,
+             // height: MediaQuery.of(context).size.height -  230,
+              color: Colors.black,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(top: 30.0),
+                    child: RaisedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(
+                        "Close",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      color: const Color(0xFF1BC0C5),
+                    ),
+                  ),
+                  Expanded(child: Image.file(list)),
+                ],
+              ),
+            ),
+          );
+        });
 
   }
 }
