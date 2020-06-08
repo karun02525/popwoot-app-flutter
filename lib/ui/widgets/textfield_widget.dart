@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class TextFieldWidget extends StatelessWidget {
 
   final String hintText;
-  int minLine=0;
+  final int minLine;
   final Function onChanged;
   final TextEditingController controller;
 

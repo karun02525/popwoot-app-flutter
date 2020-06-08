@@ -5,62 +5,56 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:popwoot/ui/shared/global.dart';
 import 'package:popwoot/ui/theme.dart';
-import 'package:popwoot/ui/widgets/button_widget.dart';
 import 'package:popwoot/ui/widgets/text_widget.dart';
 import 'package:popwoot/ui/widgets/textfield_widget.dart';
 
-class ProductAdds extends StatefulWidget {
+class CategoryAdds extends StatefulWidget {
   @override
-  _ProductAddsState createState() => _ProductAddsState();
+  _CategoryAddsState createState() => _CategoryAddsState();
 }
 
-class _ProductAddsState extends State<ProductAdds> {
+class _CategoryAddsState extends State<CategoryAdds> {
   final GlobalKey<AnimatedListState> _key = GlobalKey();
   ScrollController _scrollController = new ScrollController();
 
-  final categoryNameController = TextEditingController();
-  final categoryDescController = TextEditingController();
-  final categoryUrlController = TextEditingController();
+  final categoryNameController= TextEditingController();
+  final categoryDescController= TextEditingController();
+  final categoryUrlController= TextEditingController();
 
   List<File> _items = [];
   File _image;
   final picker = ImagePicker();
   var pickedFile;
-  bool isHide1 = true;
-  bool isHide2 = false;
-
   Future _showPhotoLibrary(bool isCamera) async {
     if (isCamera) {
-      pickedFile = await picker.getImage(
-          source: ImageSource.camera, maxHeight: 480, maxWidth: 640);
+      pickedFile = await picker.getImage(source: ImageSource.camera, maxHeight: 480, maxWidth: 640);
     } else {
-      pickedFile = await picker.getImage(
-          source: ImageSource.gallery, maxHeight: 480, maxWidth: 640);
+      pickedFile = await picker.getImage(source: ImageSource.gallery, maxHeight: 480, maxWidth: 640);
     }
     setState(() {
       _image = File(pickedFile.path);
-      _addItem(_items);
+      _addItem();
     });
   }
-
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
+        resizeToAvoidBottomPadding: false,
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: FloatingActionButton.extended(
           backgroundColor: Theme.of(context).primaryColor,
           onPressed: () {
-            if (categoryNameController.text.isEmpty) {
-              Global.toast("Please enter category Name");
-            } else if (categoryDescController.text.isEmpty) {
+
+            if(categoryNameController.text.isEmpty){
+               Global.toast("Please enter category Name");
+            }else if(categoryDescController.text.isEmpty){
               Global.toast("Please enter  category description");
-            } else if (_items.length == 0) {
+            }else if(_items.length==0){
               Global.toast("Please upload at least one photo");
-            } else {
-              Global.toast("Ok.........");
+            }else {
+               Global.toast("Ok.........");
               debugPrint("Name: " + categoryNameController.text);
               debugPrint("Desc: " + categoryDescController.text);
               debugPrint("Url: " + categoryUrlController.text);
@@ -77,7 +71,7 @@ class _ProductAddsState extends State<ProductAdds> {
         appBar: AppBar(
           titleSpacing: 2.0,
           title: Text(
-            "Add Product",
+            "Add Category",
             style: TextStyle(
               letterSpacing: 1.0,
               fontSize: 22.0,
@@ -88,27 +82,16 @@ class _ProductAddsState extends State<ProductAdds> {
         ),
         body: SingleChildScrollView(
             child: Column(
-          children: <Widget>[
-              Visibility(
-                maintainSize: false,
-                maintainAnimation: true,
-                maintainState: true,
-                visible: isHide1,
-                child : uploadPlaceHolderImage()),
-            Visibility(
-                maintainSize: false,
-                maintainAnimation: true,
-                maintainState: true,
-                visible: isHide2,
-                child : uploadImage()),
-
+            children: <Widget>[
+            uploadImage(),
             getEditBox(),
           ],
         )));
   }
 
+
   Widget uploadImage() {
-    return Container(
+   return Container(
         width: double.infinity,
         height: 150.0,
         child: Row(children: <Widget>[
@@ -123,52 +106,9 @@ class _ProductAddsState extends State<ProductAdds> {
         )));
   }
 
-  Widget uploadPlaceHolderImage() {
-    return Container(
-        width: double.infinity,
-        height: 150.0,
-        child: Container(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                "Add Photos",
-                style: TextStyle(
-                    fontSize: 17.0,
-                    fontFamily: font,
-                    fontWeight: FontWeight.w700),
-              ),
-              RaisedButton.icon(
-                onPressed: () => {_showOptions(context)},
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                label: Text(
-                  'Photos  ',
-                  style: TextStyle(color: Colors.white),
-                ),
-                icon: Icon(
-                  Icons.camera_alt,
-                  color: Colors.white,
-                ),
-                textColor: Colors.white,
-                splashColor: Colors.red,
-                color: Colors.lightBlue,
-              ),
-            ],
-          ),
-        ),
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-          colors: [Colors.deepOrange[300], Colors.white],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        )));
-  }
-
   Widget addGestureDetector() {
     return GestureDetector(
-        onTap: () => {_showOptions(context)},
+        onTap: ()=>{_showOptions(context)},
         child: Container(
           margin: EdgeInsets.all(8.0),
           alignment: Alignment.center,
@@ -216,11 +156,12 @@ class _ProductAddsState extends State<ProductAdds> {
         shrinkWrap: true,
         initialItemCount: _items.length,
         itemBuilder: (context, index, animation) {
-          return GestureDetector(
-              onTap: () {
+          return  GestureDetector(
+              onTap:(){
                 zoomImage(_items[index]);
-              },
-              child: _buildItem(_items[index], animation, index));
+              } ,
+              child:_buildItem(_items[index], animation, index)
+          );
         });
   }
 
@@ -233,23 +174,26 @@ class _ProductAddsState extends State<ProductAdds> {
         children: <Widget>[
           TextWidget('Category Name'),
           TextFieldWidget(
-              hintText: 'Enter category name',
-              controller: categoryNameController),
+              minLine: 1,
+            hintText: 'Enter category name',
+              controller: categoryNameController
+          ),
           TextWidget('Category Description'),
           TextFieldWidget(
-              minLine: 3,
-              hintText: 'Enter category description',
-              controller: categoryDescController),
+            minLine: 2,
+            hintText: 'Enter category description',
+              controller: categoryDescController
+          ),
           TextWidget('Category urls'),
           TextFieldWidget(
-              hintText: 'Enter category urls',
-              controller: categoryUrlController),
-          ButtonWidget(title: "Add Category")
+              minLine: 1,
+            hintText: 'Enter category urls',
+              controller: categoryUrlController
+          ),
         ],
       ),
     );
   }
-
   //-----------------
   Widget _buildItem(File item, Animation<double> animation, int index) {
     return SizeTransition(
@@ -273,62 +217,48 @@ class _ProductAddsState extends State<ProductAdds> {
             ),
           ),
           decoration: BoxDecoration(
-              border: Border.all(
-                color: Colors.blueAccent,
-              ),
-              borderRadius: BorderRadius.circular(10.0),
-              boxShadow: [
-                new BoxShadow(
-                    color: Colors.grey,
-                    blurRadius: 3.0,
-                    offset: new Offset(1.0, 1.0))
-              ],
-              image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: item == null ? Text("") : FileImage(item))),
+            border: Border.all(
+              color: Colors.blueAccent,
+            ),
+            borderRadius: BorderRadius.circular(10.0),
+            boxShadow: [
+              new BoxShadow(
+                  color: Colors.grey,
+                  blurRadius: 3.0,
+                  offset: new Offset(1.0, 1.0))
+            ],
+            image: DecorationImage(
+                fit: BoxFit.cover,
+                image: item == null ? Text(""): FileImage(item)
+            )
+          ),
         ),
       ),
     );
   }
-
   void removeItem(int index) {
     setState(() {
-      File removeItem = _items.removeAt(index);
-      AnimatedListRemovedItemBuilder builder = (context, animation) {
-        return _buildItem(removeItem, animation, index);
-      };
-      _key.currentState.removeItem(index, builder);
-
-      if(_items.length>0) {
-        isHide1 = false;
-        isHide2=true;
-      }else {
-        isHide1 = true;
-        isHide2=false;
-      }
+    File removeItem = _items.removeAt(index);
+    AnimatedListRemovedItemBuilder builder = (context, animation) {
+      return _buildItem(removeItem, animation, index);
+    };
+    _key.currentState.removeItem(index, builder);
     });
   }
-
-  void _addItem(_items) {
+  void _addItem() {
     setState(() {
       int i = _items.length > 0 ? _items.length : 0;
       _items.add(_image);
       _key.currentState.insertItem(i);
-      if(_items.length>0) {
-        isHide1 = false;
-        isHide2=true;
-      }
-    });
+        });
     _scrollController.animateTo(0.0,
         duration: const Duration(milliseconds: 1500), curve: Curves.easeOut);
 
-
   }
-
   void _showOptions(BuildContext context) {
-    if (_items.length > 4) {
+    if(_items.length>4) {
       Global.toast("You can not upload more than 5 photos.");
-    } else {
+    }else {
       showModalBottomSheet(
           context: context,
           builder: (context) {
@@ -353,21 +283,21 @@ class _ProductAddsState extends State<ProductAdds> {
           });
     }
   }
-
-  void zoomImage(File list) {
+  void zoomImage(File list){
     showGeneralDialog(
         context: context,
         barrierDismissible: true,
-        barrierLabel:
-            MaterialLocalizations.of(context).modalBarrierDismissLabel,
+        barrierLabel: MaterialLocalizations.of(context)
+            .modalBarrierDismissLabel,
         barrierColor: Colors.black45,
         transitionDuration: const Duration(milliseconds: 900),
-        pageBuilder: (BuildContext buildContext, Animation animation,
+        pageBuilder: (BuildContext buildContext,
+            Animation animation,
             Animation secondaryAnimation) {
           return Center(
             child: Container(
-              // width: MediaQuery.of(context).size.width - 40,
-              // height: MediaQuery.of(context).size.height -  230,
+             // width: MediaQuery.of(context).size.width - 40,
+             // height: MediaQuery.of(context).size.height -  230,
               color: Colors.black,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -392,5 +322,6 @@ class _ProductAddsState extends State<ProductAdds> {
             ),
           );
         });
+
   }
 }
