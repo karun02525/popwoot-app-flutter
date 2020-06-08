@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:popwoot/ui/model/HomeModel.dart';
 import 'package:popwoot/ui/navigation/drawer_navigation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../theme.dart';
 
@@ -15,6 +16,8 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   List<HomeModel> items = fetchAllProduct();
+
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(

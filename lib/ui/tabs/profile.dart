@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:popwoot/ui/theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
@@ -71,21 +72,34 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(child: _buildInfo(),);
+    return Scaffold(
+        appBar: AppBar(
+          titleSpacing: 2.0,
+          centerTitle: true,
+          title: Text(
+            "Profile",
+            style: TextStyle(
+              letterSpacing: 1.0,
+              fontSize: 22.0,
+              fontWeight: FontWeight.w700,
+              fontFamily: font,
+            ),
+          ),
+        ),
+        body: _buildInfo()
+    );
   }
-
 
   Widget _buildInfo(){
     if(isLogin){
-       return Column(
-         mainAxisAlignment: MainAxisAlignment.center,
-         crossAxisAlignment: CrossAxisAlignment.center,
-         children: <Widget>[
-
-           ListTile(
-             leading: Container(
-                 width: 55.0,
-                 height: 55.0,
+       return Center(
+         child: Column(
+           mainAxisAlignment: MainAxisAlignment.center,
+           crossAxisAlignment: CrossAxisAlignment.center,
+           children: <Widget>[
+             Container(
+                 width: 150.0,
+                 height: 150.0,
                  child: CachedNetworkImage(
                    imageBuilder: (context, imageProvider) => Container(
                      decoration: BoxDecoration(
@@ -96,27 +110,29 @@ class _ProfileState extends State<Profile> {
                    placeholder: (context, url) => CircularProgressIndicator(),
                    imageUrl: url,
                  )),
-             title: Text(name),
-             subtitle: Text(email),
-           ),
-           RaisedButton(
-             onPressed: _handleSignOut,
-             child: Text('SignOut'),
-           )
-         ],
+
+                SizedBox(height: 30.0),
+                Text(name.toUpperCase(),style: TextStyle(fontWeight: FontWeight.w700,fontFamily: font),),
+                Text(email,style: TextStyle(fontWeight: FontWeight.w100,fontFamily: font),),
+             SizedBox(height: 30.0),
+             RaisedButton(
+               onPressed: _handleSignOut,
+               child: Text('SignOut'),
+             )
+           ],
+         ),
        );
     }else{
-       return Column(
-         mainAxisAlignment: MainAxisAlignment.center,
-         crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Text('you are not signed in..'),
-            RaisedButton(
-              onPressed: _handleSignIn,
-              child: Text('SignIn'),
-            )
-          ],
-       );
+       return Center(
+               child:InkWell(
+                 onTap: _handleSignIn,
+                   child: Image.asset('assets/images/googlesignin.png',
+                   width: 300.0,
+                     height: 170.0,
+                   ),
+
+               ),
+           );
     }
   }
 
