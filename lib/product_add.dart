@@ -44,36 +44,31 @@ class _ProductAddsState extends State<ProductAdds> {
   }
 
 
+  void callApi(){
+
+    if (categoryNameController.text.isEmpty) {
+      Global.toast("Please enter category Name");
+    } else if (categoryDescController.text.isEmpty) {
+      Global.toast("Please enter  category description");
+    } else if (_items.length == 0) {
+      Global.toast("Please upload at least one photo");
+    } else {
+      Global.toast("Ok.........");
+      debugPrint("Name: " + categoryNameController.text);
+      debugPrint("Desc: " + categoryDescController.text);
+      debugPrint("Url: " + categoryUrlController.text);
+      _items.forEach((element) {
+        debugPrint("URL Image Path: " + element.toString());
+      });
+    }
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: FloatingActionButton.extended(
-          backgroundColor: Theme.of(context).primaryColor,
-          onPressed: () {
-            if (categoryNameController.text.isEmpty) {
-              Global.toast("Please enter category Name");
-            } else if (categoryDescController.text.isEmpty) {
-              Global.toast("Please enter  category description");
-            } else if (_items.length == 0) {
-              Global.toast("Please upload at least one photo");
-            } else {
-              Global.toast("Ok.........");
-              debugPrint("Name: " + categoryNameController.text);
-              debugPrint("Desc: " + categoryDescController.text);
-              debugPrint("Url: " + categoryUrlController.text);
-              _items.forEach((element) {
-                debugPrint("URL Image Path: " + element.toString());
-              });
-            }
-          },
-          isExtended: true,
-          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          icon: Icon(Icons.playlist_add),
-          label: Text('Add Category'),
-        ),
         appBar: AppBar(
           titleSpacing: 2.0,
           title: Text(
@@ -110,7 +105,7 @@ class _ProductAddsState extends State<ProductAdds> {
   Widget uploadImage() {
     return Container(
         width: double.infinity,
-        height: 150.0,
+        height: 130.0,
         child: Row(children: <Widget>[
           addGestureDetector(),
           Expanded(child: getListImage())
@@ -126,7 +121,7 @@ class _ProductAddsState extends State<ProductAdds> {
   Widget uploadPlaceHolderImage() {
     return Container(
         width: double.infinity,
-        height: 150.0,
+        height: 130.0,
         child: Container(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -231,20 +226,58 @@ class _ProductAddsState extends State<ProductAdds> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          TextWidget('Category Name'),
+          TextWidget('Product ID or Scan'),
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+           children: <Widget>[
+             Expanded(
+               flex: 6,
+             child:  TextFieldWidget(
+                 hintText: 'Enter Product id',
+                 controller: categoryNameController),
+             ),
+             Expanded(
+               flex: 1,
+               child: IconButton(
+                   onPressed: (){},
+                   icon:Icon(Global.ic_scanner),
+                   iconSize: 50.0,
+               ),
+             )
+           ],
+          ),
+
+          TextWidget('Product Name'),
           TextFieldWidget(
-              hintText: 'Enter category name',
+              hintText: 'Enter Product name',
               controller: categoryNameController),
-          TextWidget('Category Description'),
+
+          TextWidget('Product Category'),
+          TextFieldWidget(
+              hintText: 'Select product category',
+              controller: categoryNameController),
+
+          TextWidget('Product Description'),
           TextFieldWidget(
               minLine: 3,
-              hintText: 'Enter category description',
+              hintText: 'Enter Product description',
               controller: categoryDescController),
-          TextWidget('Category urls'),
+
+          TextWidget('Product Search Query'),
           TextFieldWidget(
-              hintText: 'Enter category urls',
+              hintText: 'Enter Search Query',
               controller: categoryUrlController),
-          ButtonWidget(title: "Add Category")
+
+          TextWidget('Product urls'),
+          TextFieldWidget(
+              hintText: 'Enter product urls',
+              controller: categoryUrlController),
+          ButtonWidget(title: "Add Product",
+             onPressed:callApi,
+          ),
+          SizedBox(height: 100.0,)
         ],
       ),
     );

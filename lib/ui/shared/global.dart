@@ -5,7 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class Global {
+
   static const Color appColor = const Color(0xffE25819);
+  static const IconData ic_scanner = Icons.filter_center_focus;
+
+
 
 
   static void toast(String message){
@@ -26,6 +30,8 @@ class Global {
       duration: Duration(seconds: 3),
     ));
   }
+
+
 
 
 }

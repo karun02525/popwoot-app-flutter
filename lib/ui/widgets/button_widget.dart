@@ -19,7 +19,7 @@ class ButtonWidget extends StatelessWidget {
           color: Colors.deepOrangeAccent,
           textColor: Colors.white,
           splashColor: Colors.purpleAccent,
-          onPressed: () => {onPressed},
+          onPressed:onPressed,
           child: Text(title,
               style: TextStyle(
                   fontFamily: font, fontSize: 15, fontWeight: FontWeight.w700)),
