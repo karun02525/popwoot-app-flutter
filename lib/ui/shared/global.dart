@@ -2,12 +2,15 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class Global {
 
   static const Color appColor = const Color(0xffE25819);
-  static const IconData ic_scanner = Icons.filter_center_focus;
+  static const IconData ic_scanner = MaterialCommunityIcons.barcode_scan;
+
+
 
 
 

@@ -8,6 +8,8 @@ import 'package:popwoot/ui/theme.dart';
 import 'package:popwoot/ui/widgets/button_widget.dart';
 import 'package:popwoot/ui/widgets/text_widget.dart';
 import 'package:popwoot/ui/widgets/textfield_widget.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+
 
 class ProductAdds extends StatefulWidget {
   @override
@@ -18,9 +20,11 @@ class _ProductAddsState extends State<ProductAdds> {
   final GlobalKey<AnimatedListState> _key = GlobalKey();
   ScrollController _scrollController = new ScrollController();
 
-  final categoryNameController = TextEditingController();
-  final categoryDescController = TextEditingController();
-  final categoryUrlController = TextEditingController();
+  final productId = TextEditingController();
+  final productName = TextEditingController();
+  final productDesc = TextEditingController();
+
+  String barcodeScanRes;
 
   List<File> _items = [];
   File _image;
@@ -28,6 +32,15 @@ class _ProductAddsState extends State<ProductAdds> {
   var pickedFile;
   bool isHide1 = true;
   bool isHide2 = false;
+
+
+  Future scanBarcodeNormal() async {
+    barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
+        "#ff6666", "Cancel", true, ScanMode.DEFAULT);
+    setState(() {
+      productId.text = barcodeScanRes;
+    });
+  }
 
   Future _showPhotoLibrary(bool isCamera) async {
     if (isCamera) {
@@ -46,17 +59,14 @@ class _ProductAddsState extends State<ProductAdds> {
 
   void callApi(){
 
-    if (categoryNameController.text.isEmpty) {
+    if (productId.text.isEmpty) {
       Global.toast("Please enter category Name");
-    } else if (categoryDescController.text.isEmpty) {
+    } else if (productName.text.isEmpty) {
       Global.toast("Please enter  category description");
     } else if (_items.length == 0) {
       Global.toast("Please upload at least one photo");
     } else {
       Global.toast("Ok.........");
-      debugPrint("Name: " + categoryNameController.text);
-      debugPrint("Desc: " + categoryDescController.text);
-      debugPrint("Url: " + categoryUrlController.text);
       _items.forEach((element) {
         debugPrint("URL Image Path: " + element.toString());
       });
@@ -236,14 +246,14 @@ class _ProductAddsState extends State<ProductAdds> {
                flex: 6,
              child:  TextFieldWidget(
                  hintText: 'Enter Product id',
-                 controller: categoryNameController),
+                 controller: productId),
              ),
              Expanded(
                flex: 1,
                child: IconButton(
-                   onPressed: (){},
+                   onPressed:scanBarcodeNormal,
                    icon:Icon(Global.ic_scanner),
-                   iconSize: 50.0,
+                   iconSize: 40.0,
                ),
              )
            ],
@@ -252,32 +262,32 @@ class _ProductAddsState extends State<ProductAdds> {
           TextWidget('Product Name'),
           TextFieldWidget(
               hintText: 'Enter Product name',
-              controller: categoryNameController),
+              controller: productName),
 
           TextWidget('Product Category'),
           TextFieldWidget(
               hintText: 'Select product category',
-              controller: categoryNameController),
+              controller: productDesc),
 
           TextWidget('Product Description'),
           TextFieldWidget(
               minLine: 3,
               hintText: 'Enter Product description',
-              controller: categoryDescController),
+              controller: productDesc),
 
           TextWidget('Product Search Query'),
           TextFieldWidget(
               hintText: 'Enter Search Query',
-              controller: categoryUrlController),
+              controller: productDesc),
 
           TextWidget('Product urls'),
           TextFieldWidget(
               hintText: 'Enter product urls',
-              controller: categoryUrlController),
+              controller: productDesc),
           ButtonWidget(title: "Add Product",
              onPressed:callApi,
           ),
-          SizedBox(height: 100.0,)
+          SizedBox(height: 10.0,)
         ],
       ),
     );

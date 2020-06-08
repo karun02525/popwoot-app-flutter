@@ -18,18 +18,21 @@ class TextFieldWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-       maxLines: minLine,
-        controller: controller,
-        decoration: InputDecoration(
-         hintText: hintText,
-            border: OutlineInputBorder(
-              borderSide: BorderSide(
-                  color: Colors.red[200],
-                  width: 8.0),
-            )
-        ),
+    return Container(
+      child: TextField(
+         maxLines: minLine,
+          controller: controller,
+          decoration: InputDecoration(
+              contentPadding: EdgeInsets.fromLTRB(10.0, 10.0, 20.0, 10.0),
+           hintText: hintText,
+              border: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: Colors.red[200],
+                    width: 8.0),
+              )
+          ),
 
+      ),
     );
   }
 }
