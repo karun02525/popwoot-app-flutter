@@ -12,7 +12,7 @@ void main() {
     theme: ThemeData(
         primaryColor: Global.appColor, accentColor: Colors.blue),
     debugShowCheckedModeBanner: false,
-    home: ProductAdds(),
+    home: TabBottomController(),
     routes: {
       '/home':(context) => TabBottomController(),
       '/add_category':(context) => AddCategory(),
