@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:popwoot/ui/model/ReviewModel.dart';
-import '../theme.dart';
+import '../widgets/theme.dart';
 
 class Review extends StatefulWidget {
   @override

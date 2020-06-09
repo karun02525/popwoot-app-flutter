@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:popwoot/ui/navigation/drawer_navigation.dart';
 
-import '../theme.dart';
+import '../widgets/theme.dart';
 
 class AddCategory extends StatefulWidget {
   @override

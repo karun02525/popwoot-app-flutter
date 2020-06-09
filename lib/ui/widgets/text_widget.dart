@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../theme.dart';
+import 'theme.dart';
 
 class TextWidget extends StatelessWidget {
   final String title;

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../theme.dart';
+import 'theme.dart';
 
 class ButtonWidget extends StatelessWidget {
   final String title;
