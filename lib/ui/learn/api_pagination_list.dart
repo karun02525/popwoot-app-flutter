@@ -10,6 +10,7 @@ class LazyLoadingPage extends StatefulWidget {
 
 class _LazyLoadingPageState extends State<LazyLoadingPage> {
 
+  var refreshKey = GlobalKey<RefreshIndicatorState>();
   static int page = 0;
   ScrollController _sc = new ScrollController();
   bool isLoading = false;
@@ -19,8 +20,12 @@ class _LazyLoadingPageState extends State<LazyLoadingPage> {
 
   @override
   void initState() {
-    this._getMoreData(page);
+    _callApi();
     super.initState();
+  }
+
+  _callApi(){
+    this._getMoreData(page);
     _sc.addListener(() {
       if (_sc.position.pixels == _sc.position.maxScrollExtent) {
         _getMoreData(page);
@@ -28,16 +33,31 @@ class _LazyLoadingPageState extends State<LazyLoadingPage> {
     });
   }
 
+
+  Future<void> _onRefresh() async {
+    setState(() {
+      page = 0;
+      users.clear();
+      firstLoading = true;
+      _callApi();
+    });
+
+  }
+
   void _getMoreData(int index) async {
     if (!isLoading) {
       setState(() {
         isLoading = true;
       });
-      var url = "https://randomuser.me/api/?page=" + index.toString() + "&results=20&seed=abc";
+      var url = "https://randomuser.me/api/?page=" + index.toString() + "&results=10";
+      debugPrint("url : "+ url);
       final response = await dio.get(url);
       List tList = new List();
       for (int i = 0; i<response.data['results'].length; i++) {
-        tList.add(response.data['results'][i]);
+        setState(() {
+          debugPrint("Data : " + response.data['results'][i].toString());
+          tList.add(response.data['results'][i]);
+        });
       }
 
       setState(() {
@@ -71,7 +91,10 @@ class _LazyLoadingPageState extends State<LazyLoadingPage> {
 
   Widget _buildList() {
     return firstLoading ? shimmerEffect() :
-    users.length == 0
+    RefreshIndicator(
+        key: refreshKey,
+        onRefresh: _onRefresh,
+        child: users.length == 0
         ? Container(child: Center(child: Text('No data available')))
         : ListView.builder(
       itemCount: users.length + 1,
@@ -93,7 +116,7 @@ class _LazyLoadingPageState extends State<LazyLoadingPage> {
           );
         }
       },
-    );
+    ));
   }
 
   Widget _buildProgressIndicator() {
@@ -108,11 +131,11 @@ class _LazyLoadingPageState extends State<LazyLoadingPage> {
     );
   }
 
-
   Widget shimmerEffect(){
     return Container(
       padding: EdgeInsets.all(25.0),
       child: Shimmer.fromColors(
+
           direction: ShimmerDirection.ltr,
           period: Duration(seconds:2),
           child: Column(
@@ -164,10 +187,8 @@ class _LazyLoadingPageState extends State<LazyLoadingPage> {
             ))
                 .toList(),
           ),
-          baseColor: Colors.grey[700],
-          highlightColor: Colors.grey[100]),
+          baseColor: Colors.grey[600],
+          highlightColor: Colors.white),
     );
   }
-
-
 }
