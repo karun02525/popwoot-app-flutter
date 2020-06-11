@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:popwoot/ui/model/CategoryModel.dart';
-import 'file:///D:/project/flutter_project/flutter_app/popwoot/lib/ui/widgets/theme.dart';
+import 'package:popwoot/ui/widgets/theme.dart';
 
 class CategoryScreen extends StatefulWidget {
   @override

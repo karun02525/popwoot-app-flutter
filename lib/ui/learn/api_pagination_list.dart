@@ -1,6 +1,9 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:popwoot/services/network/dio_connectivity_request.dart';
+import 'package:popwoot/services/network/dio_retry_interceptor.dart';
 import 'package:shimmer/shimmer.dart';
 
 class LazyLoadingPage extends StatefulWidget {
@@ -9,19 +12,28 @@ class LazyLoadingPage extends StatefulWidget {
 }
 
 class _LazyLoadingPageState extends State<LazyLoadingPage> {
-
+  Dio dio;
   var refreshKey = GlobalKey<RefreshIndicatorState>();
   static int page = 0;
   ScrollController _sc = new ScrollController();
   bool isLoading = false;
   bool firstLoading = true;
   List users = List();
-  final dio = Dio();
-
   @override
   void initState() {
-    _callApi();
     super.initState();
+    dio = Dio();
+    dio.interceptors.add(
+      RetryOnChangeIntercepter(
+         requestRetrier: DioConnectivityRequest(
+           dio: Dio(),
+           connectivity: Connectivity(),
+         )
+      )
+    );
+
+
+    _callApi();
   }
 
   _callApi(){

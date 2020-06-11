@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:popwoot/enums/connectivity_status.dart';
 import 'package:popwoot/services/login_service.dart';
-import 'file:///D:/project/flutter_project/flutter_app/popwoot/lib/ui/widgets/theme.dart';
+import 'package:popwoot/ui/widgets/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

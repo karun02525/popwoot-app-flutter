@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:popwoot/ui/shared/global.dart';
-import 'file:///D:/project/flutter_project/flutter_app/popwoot/lib/ui/widgets/theme.dart';
+import 'package:popwoot/ui/widgets/theme.dart';
 import 'package:popwoot/ui/widgets/button_widget.dart';
 import 'package:popwoot/ui/widgets/text_widget.dart';
 import 'package:popwoot/ui/widgets/textfield_widget.dart';

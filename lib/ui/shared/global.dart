@@ -12,9 +12,6 @@ class Global {
 
 
 
-
-
-
   static void toast(String message){
     Fluttertoast.showToast(
         msg: message,
