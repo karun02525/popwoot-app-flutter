@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:popwoot/ui/tabs/tab_controller.dart';
+import 'file:///D:/project/popwoot_project/popwoot/lib/ui/navigation/tabs/tab_nav_controller.dart';
 import 'package:shimmer/shimmer.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -21,7 +21,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void _navigateToHome(){
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (BuildContext context) => TabBottomController()
+          builder: (BuildContext context) => TabNavController()
         )
       );
   }

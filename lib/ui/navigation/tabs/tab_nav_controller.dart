@@ -1,17 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:popwoot/ui/tabs/category.dart';
-import 'package:popwoot/ui/tabs/home.dart';
-import 'package:popwoot/ui/tabs/profile.dart';
-import 'package:popwoot/ui/tabs/review.dart';
-import 'package:popwoot/ui/tabs/scanner.dart';
+import 'file:///D:/project/popwoot_project/popwoot/lib/ui/navigation/tabs/category.dart';
+import 'file:///D:/project/popwoot_project/popwoot/lib/ui/navigation/tabs/home.dart';
+import 'file:///D:/project/popwoot_project/popwoot/lib/ui/navigation/tabs/profile.dart';
+import 'file:///D:/project/popwoot_project/popwoot/lib/ui/navigation/tabs/review.dart';
+import 'file:///D:/project/popwoot_project/popwoot/lib/ui/navigation/tabs/scanner.dart';
 
-class TabBottomController extends StatefulWidget {
+class TabNavController extends StatefulWidget {
   @override
-  _TabBottomControllerState createState() => _TabBottomControllerState();
+  _TabNavControllerState createState() => _TabNavControllerState();
 }
 
-class _TabBottomControllerState extends State<TabBottomController> {
+class _TabNavControllerState extends State<TabNavController> {
   int _currentIndex = 0;
   final List<Widget> _children = [
     Home(),
