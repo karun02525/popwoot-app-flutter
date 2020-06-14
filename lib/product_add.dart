@@ -34,6 +34,12 @@ class _ProductAddsState extends State<ProductAdds> {
   bool isHide2 = false;
 
 
+
+
+
+
+
+
   Future scanBarcodeNormal() async {
     barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
         "#ff6666", "Cancel", true, ScanMode.DEFAULT);

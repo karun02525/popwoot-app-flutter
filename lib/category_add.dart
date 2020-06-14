@@ -1,5 +1,9 @@
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'dart:ui';
+import 'package:dio/dio.dart';
+import 'package:path/path.dart' as p;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -18,16 +22,24 @@ class _CategoryAddsState extends State<CategoryAdds> {
   final GlobalKey<AnimatedListState> _key = GlobalKey();
   ScrollController _scrollController = new ScrollController();
 
-  final categoryNameController = TextEditingController();
-  final categoryDescController = TextEditingController();
-  final categoryUrlController = TextEditingController();
+  final editName = TextEditingController();
+  final editDesc = TextEditingController();
+  final editUrl = TextEditingController();
 
+  Dio dio;
   List<File> _items = [];
   File _image;
   final picker = ImagePicker();
-  var pickedFile;
   bool isHide1 = true;
   bool isHide2 = false;
+  var pickedFile;
+
+  @override
+  void initState() {
+    super.initState();
+    dio = Dio();
+  }
+
 
   Future _showPhotoLibrary(bool isCamera) async {
     if (isCamera) {
@@ -44,26 +56,86 @@ class _CategoryAddsState extends State<CategoryAdds> {
   }
 
 
-  void callApi(){
+  void callApi() async{
 
-    if (categoryNameController.text.isEmpty) {
+  // debugger();
+
+
+
+    //imagePaths.add(ArrayData.getUri());
+    //imagePaths.add(ArrayData.getUri());
+
+    List imageBytes = _image.readAsBytesSync();
+    postApi(editName.text,editDesc.text,editUrl.text,_items) ;
+    /*
+    if (editName.text.isEmpty) {
       Global.toast("Please enter category Name");
-    } else if (categoryDescController.text.isEmpty) {
+    } else if (editDesc.text.isEmpty) {
       Global.toast("Please enter  category description");
     } else if (_items.length == 0) {
       Global.toast("Please upload at least one photo");
     } else {
       Global.toast("Ok.........");
-      debugPrint("Name: " + categoryNameController.text);
-      debugPrint("Desc: " + categoryDescController.text);
-      debugPrint("Url: " + categoryUrlController.text);
+      debugPrint("Name: " + editName.text);
+      debugPrint("Desc: " + editDesc.text);
+      debugPrint("Url: " + editUrl.text);
+
+      postApi(editName.text,editDesc.text,editUrl.text,_items);
+
       _items.forEach((element) {
         debugPrint("URL Image Path: " + element.toString());
       });
-    }
+    }*/
   }
 
 
+  void postApi(String txtName,String txtDesc,String txtUrl, List<File> items) async {
+
+
+    FormData formData = FormData.fromMap({
+      "files": [
+        await MultipartFile.fromFile(_items[0].path, filename: p.basename(_items[0].path)),
+        await MultipartFile.fromFile(_items[1].path, filename: p.basename(_items[1].path)),
+      ]
+    });
+
+
+    Map<String, String> requestHeaders = {
+      'Content-type': 'multipart/form-data',
+      'Accept': 'application/json',
+      //'Accept': 'multipart/form-data',
+      'authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1ZWRmODEzZjRiOTRjZjFjZjA3MTg4ZTgiLCJzY29wZXMiOltdLCJleHAiOjE1OTIxNDMwODEsImlhdCI6MTU5MjEyNTA4MX0.Hvfx2Zo82LynMtE6k1HJHQFaBpf4MpwWm3kSJMjgWMzDhpybMWM9TT-_tH57IewpaAcG4Q7afwrelHvzdHNs6Q'
+    };
+
+
+    try {
+      final response = await dio.post("http://192.168.0.104:8087/uploadMultipleFiles",data: formData,
+          options: Options(headers: requestHeaders));
+
+      if(response.statusCode==200){
+      //  print(json.decode(response.body));
+        debugPrint("data_res : Success..............");
+        Global.toast('Ok');
+      }
+    } on DioError catch (e) {
+      var errorMessage= jsonDecode(jsonEncode(e.response.data));
+      var statusCode= e.response.statusCode;
+      if(statusCode == 400){
+        debugPrint("data_res 1: ${errorMessage['status']}");
+        debugPrint("data_res 1: ${errorMessage['message']}");
+      }else if(statusCode == 401){
+        debugPrint("data_res 1: ${errorMessage['status']}");
+        debugPrint("data_res 1: ${errorMessage['message']}");
+      }else{
+        print(e.message);
+        print(e.request);
+      }
+    }
+  }
+
+  muti(File file) async{
+    await MultipartFile.fromFile(file.path, filename:p.basename(file.path));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -229,16 +301,16 @@ class _CategoryAddsState extends State<CategoryAdds> {
           TextWidget('Category Name'),
           TextFieldWidget(
               hintText: 'Enter category name',
-              controller: categoryNameController),
+              controller: editName),
           TextWidget('Category Description'),
           TextFieldWidget(
               minLine: 3,
               hintText: 'Enter category description',
-              controller: categoryDescController),
+              controller: editDesc),
           TextWidget('Category urls'),
           TextFieldWidget(
               hintText: 'Enter category urls',
-              controller: categoryUrlController),
+              controller: editUrl),
           ButtonWidget(title: "Add Category",
             onPressed:callApi,
           ),SizedBox(height: 100.0,)

@@ -38,6 +38,7 @@ dependencies:
   connectivity: ^0.4.8+6
   provider: ^4.1.3
   dio: ^3.0.9
+  path: any
 
 
 
