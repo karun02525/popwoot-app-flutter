@@ -2,7 +2,7 @@ import 'dart:ffi';
 import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:popwoot/ui/shared/global.dart';
+import 'file:///D:/project/popwoot_project/popwoot/lib/ui/widgets/global.dart';
 import 'package:popwoot/ui/widgets/theme.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';

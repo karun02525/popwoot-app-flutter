@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:popwoot/ui/shared/global.dart';
+import 'file:///D:/project/popwoot_project/popwoot/lib/ui/widgets/global.dart';
 
 class DialogDemo extends StatefulWidget {
   @override

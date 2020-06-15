@@ -7,6 +7,6 @@ class Constraints{
     static const String addCategoryUrl=baseUrl+'/api/cauth/addcategory';
     static const String getAllCategoryUrl=baseUrl+'/api/oauth/allcategory';
 
-    static const String token='eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1ZWRmODEzZjRiOTRjZjFjZjA3MTg4ZTgiLCJzY29wZXMiOltdLCJleHAiOjE1OTIyMjA2MDUsImlhdCI6MTU5MjIwMjYwNX0.pCzOwNncuBvH67-EGibZS7_8j2Y4uLwdeVRkVOcin8OyZm2EetOtohcfFX6g3VXc0JjdzymwE53NdKGjWCXlrg';
+    static const String token='eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1ZWRmODEzZjRiOTRjZjFjZjA3MTg4ZTgiLCJzY29wZXMiOltdLCJleHAiOjE1OTIyNDkzNTMsImlhdCI6MTU5MjIzMTM1M30.lyG8VAXqdNkdCwsCXEF7zmdTb1eAKrNhMDKlMy50tLdm1dM4Bss1-kYk0pKqQwH71TGZ1JZ-_t2UZXzv8wVAHQ';
 
 }

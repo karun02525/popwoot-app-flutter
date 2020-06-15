@@ -7,7 +7,7 @@ import 'package:path/path.dart' as p;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:popwoot/ui/shared/global.dart';
+import 'file:///D:/project/popwoot_project/popwoot/lib/ui/widgets/global.dart';
 import 'package:popwoot/ui/widgets/theme.dart';
 import 'package:popwoot/ui/widgets/button_widget.dart';
 import 'package:popwoot/ui/widgets/text_widget.dart';
@@ -253,7 +253,7 @@ class _CategoryAddsState extends State<CategoryAdds> {
                 ),
                 textColor: Colors.white,
                 splashColor: Colors.red,
-                color: Colors.lightBlue,
+                color: Colors.grey[500],
               ),
             ],
           ),
