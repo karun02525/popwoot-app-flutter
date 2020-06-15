@@ -90,28 +90,19 @@ class _CategoryAddsState extends State<CategoryAdds> {
     Map<String, String> requestHeaders = {
       'Content-type': 'application/json',
       'Accept': 'application/json',
-      'authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1ZWRmODEzZjRiOTRjZjFjZjA3MTg4ZTgiLCJzY29wZXMiOltdLCJleHAiOjE1OTIyMjA2MDUsImlhdCI6MTU5MjIwMjYwNX0.pCzOwNncuBvH67-EGibZS7_8j2Y4uLwdeVRkVOcin8OyZm2EetOtohcfFX6g3VXc0JjdzymwE53NdKGjWCXlrg'
+      'authorization': 'Bearer ${Constraints.token}'
     };
 
-
     try {
-      final response = await dio.post("http://192.168.0.105:8087/api/cauth/addcategory",data:params,
+      final response = await dio.post(Constraints.addCategoryUrl,data:params,
           options: Options(headers: requestHeaders));
 
       if(response.statusCode==200){
         final responseBody = jsonDecode(jsonEncode(response.data));
         if(responseBody['status']) {
-          Global.toast(responseBody['message']);
-          setState(() {
-            _clearAllItems();
-          });
+          pd.hide();
+          messageAlert(responseBody['message'],'Category');
         }
-
-
-        debugPrint("data_res : Success..1..${responseBody}..........");
-        debugPrint("data_res : Success...2  status : .${responseBody['status']}..........");
-        debugPrint("data_res : Success...2  message : .${responseBody['message']}..........");
-        debugPrint("data_res : Success...2  imgarray : .${responseBody['imgarray']}..........");
       }
     } on DioError catch (e) {
       var errorMessage= jsonDecode(jsonEncode(e.response.data));
@@ -129,6 +120,40 @@ class _CategoryAddsState extends State<CategoryAdds> {
     }
   }
 
+  messageAlert(String msg,String ttl){
+   showDialog(
+       context: context,
+       barrierDismissible: false,
+       builder: (BuildContext context){
+          return  WillPopScope(
+              onWillPop: () async {
+            return false;
+          },
+         child: CupertinoAlertDialog(
+              title:Text(ttl),
+              content:Text(msg),
+             actions: <Widget>[
+               CupertinoDialogAction(
+                 isDefaultAction: true,
+                 child: Column(
+                   children: <Widget>[
+                     Text('Okay')
+                   ],
+                 ),
+                 onPressed: (){
+                   setState(() {
+                     _clearAllItems();
+                   });
+                   Navigator.pop(context);
+                 },
+               )
+             ],
+         ));
+       }
+   );
+  }
+
+
   void _clearAllItems() {
     for (var i = 0; i <= _items.length - 1; i++) {
       _key.currentState.removeItem(0,
@@ -142,7 +167,6 @@ class _CategoryAddsState extends State<CategoryAdds> {
     editName.clear();
     editDesc.clear();
     editUrl.clear();
-    pd.hide();
   }
 
 
