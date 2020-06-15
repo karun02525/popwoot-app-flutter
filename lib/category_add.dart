@@ -12,6 +12,7 @@ import 'package:popwoot/ui/widgets/theme.dart';
 import 'package:popwoot/ui/widgets/button_widget.dart';
 import 'package:popwoot/ui/widgets/text_widget.dart';
 import 'package:popwoot/ui/widgets/textfield_widget.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 
 import 'constraints/constraints.dart';
 
@@ -27,6 +28,7 @@ class _CategoryAddsState extends State<CategoryAdds> {
   final editName = TextEditingController();
   final editDesc = TextEditingController();
   final editUrl = TextEditingController();
+  ProgressDialog pd;
 
   Dio dio;
   List<File> _items = [];
@@ -40,16 +42,18 @@ class _CategoryAddsState extends State<CategoryAdds> {
   void initState() {
     super.initState();
     dio = Dio();
+    pd = ProgressDialog(context,type: ProgressDialogType.Normal);
+    pd.style(message: 'Uploading file...');
   }
 
 
   Future _showPhotoLibrary(bool isCamera) async {
     if (isCamera) {
       pickedFile = await picker.getImage(
-          source: ImageSource.camera, maxHeight: 562.0, maxWidth: 1000.0,);
+          source: ImageSource.camera, maxHeight: 1062.0, maxWidth: 1500.0,);
     } else {
       pickedFile = await picker.getImage(
-          source: ImageSource.gallery, maxHeight: 562.0, maxWidth: 1000.0);
+          source: ImageSource.gallery, maxHeight: 1062.0, maxWidth: 1500.0);
     }
     setState(() {
       _image = File(pickedFile.path);
@@ -60,31 +64,28 @@ class _CategoryAddsState extends State<CategoryAdds> {
 
   void callApi() async{
     //debugger();
-    postApi(editName.text,editDesc.text,editUrl.text);
-
+    if (editName.text.isEmpty) {
+      Global.toast("Please enter category Name");
+    } else if (editDesc.text.isEmpty) {
+      Global.toast("Please enter  category description");
+    } else if (_items.length == 0) {
+      Global.toast("Please upload at least one photo");
+    } else {
+      await pd.show();
+      final imagesData = _items.map((item) =>
+      Constraints.base64Prefix + base64Encode(item.readAsBytesSync())).toList();
+      postApi(editName.text, editDesc.text, editUrl.text, imagesData);
+    }
   }
 
-
-  void postApi(String txtName,String txtDesc,String txtUrl) async {
-
-/*    List<String> imagePaths=[];
-    for(int i=0;i<_items.length;i++){
-      //List<int> imageBytes = _items[i].readAsBytesSync();
-      imagePaths.add();
-    }*/
-
-    final imagesData= _items.map((item)=> Constraints.base64Prefix+base64Encode(item.readAsBytesSync())).toList();
-
-
-    Map<String, dynamic> body = {
+  void postApi(String txtName,String txtDesc,String txtUrl, List<String> imagesData) async {
+    Map<String, dynamic> params = {
        'cname':txtName,
        'cdetails':txtDesc,
        'burl':txtUrl,
        'imgarray':imagesData,
     };
 
-
-    debugPrint("data_res path: ${body.toString()}");
 
     Map<String, String> requestHeaders = {
       'Content-type': 'application/json',
@@ -94,33 +95,56 @@ class _CategoryAddsState extends State<CategoryAdds> {
 
 
     try {
-      final response = await dio.post("http://192.168.0.105:8087/api/cauth/addcategory",data: jsonEncode(body),
+      final response = await dio.post("http://192.168.0.105:8087/api/cauth/addcategory",data:params,
           options: Options(headers: requestHeaders));
 
       if(response.statusCode==200){
-      //  print(json.decode(response.body));
-        debugPrint("data_res : Success..............");
-        Global.toast('Ok');
+        final responseBody = jsonDecode(jsonEncode(response.data));
+        if(responseBody['status']) {
+          Global.toast(responseBody['message']);
+          setState(() {
+            _clearAllItems();
+          });
+        }
+
+
+        debugPrint("data_res : Success..1..${responseBody}..........");
+        debugPrint("data_res : Success...2  status : .${responseBody['status']}..........");
+        debugPrint("data_res : Success...2  message : .${responseBody['message']}..........");
+        debugPrint("data_res : Success...2  imgarray : .${responseBody['imgarray']}..........");
       }
     } on DioError catch (e) {
       var errorMessage= jsonDecode(jsonEncode(e.response.data));
       var statusCode= e.response.statusCode;
       if(statusCode == 400){
-        debugPrint("data_res 1: ${errorMessage['status']}");
-        debugPrint("data_res 1: ${errorMessage['message']}");
+        pd.hide();
+        Global.toast(errorMessage['message']);
       }else if(statusCode == 401){
-        debugPrint("data_res 1: ${errorMessage['status']}");
-        debugPrint("data_res 1: ${errorMessage['message']}");
+        pd.hide();
+        Global.toast(errorMessage['message']);
       }else{
-        print(e.message);
-        print(e.request);
+        pd.hide();
+        Global.toast('Something went wrong');
       }
     }
   }
 
-  muti(File file) async{
-    await MultipartFile.fromFile(file.path, filename:p.basename(file.path));
+  void _clearAllItems() {
+    for (var i = 0; i <= _items.length - 1; i++) {
+      _key.currentState.removeItem(0,
+              (BuildContext context, Animation<double> animation) {
+            return Container();
+          });
+    }
+    _items.clear();
+    isHide1 = true;
+    isHide2 = false;
+    editName.clear();
+    editDesc.clear();
+    editUrl.clear();
+    pd.hide();
   }
+
 
   @override
   Widget build(BuildContext context) {
