@@ -127,6 +127,9 @@ class _ProductAddsState extends State<ProductAdds> {
       Global.toast("Please upload at least one photo");
     } else {
       _isLoading=true;
+      setState(() {
+        _isLoading=true;
+      });
       final imagesData = _items.map((item) =>
       Constraints.base64Prefix + base64Encode(item.readAsBytesSync())).toList();
       postApi(editProdId.text, editProdName.text,catId,editProdDesc.text,editProdSearchQ.text,editProdUrl.text, imagesData);
@@ -449,7 +452,6 @@ class _ProductAddsState extends State<ProductAdds> {
               onChanged: (newValue) {
                 setState(() {
                   catId = newValue;
-                  Global.toast(catId);
                 });
               },
           ),
