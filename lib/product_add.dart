@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:popwoot/ui/widgets/dropdown_widget.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'constraints/constraints.dart';
 import 'file:///D:/project/popwoot_project/popwoot/lib/ui/widgets/global.dart';
 import 'package:popwoot/ui/widgets/theme.dart';
@@ -24,9 +25,12 @@ class _ProductAddsState extends State<ProductAdds> {
   final GlobalKey<AnimatedListState> _key = GlobalKey();
   ScrollController _scrollController = new ScrollController();
 
-  final productId = TextEditingController();
-  final productName = TextEditingController();
-  final productDesc = TextEditingController();
+  final editProdId = TextEditingController();
+  final editProdName = TextEditingController();
+  final editProdDesc = TextEditingController();
+  final editProdSearchQ = TextEditingController();
+  final editProdUrl = TextEditingController();
+  String catId;
 
   String barcodeScanRes;
 
@@ -37,9 +41,9 @@ class _ProductAddsState extends State<ProductAdds> {
   bool isHide1 = true;
   bool isHide2 = false;
 
-  String catId;
-  List listData;
+  List categoryList;
   Dio dio;
+  bool _isLoading=true;
 
   @override
   void initState() {
@@ -54,8 +58,9 @@ class _ProductAddsState extends State<ProductAdds> {
       if (response.statusCode == 200) {
         final responseBody = jsonDecode(jsonEncode(response.data));
         if (responseBody['status']) {
+          hideLoader();
           setState(() {
-            listData = responseBody['data'];
+            categoryList = responseBody['data'];
           });
         }
       }
@@ -67,25 +72,29 @@ class _ProductAddsState extends State<ProductAdds> {
       debugPrint("print: statusCode :" + statusCode.toString());
 
       if (statusCode == 400) {
+        hideLoader();
         Global.toast(errorMessage['message']);
       } else if (statusCode == 401) {
+        hideLoader();
         Global.toast(errorMessage['message']);
       } else {
+        hideLoader();
         Global.toast('Something went wrong');
       }
     }
   }
-
-
-
+  void hideLoader(){
+      setState(() {
+        _isLoading=false;
+      });
+    }
   Future scanBarcodeNormal() async {
     barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
         "#ff6666", "Cancel", true, ScanMode.DEFAULT);
     setState(() {
-      productId.text = barcodeScanRes;
+      editProdId.text = barcodeScanRes;
     });
   }
-
   Future _showPhotoLibrary(bool isCamera) async {
     if (isCamera) {
       pickedFile = await picker.getImage(
@@ -102,20 +111,124 @@ class _ProductAddsState extends State<ProductAdds> {
 
 
   void callApi(){
-
-    if (productId.text.isEmpty) {
-      Global.toast("Please enter category Name");
-    } else if (productName.text.isEmpty) {
-      Global.toast("Please enter  category description");
+    if (editProdId.text.isEmpty) {
+      Global.toast("Please enter product id or scan");
+    } else if (editProdName.text.isEmpty) {
+      Global.toast("Please enter product name");
+    } else if (catId==null) {
+      Global.toast("Please select category");
+    } else if (editProdDesc.text.isEmpty) {
+      Global.toast("Please enter product description");
+    } else if (editProdSearchQ.text.isEmpty) {
+      Global.toast("Please enter product Search Query");
+    }else if (editProdUrl.text.isEmpty) {
+      Global.toast("Please enter product url");
     } else if (_items.length == 0) {
       Global.toast("Please upload at least one photo");
     } else {
-      Global.toast("Ok.........");
-      _items.forEach((element) {
-        debugPrint("URL Image Path: " + element.toString());
-      });
+      _isLoading=true;
+      final imagesData = _items.map((item) =>
+      Constraints.base64Prefix + base64Encode(item.readAsBytesSync())).toList();
+      postApi(editProdId.text, editProdName.text,catId,editProdDesc.text,editProdSearchQ.text,editProdUrl.text, imagesData);
     }
   }
+
+  void postApi(String prodId,String name,String catId,String desc,String searchQ,String prodUrl, List<String> imagesData) async {
+    Map<String, dynamic> params = {
+      'pcode':prodId,
+      'pname':name,
+      'category':catId,
+      'pdescription':desc,
+      'psearch':searchQ,
+      'burl':prodUrl,
+      'imgarray':imagesData,
+    };
+
+
+    Map<String, String> requestHeaders = {
+      'Content-type': 'application/json',
+      'Accept': 'application/json',
+      'authorization': 'Bearer ${Constraints.token}'
+    };
+
+    try {
+      final response = await dio.post(Constraints.addProductUrl,data:params,
+          options: Options(headers: requestHeaders));
+
+      if(response.statusCode==200){
+        final responseBody = jsonDecode(jsonEncode(response.data));
+        if(responseBody['status']) {
+          hideLoader();
+          messageAlert(responseBody['message'],'Product');
+        }
+      }
+    } on DioError catch (e) {
+      var errorMessage= jsonDecode(jsonEncode(e.response.data));
+      var statusCode= e.response.statusCode;
+      if(statusCode == 400){
+
+        Global.toast(errorMessage['message']);
+      }else if(statusCode == 401){
+       hideLoader();
+        Global.toast(errorMessage['message']);
+      }else{
+       hideLoader();
+        Global.toast('Something went wrong');
+      }
+    }
+  }
+  messageAlert(String msg,String ttl){
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context){
+          return  WillPopScope(
+              onWillPop: () async {
+                return false;
+              },
+              child: CupertinoAlertDialog(
+                title:Text(ttl),
+                content:Text(msg),
+                actions: <Widget>[
+                  CupertinoDialogAction(
+                    isDefaultAction: true,
+                    child: Column(
+                      children: <Widget>[
+                        Text('Okay')
+                      ],
+                    ),
+                    onPressed: (){
+                      setState(() {
+                        _clearAllItems();
+                      });
+                      Navigator.pop(context);
+                    },
+                  )
+                ],
+              ));
+        }
+    );
+  }
+  void _clearAllItems() {
+    for (var i = 0; i <= _items.length - 1; i++) {
+      _key.currentState.removeItem(0,
+              (BuildContext context, Animation<double> animation) {
+            return Container();
+          });
+    }
+    _items.clear();
+    isHide1 = true;
+    isHide2 = false;
+    editProdId.clear();
+    editProdName.clear();
+    catId=null;
+    editProdDesc.clear();
+    editProdSearchQ.clear();
+    editProdUrl.clear();
+  }
+
+
+
 
 
 
@@ -135,25 +248,40 @@ class _ProductAddsState extends State<ProductAdds> {
             ),
           ),
         ),
-        body: SingleChildScrollView(
-            child: Column(
+        body: Stack(
           children: <Widget>[
-              Visibility(
-                maintainSize: false,
-                maintainAnimation: true,
-                maintainState: true,
-                visible: isHide1,
-                child : uploadPlaceHolderImage()),
-            Visibility(
-                maintainSize: false,
-                maintainAnimation: true,
-                maintainState: true,
-                visible: isHide2,
-                child : uploadImage()),
 
-            getEditBox(),
+            SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    Visibility(
+                        maintainSize: false,
+                        maintainAnimation: true,
+                        maintainState: true,
+                        visible: isHide1,
+                        child : uploadPlaceHolderImage()),
+                    Visibility(
+                        maintainSize: false,
+                        maintainAnimation: true,
+                        maintainState: true,
+                        visible: isHide2,
+                        child : uploadImage()),
+
+                    getEditBox(),
+                  ],
+                )),
+
+            Center(
+              child: Visibility(
+                  maintainSize: false,
+                  maintainAnimation: true,
+                  maintainState: true,
+                  visible: _isLoading,
+                  child : CircularProgressIndicator()),
+            )
           ],
-        )));
+        )
+    );
   }
 
   Widget uploadImage() {
@@ -290,7 +418,7 @@ class _ProductAddsState extends State<ProductAdds> {
                flex: 6,
              child:  TextFieldWidget(
                  hintText: 'Enter Product id',
-                 controller: productId),
+                 controller: editProdId),
              ),
              Expanded(
                flex: 1,
@@ -306,13 +434,13 @@ class _ProductAddsState extends State<ProductAdds> {
           TextWidget('Product Name'),
           TextFieldWidget(
               hintText: 'Enter Product name',
-              controller: productName),
+              controller: editProdName),
 
           TextWidget('Product Category'),
           DropdownWidget(
               hint: 'Select category',
               value: catId,
-              items: listData?.map((item) {
+              items: categoryList?.map((item) {
                 return DropdownMenuItem(
                   value: item['id'],
                   child: Text(item['cname']),
@@ -330,17 +458,17 @@ class _ProductAddsState extends State<ProductAdds> {
           TextFieldWidget(
               minLine: 3,
               hintText: 'Enter Product description',
-              controller: productDesc),
+              controller: editProdDesc),
 
           TextWidget('Product Search Query'),
           TextFieldWidget(
               hintText: 'Enter Search Query',
-              controller: productDesc),
+              controller: editProdSearchQ),
 
           TextWidget('Product urls'),
           TextFieldWidget(
               hintText: 'Enter product urls',
-              controller: productDesc),
+              controller: editProdUrl),
           ButtonWidget(title: "Add Product",
              onPressed:callApi,
           ),

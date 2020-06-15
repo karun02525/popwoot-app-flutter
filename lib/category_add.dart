@@ -119,7 +119,6 @@ class _CategoryAddsState extends State<CategoryAdds> {
       }
     }
   }
-
   messageAlert(String msg,String ttl){
    showDialog(
        context: context,
@@ -152,8 +151,6 @@ class _CategoryAddsState extends State<CategoryAdds> {
        }
    );
   }
-
-
   void _clearAllItems() {
     for (var i = 0; i <= _items.length - 1; i++) {
       _key.currentState.removeItem(0,
