@@ -13,6 +13,8 @@ import 'package:popwoot/ui/widgets/button_widget.dart';
 import 'package:popwoot/ui/widgets/text_widget.dart';
 import 'package:popwoot/ui/widgets/textfield_widget.dart';
 
+import 'constraints/constraints.dart';
+
 class CategoryAdds extends StatefulWidget {
   @override
   _CategoryAddsState createState() => _CategoryAddsState();
@@ -44,10 +46,10 @@ class _CategoryAddsState extends State<CategoryAdds> {
   Future _showPhotoLibrary(bool isCamera) async {
     if (isCamera) {
       pickedFile = await picker.getImage(
-          source: ImageSource.camera, maxHeight: 480, maxWidth: 640);
+          source: ImageSource.camera, maxHeight: 562.0, maxWidth: 1000.0,);
     } else {
       pickedFile = await picker.getImage(
-          source: ImageSource.gallery, maxHeight: 480, maxWidth: 640);
+          source: ImageSource.gallery, maxHeight: 562.0, maxWidth: 1000.0);
     }
     setState(() {
       _image = File(pickedFile.path);
@@ -57,59 +59,42 @@ class _CategoryAddsState extends State<CategoryAdds> {
 
 
   void callApi() async{
+    //debugger();
+    postApi(editName.text,editDesc.text,editUrl.text);
 
-  // debugger();
-
-
-
-    //imagePaths.add(ArrayData.getUri());
-    //imagePaths.add(ArrayData.getUri());
-
-    List imageBytes = _image.readAsBytesSync();
-    postApi(editName.text,editDesc.text,editUrl.text,_items) ;
-    /*
-    if (editName.text.isEmpty) {
-      Global.toast("Please enter category Name");
-    } else if (editDesc.text.isEmpty) {
-      Global.toast("Please enter  category description");
-    } else if (_items.length == 0) {
-      Global.toast("Please upload at least one photo");
-    } else {
-      Global.toast("Ok.........");
-      debugPrint("Name: " + editName.text);
-      debugPrint("Desc: " + editDesc.text);
-      debugPrint("Url: " + editUrl.text);
-
-      postApi(editName.text,editDesc.text,editUrl.text,_items);
-
-      _items.forEach((element) {
-        debugPrint("URL Image Path: " + element.toString());
-      });
-    }*/
   }
 
 
-  void postApi(String txtName,String txtDesc,String txtUrl, List<File> items) async {
+  void postApi(String txtName,String txtDesc,String txtUrl) async {
+
+/*    List<String> imagePaths=[];
+    for(int i=0;i<_items.length;i++){
+      //List<int> imageBytes = _items[i].readAsBytesSync();
+      imagePaths.add();
+    }*/
+
+    final imagesData= _items.map((item)=> Constraints.base64Prefix+base64Encode(item.readAsBytesSync())).toList();
 
 
-    FormData formData = FormData.fromMap({
-      "files": [
-        await MultipartFile.fromFile(_items[0].path, filename: p.basename(_items[0].path)),
-        await MultipartFile.fromFile(_items[1].path, filename: p.basename(_items[1].path)),
-      ]
-    });
+    Map<String, dynamic> body = {
+       'cname':txtName,
+       'cdetails':txtDesc,
+       'burl':txtUrl,
+       'imgarray':imagesData,
+    };
 
+
+    debugPrint("data_res path: ${body.toString()}");
 
     Map<String, String> requestHeaders = {
-      'Content-type': 'multipart/form-data',
+      'Content-type': 'application/json',
       'Accept': 'application/json',
-      //'Accept': 'multipart/form-data',
-      'authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1ZWRmODEzZjRiOTRjZjFjZjA3MTg4ZTgiLCJzY29wZXMiOltdLCJleHAiOjE1OTIxNDMwODEsImlhdCI6MTU5MjEyNTA4MX0.Hvfx2Zo82LynMtE6k1HJHQFaBpf4MpwWm3kSJMjgWMzDhpybMWM9TT-_tH57IewpaAcG4Q7afwrelHvzdHNs6Q'
+      'authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1ZWRmODEzZjRiOTRjZjFjZjA3MTg4ZTgiLCJzY29wZXMiOltdLCJleHAiOjE1OTIyMjA2MDUsImlhdCI6MTU5MjIwMjYwNX0.pCzOwNncuBvH67-EGibZS7_8j2Y4uLwdeVRkVOcin8OyZm2EetOtohcfFX6g3VXc0JjdzymwE53NdKGjWCXlrg'
     };
 
 
     try {
-      final response = await dio.post("http://192.168.0.104:8087/uploadMultipleFiles",data: formData,
+      final response = await dio.post("http://192.168.0.105:8087/api/cauth/addcategory",data: jsonEncode(body),
           options: Options(headers: requestHeaders));
 
       if(response.statusCode==200){
