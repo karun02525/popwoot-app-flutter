@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:popwoot/ui/widgets/theme.dart';
 
 class TextFieldWidget extends StatelessWidget {
 
@@ -21,6 +22,7 @@ class TextFieldWidget extends StatelessWidget {
     return Container(
       child: TextField(
          maxLines: minLine,
+          style: TextStyle(fontFamily: font, fontSize: 15, fontWeight: FontWeight.w100),
           controller: controller,
           decoration: InputDecoration(
               contentPadding: EdgeInsets.fromLTRB(10.0, 10.0, 20.0, 10.0),

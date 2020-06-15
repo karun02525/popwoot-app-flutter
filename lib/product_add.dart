@@ -1,8 +1,12 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:popwoot/ui/widgets/dropdown_widget.dart';
+import 'constraints/constraints.dart';
 import 'file:///D:/project/popwoot_project/popwoot/lib/ui/widgets/global.dart';
 import 'package:popwoot/ui/widgets/theme.dart';
 import 'package:popwoot/ui/widgets/button_widget.dart';
@@ -33,10 +37,44 @@ class _ProductAddsState extends State<ProductAdds> {
   bool isHide1 = true;
   bool isHide2 = false;
 
+  String catId;
+  List listData;
+  Dio dio;
 
+  @override
+  void initState() {
+    super.initState();
+    dio = Dio();
+    getCategoryAllAsync();
+  }
 
+  void getCategoryAllAsync() async {
+    try {
+      final response = await dio.get(Constraints.getAllCategoryUrl);
+      if (response.statusCode == 200) {
+        final responseBody = jsonDecode(jsonEncode(response.data));
+        if (responseBody['status']) {
+          setState(() {
+            listData = responseBody['data'];
+          });
+        }
+      }
+    } on DioError catch (e) {
+      var errorMessage = jsonDecode(jsonEncode(e.response.data));
+      var statusCode = e.response.statusCode;
 
+      debugPrint("print: error :" + errorMessage.toString());
+      debugPrint("print: statusCode :" + statusCode.toString());
 
+      if (statusCode == 400) {
+        Global.toast(errorMessage['message']);
+      } else if (statusCode == 401) {
+        Global.toast(errorMessage['message']);
+      } else {
+        Global.toast('Something went wrong');
+      }
+    }
+  }
 
 
 
@@ -151,7 +189,7 @@ class _ProductAddsState extends State<ProductAdds> {
                     fontWeight: FontWeight.w700),
               ),
               RaisedButton.icon(
-                onPressed: () => {_showOptions(context)},
+                onPressed: () => {_ImagePackerBtn(context)},
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(5.0))),
                 label: Text(
@@ -164,7 +202,7 @@ class _ProductAddsState extends State<ProductAdds> {
                 ),
                 textColor: Colors.white,
                 splashColor: Colors.red,
-                color: Colors.lightBlue,
+                color: Colors.grey[500],
               ),
             ],
           ),
@@ -179,7 +217,7 @@ class _ProductAddsState extends State<ProductAdds> {
 
   Widget addGestureDetector() {
     return GestureDetector(
-        onTap: () => {_showOptions(context)},
+        onTap: () => {_ImagePackerBtn(context)},
         child: Container(
           margin: EdgeInsets.all(8.0),
           alignment: Alignment.center,
@@ -271,9 +309,22 @@ class _ProductAddsState extends State<ProductAdds> {
               controller: productName),
 
           TextWidget('Product Category'),
-          TextFieldWidget(
-              hintText: 'Select product category',
-              controller: productDesc),
+          DropdownWidget(
+              hint: 'Select category',
+              value: catId,
+              items: listData?.map((item) {
+                return DropdownMenuItem(
+                  value: item['id'],
+                  child: Text(item['cname']),
+                );
+              })?.toList(),
+              onChanged: (newValue) {
+                setState(() {
+                  catId = newValue;
+                  Global.toast(catId);
+                });
+              },
+          ),
 
           TextWidget('Product Description'),
           TextFieldWidget(
@@ -374,7 +425,7 @@ class _ProductAddsState extends State<ProductAdds> {
 
   }
 
-  void _showOptions(BuildContext context) {
+  void _ImagePackerBtn(BuildContext context) {
     if (_items.length > 4) {
       Global.toast("You can not upload more than 5 photos.");
     } else {
@@ -402,7 +453,6 @@ class _ProductAddsState extends State<ProductAdds> {
           });
     }
   }
-
   void zoomImage(File list) {
     showGeneralDialog(
         context: context,
