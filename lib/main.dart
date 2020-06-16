@@ -22,7 +22,8 @@ class LaunchApp extends StatelessWidget {
         routes: {
           '/home':(context) => TabNavController(),
           '/add_category':(context) => AddCategory(),
-          '/add_product':(context) => AddProduct()
+          '/add_product':(context) => AddProduct(),
+          '/add_review':(context) => AddReview()
         },
       ));
   }

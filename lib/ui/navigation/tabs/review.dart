@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:popwoot/ui/product/add_review.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -106,7 +107,13 @@ class _ReviewState extends State<Review> {
                   child: ListView.builder(
                       itemCount: items?.length,
                       itemBuilder: (context, index) {
-                        return buildCardView(context, index);
+                        return GestureDetector(
+                             child: buildCardView(context, index),
+                            onTap:  () => Scaffold
+                                .of(context)
+                                .showSnackBar(SnackBar(content: Text(index.toString())))
+
+                        );
                       })),
             ],
           )),
@@ -122,7 +129,7 @@ class _ReviewState extends State<Review> {
           children: <Widget>[
             Row(children: <Widget>[
               getImage(Constraints.baseImageUrl+items[index]['ipath']),
-              getContent(items[index]['id'].toString(),items[index]['pname'].toString(), 1,2),
+              getContent(items[index]['pid'],items[index]['pname'],items[index]['pdesc'],items[index]['ipath'], 1,2),
             ]),
             Padding(
               padding: const EdgeInsets.only(top: 15.0, left: 10),
@@ -152,7 +159,7 @@ class _ReviewState extends State<Review> {
         ));
   }
 
-  Widget getContent(String id, String title, int rating, int review) {
+  Widget getContent(String pid, String pname,String pdesc, String ipath, int rating, int review) {
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -161,7 +168,7 @@ class _ReviewState extends State<Review> {
           Padding(
             padding: const EdgeInsets.only(left: 10.0),
             child: Text(
-              title,
+              pname,
               style: TextStyle(
                   fontFamily: font,
                   fontWeight: FontWeight.w700,
@@ -170,7 +177,19 @@ class _ReviewState extends State<Review> {
           ),
           setStar(rating),
           FlatButton.icon(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(context,
+                 MaterialPageRoute(
+                   builder: (context) => AddReview(),
+                   settings: RouteSettings(
+                     arguments: [pid,pname,pdesc,ipath]
+                   )
+                 )
+              );
+               /* Navigator.pushNamed(context, '/add_review',
+                  arguments: 'karun..............'
+                );*/
+            },
             splashColor: Colors.cyanAccent,
             icon: Icon(
               Icons.open_in_new,

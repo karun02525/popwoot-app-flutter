@@ -21,6 +21,9 @@ import 'package:progress_dialog/progress_dialog.dart';
 import '../widgets/theme.dart';
 
 class AddReview extends StatefulWidget {
+ /* final String title;
+  AddReview({Key key,this.title}) : super(key: key);
+*/
   @override
   _AddReviewState createState() => _AddReviewState();
 }
@@ -33,6 +36,10 @@ class _AddReviewState extends State<AddReview> {
   final editYoutube = TextEditingController();
   int ratingValue=0;
   ProgressDialog pd;
+  String pid;
+  String pname;
+  String pdesc;
+  String ipath;
 
   Dio dio;
   List<File> _items = [];
@@ -91,9 +98,9 @@ class _AddReviewState extends State<AddReview> {
 
   void postApi(String comment,String youtubeurl,String audio,List<String> imagesData) async {
     Map<String, dynamic> params = {
-      'pid': '5ee864ea50f66a2288a3193b',
-      'pname': 'pname',
-      'pdesc': 'pdesc',
+      'pid': pid,
+      'pname': pname,
+      'pdesc': pdesc,
       'comment': comment,
       'astar': ratingValue,
       'published': 1,
@@ -184,6 +191,12 @@ class _AddReviewState extends State<AddReview> {
 
   @override
   Widget build(BuildContext context) {
+    List data = ModalRoute.of(context).settings.arguments;
+    pid=data[0];
+    pname=data[1];
+    pdesc=data[2];
+    ipath=data[3];
+
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -198,7 +211,6 @@ class _AddReviewState extends State<AddReview> {
             ),
           ),
         ),
-        drawer: NavigationDrawer(),
         body: SingleChildScrollView(
             child: Column(
           children: <Widget>[
@@ -236,14 +248,13 @@ class _AddReviewState extends State<AddReview> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            getProductImage(
-                'https://image3.mouthshut.com/images/imagesp/925748105s.jpg'),
-            getContent("Vu televisions", "IE", 0, 0),
+            getProductImage(Constraints.baseImageUrl+ipath),
+            getContent(),
           ]),
     );
   }
 
-  Widget getContent(String id, String title, int rating, int review) {
+  Widget getContent() {
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.only(left: 10.0),
@@ -252,14 +263,13 @@ class _AddReviewState extends State<AddReview> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             TextWidget(
-              title: title,
+              title: pname,
               isBold: true,
               top: 0.0,
             ),
-            setStar(rating),
-            TextWidget(title: "Electronics", color: Colors.blue, top: 0.0),
+            setStar(0),
             TextWidget(
-                title: "product/f47e8686-b793-4763-8ffd-3f39d9a1f84f_0.png",
+                title: pdesc,
                 top: 0.0),
           ],
         ),

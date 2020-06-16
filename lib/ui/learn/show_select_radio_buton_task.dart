@@ -113,15 +113,7 @@ class SelectCityModel {
 
   static List<SelectCityModel> getCityList() {
     return [
-      SelectCityModel(id: 1, eng: 'Pusauli', hi: 'पुसौली'),
-      SelectCityModel(id: 2, eng: 'Mohania', hi: 'मोहनिया'),
-      SelectCityModel(id: 3, eng: 'Kudra', hi: 'कुदरा'),
-      SelectCityModel(id: 4, eng: 'Bhabhua', hi: 'भभुआ'),
-      SelectCityModel(id: 5, eng: 'Ramgarh', hi: 'रामगढ'),
-      SelectCityModel(id: 6, eng: 'Nuaon', hi: 'नुआओं'),
-      SelectCityModel(id: 7, eng: 'Durgawati', hi: 'दुर्गावती'),
-      SelectCityModel(id: 8, eng: 'Chand', hi: 'चाँद'),
-      SelectCityModel(id: 9, eng: 'Sonhan', hi: 'सोनहन'),
+      SelectCityModel(id: 1, eng: 'Bang', hi: 'bang'),
     ];
   }
 }

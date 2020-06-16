@@ -142,7 +142,8 @@ class _HomeState extends State<Home> {
       child: Row(
         children: <Widget>[
          items[index]['userimg'] !=null ? getProfileImage(items[index]['userimg']) :
-        CircleAvatar(child: Text(items[index]['user'][0]),),
+         CircleAvatar(child: Text(items[index]['user'][0]),),
+
          setContent(items[index]['user'],items[index]['pname'],items[index]['rdate'])
         ],
       ),
@@ -172,6 +173,8 @@ class _HomeState extends State<Home> {
 
   Widget getProfileImage(String profileUrl) {
     return Container(
+        width: 40.0,
+        height: 40.0,
         margin: EdgeInsets.only(left: 13, top: 10.0, bottom: 2),
         child: CachedNetworkImage(
           imageBuilder: (context, imageProvider) => Container(
