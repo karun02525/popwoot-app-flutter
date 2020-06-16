@@ -8,6 +8,7 @@ class Constraints{
     static const String addCategoryUrl=baseUrl+'/api/cauth/addcategory';
     static const String addProductUrl=baseUrl+'/api/cauth/addproduct';
     static const String addReviewUrl=baseUrl+'/api/cauth/addreview';
+    static const String getHomeUrl=baseUrl+'/api/oauth/review/1';
 
     static const String getAllCategoryUrl=baseUrl+'/api/oauth/allcategory';
     static const String getDefaultReviewUrl=baseUrl+'/api/oauth/defaultreview/1/k';

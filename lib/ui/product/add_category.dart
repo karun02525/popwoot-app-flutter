@@ -331,20 +331,20 @@ class _AddCategoryState extends State<AddCategory> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          TextWidget(title:'Category Name'),
+          TextWidget(title:'Category Name',isBold: true,top: 15.0,bottom: 3.0),
           TextFieldWidget(
               hintText: 'Enter category name',
               controller: editName),
-          TextWidget(title:'Category Description'),
+          TextWidget(title:'Category Description',isBold: true,top: 15.0,bottom: 3.0),
           TextFieldWidget(
               minLine: 3,
               hintText: 'Enter category description',
               controller: editDesc),
-          TextWidget(title:'Category urls'),
+          TextWidget(title:'Category urls',isBold: true,top: 15.0,bottom: 3.0),
           TextFieldWidget(
               hintText: 'Enter category urls',
               controller: editUrl),
-          ButtonWidget(title: "Add Category",
+          ButtonWidget(title: "Add Category",isBold: true,
             onPressed:callApi,
           ),SizedBox(height: 100.0,)
 

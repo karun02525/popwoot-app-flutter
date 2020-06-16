@@ -409,7 +409,7 @@ class _AddProductState extends State<AddProduct> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          TextWidget(title:'Product ID or Scan'),
+          TextWidget(title:'Product ID or Scan',isBold: true,top: 15.0,bottom: 3.0),
 
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -432,12 +432,12 @@ class _AddProductState extends State<AddProduct> {
             ],
           ),
 
-          TextWidget(title:'Product Name'),
+          TextWidget(title:'Product Name',isBold: true,top: 15.0,bottom: 3.0),
           TextFieldWidget(
               hintText: 'Enter Product name',
               controller: editProdName),
 
-          TextWidget(title:'Product Category'),
+          TextWidget(title:'Product Category',isBold: true,top: 15.0,bottom: 3.0),
           DropdownWidget(
             hint: 'Select category',
             value: catId,
@@ -454,22 +454,22 @@ class _AddProductState extends State<AddProduct> {
             },
           ),
 
-          TextWidget(title:'Product Description'),
+          TextWidget(title:'Product Description',isBold: true,top: 15.0,bottom: 3.0),
           TextFieldWidget(
               minLine: 3,
               hintText: 'Enter Product description',
               controller: editProdDesc),
 
-          TextWidget(title:'Product Search Query'),
+          TextWidget(title:'Product Search Query',isBold: true,top: 15.0,bottom: 3.0),
           TextFieldWidget(
               hintText: 'Enter Search Query',
               controller: editProdSearchQ),
 
-          TextWidget(title:'Product urls'),
+          TextWidget(title:'Product urls',isBold: true,top: 15.0,bottom: 3.0),
           TextFieldWidget(
               hintText: 'Enter product urls',
               controller: editProdUrl),
-          ButtonWidget(title: "Add Product",
+          ButtonWidget(title: "Add Product",isBold: true,
             onPressed:callApi,
           ),
           SizedBox(height: 10.0,)

@@ -1,10 +1,16 @@
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:popwoot/constraints/constraints.dart';
 import 'package:popwoot/ui/model/HomeModel.dart';
 import 'package:popwoot/ui/navigation/drawer_navigation.dart';
+import 'package:popwoot/ui/widgets/global.dart';
+import 'package:popwoot/ui/widgets/text_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../widgets/theme.dart';
@@ -15,16 +21,60 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  List<HomeModel> items = fetchAllProduct();
+  List items;
+  Dio dio;
+  bool _isLoading = true;
 
+  @override
+  void initState() {
+    super.initState();
+    dio = Dio();
+    getHomeApiAsync();
+  }
+
+  void getHomeApiAsync() async {
+    try {
+      final response = await dio.get(Constraints.getHomeUrl);
+      if (response.statusCode == 200) {
+        final responseBody = jsonDecode(jsonEncode(response.data));
+        if (responseBody['status']) {
+          hideLoader();
+          setState(() {
+            items = responseBody['data'];
+          });
+        }
+      }
+    } on DioError catch (e) {
+      var errorMessage = jsonDecode(jsonEncode(e.response.data));
+      var statusCode = e.response.statusCode;
+
+      debugPrint("print: error :" + errorMessage.toString());
+      debugPrint("print: statusCode :" + statusCode.toString());
+
+      if (statusCode == 400) {
+        hideLoader();
+        Global.toast(errorMessage['message']);
+      } else if (statusCode == 401) {
+        hideLoader();
+        Global.toast(errorMessage['message']);
+      } else {
+        hideLoader();
+        Global.toast('Something went wrong');
+      }
+    }
+  }
+
+  void hideLoader() {
+    setState(() {
+      _isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        statusBarBrightness: Brightness.light
-    ));
-
+        statusBarBrightness: Brightness.light));
 
     return Scaffold(
         appBar: AppBar(
@@ -53,12 +103,17 @@ class _HomeState extends State<Home> {
           ],
         ),
         drawer: NavigationDrawer(),
-        body: Container(
-          child: ListView.builder(
-              itemCount: items.length,
-              itemBuilder: (context, index) =>
-                  buildProductCard(context, index)),
-        ));
+        body: _isLoading
+            ? Container(
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              )
+            : ListView.builder(
+                    itemCount: items.length,
+                    itemBuilder: (context, index) =>
+                        buildProductCard(context, index)),
+              );
   }
 
   Widget buildProductCard(BuildContext context, int index) {
@@ -68,9 +123,9 @@ class _HomeState extends State<Home> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           getHeadTitle(items, index),
-          getBgImage(items[index].bg_url),
-          setStar(),
-          descMess(),
+         getBgImage(Constraints.baseImageUrl+items[index]['ipath']),
+          setStar(items[index]['astar']),
+          descMess(items[index]['pdesc']),
           bottomView(),
           Container(
             height: 10,
@@ -81,63 +136,35 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Widget getHeadTitle(List<HomeModel> items, index) {
+  Widget getHeadTitle(List items, index) {
     return Container(
+      margin: EdgeInsets.only(left:10.0,top: 5),
       child: Row(
         children: <Widget>[
-          getProfileImage(items[index].profile_url),
-          setContent(items[index].name)
+         items[index]['userimg'] !=null ? getProfileImage(items[index]['userimg']) :
+        CircleAvatar(child: Text(items[index]['user'][0]),),
+         setContent(items[index]['user'],items[index]['pname'],items[index]['rdate'])
         ],
       ),
     );
   }
 
-  Widget setContent(String name) {
+  Widget setContent(String name,String pname,String rdate) {
     return Container(
-      margin: EdgeInsets.only(top: 5),
+      margin: EdgeInsets.only(left:10.0,top: 5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              Padding(
-                padding: EdgeInsets.only(left: 10),
-                child: Text(name,
-                    style: TextStyle(
-                      fontSize: 15.0,
-                      fontWeight: FontWeight.w100,
-                      fontFamily: font,
-                    )),
-              ),
-              Padding(
-                padding: EdgeInsets.only(left: 20, right: 5.0),
-                child: Text("reviewed",
-                    style: TextStyle(
-                      fontSize: 13.0,
-                      fontWeight: FontWeight.w100,
-                      fontFamily: font,
-                    )),
-              ),
-              Text(
-                "@ 24 MAy 2020 13:10PM",
-                style: TextStyle(
-                  fontSize: 10.0,
-                  fontWeight: FontWeight.w100,
-                  fontFamily: font,
-                ),
-                textAlign: TextAlign.left,
-              ),
+              TextWidget(title: name.toString().toUpperCase(),fontSize: 13.0,),
+              TextWidget(title: '  reviewed   ',fontSize:12.0 ,),
+              TextWidget(title: '@$rdate',fontSize: 12.0,)
             ],
           ),
-          Padding(
-            padding: EdgeInsets.only(left: 10, top: 1.0),
-            child: Text("Water pump",
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontFamily: font,
-                )),
-          ),
+          TextWidget(title:pname,isBold: true,),
         ],
       ),
     );
@@ -145,8 +172,6 @@ class _HomeState extends State<Home> {
 
   Widget getProfileImage(String profileUrl) {
     return Container(
-        width: 40.0,
-        height: 40.0,
         margin: EdgeInsets.only(left: 13, top: 10.0, bottom: 2),
         child: CachedNetworkImage(
           imageBuilder: (context, imageProvider) => Container(
@@ -172,29 +197,23 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Widget setStar() {
+  Widget setStar(String astar) {
     return Container(
         margin: EdgeInsets.only(left: 10.0, right: 10.0, top: 10),
         child: FlutterRatingBar(
-          initialRating: 4,
+          initialRating: double.parse(astar),
           fillColor: Colors.amber,
           borderColor: Colors.amber.withAlpha(50),
           tapOnlyMode: true,
           itemPadding: EdgeInsets.symmetric(horizontal: 1.0),
-          itemSize: 25.0,
+          itemSize: 25.0, onRatingUpdate: (double rating) {  },
         ));
   }
 
-  Widget descMess() {
+  Widget descMess(String pdesc) {
     return Container(
       margin: EdgeInsets.only(left: 10.0, right: 10.0, top: 10),
-      child: Text(
-          "A product is an object or system made available fo offered to a market to satisfy the desire or need of a ...",
-          style: TextStyle(
-            fontWeight: FontWeight.w100,
-            fontFamily: font,
-          )),
-    );
+      child:  TextWidget(title:pdesc,fontSize:14.0),);
   }
 
   Widget bottomView() {

@@ -18,7 +18,7 @@ class LaunchApp extends StatelessWidget {
         theme: ThemeData(
             primaryColor: Global.appColor, accentColor: Colors.blue),
         debugShowCheckedModeBanner: false,
-        home: AddReview(),
+        home: TabNavController(),
         routes: {
           '/home':(context) => TabNavController(),
           '/add_category':(context) => AddCategory(),
