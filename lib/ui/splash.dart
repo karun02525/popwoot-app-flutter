@@ -2,8 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'file:///D:/project/popwoot_project/popwoot/lib/ui/navigation/tabs/tab_nav_controller.dart';
 import 'package:shimmer/shimmer.dart';
+
+import 'navigation/tab_nav_controller.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
