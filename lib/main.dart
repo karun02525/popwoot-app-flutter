@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:popwoot/product_add.dart';
 import 'package:popwoot/services/connectivity_service.dart';
 import 'package:popwoot/ui/navigation/tab_nav_controller.dart';
 import 'package:popwoot/ui/product/add_category.dart';

@@ -409,7 +409,7 @@ class _AddProductState extends State<AddProduct> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          TextWidget('Product ID or Scan'),
+          TextWidget(title:'Product ID or Scan'),
 
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -432,12 +432,12 @@ class _AddProductState extends State<AddProduct> {
             ],
           ),
 
-          TextWidget('Product Name'),
+          TextWidget(title:'Product Name'),
           TextFieldWidget(
               hintText: 'Enter Product name',
               controller: editProdName),
 
-          TextWidget('Product Category'),
+          TextWidget(title:'Product Category'),
           DropdownWidget(
             hint: 'Select category',
             value: catId,
@@ -454,18 +454,18 @@ class _AddProductState extends State<AddProduct> {
             },
           ),
 
-          TextWidget('Product Description'),
+          TextWidget(title:'Product Description'),
           TextFieldWidget(
               minLine: 3,
               hintText: 'Enter Product description',
               controller: editProdDesc),
 
-          TextWidget('Product Search Query'),
+          TextWidget(title:'Product Search Query'),
           TextFieldWidget(
               hintText: 'Enter Search Query',
               controller: editProdSearchQ),
 
-          TextWidget('Product urls'),
+          TextWidget(title:'Product urls'),
           TextFieldWidget(
               hintText: 'Enter product urls',
               controller: editProdUrl),

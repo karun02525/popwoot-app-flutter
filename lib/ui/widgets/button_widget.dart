@@ -6,7 +6,8 @@ import 'theme.dart';
 class ButtonWidget extends StatelessWidget {
   final String title;
   final Function onPressed;
-  ButtonWidget({this.title, this.onPressed});
+  bool isBold;
+  ButtonWidget({this.title,this.isBold=false,this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +16,7 @@ class ButtonWidget extends StatelessWidget {
         child:SizedBox(
           width: double.infinity,
           height: 50.0,
-         child: RaisedButton(
+         child: isBold ? RaisedButton(
           color: Colors.deepOrangeAccent,
           textColor: Colors.white,
           splashColor: Colors.purpleAccent,
@@ -23,6 +24,14 @@ class ButtonWidget extends StatelessWidget {
           child: Text(title,
               style: TextStyle(
                   fontFamily: font, fontSize: 15, fontWeight: FontWeight.w700)),
+        ):RaisedButton(
+          color: Colors.deepOrangeAccent,
+          textColor: Colors.white,
+          splashColor: Colors.purpleAccent,
+          onPressed:onPressed,
+          child: Text(title,
+              style: TextStyle(
+                  fontFamily: font, fontSize: 15, fontWeight: FontWeight.w100)),
         )));
   }
 }

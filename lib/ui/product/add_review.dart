@@ -19,14 +19,12 @@ import 'package:progress_dialog/progress_dialog.dart';
 
 import '../widgets/theme.dart';
 
-
 class AddReview extends StatefulWidget {
   @override
   _AddReviewState createState() => _AddReviewState();
 }
 
 class _AddReviewState extends State<AddReview> {
-
   final GlobalKey<AnimatedListState> _key = GlobalKey();
   ScrollController _scrollController = new ScrollController();
 
@@ -47,15 +45,17 @@ class _AddReviewState extends State<AddReview> {
   void initState() {
     super.initState();
     dio = Dio();
-    pd = ProgressDialog(context,type: ProgressDialogType.Normal);
+    pd = ProgressDialog(context, type: ProgressDialogType.Normal);
     pd.style(message: 'Uploading file...');
   }
-
 
   Future _showPhotoLibrary(bool isCamera) async {
     if (isCamera) {
       pickedFile = await picker.getImage(
-        source: ImageSource.camera, maxHeight: 1062.0, maxWidth: 1500.0,);
+        source: ImageSource.camera,
+        maxHeight: 1062.0,
+        maxWidth: 1500.0,
+      );
     } else {
       pickedFile = await picker.getImage(
           source: ImageSource.gallery, maxHeight: 1062.0, maxWidth: 1500.0);
@@ -66,8 +66,7 @@ class _AddReviewState extends State<AddReview> {
     });
   }
 
-
-  void callApi() async{
+  void callApi() async {
     //debugger();
     if (editName.text.isEmpty) {
       Global.toast("Please enter category Name");
@@ -77,20 +76,22 @@ class _AddReviewState extends State<AddReview> {
       Global.toast("Please upload at least one photo");
     } else {
       await pd.show();
-      final imagesData = _items.map((item) =>
-      Constraints.base64Prefix + base64Encode(item.readAsBytesSync())).toList();
+      final imagesData = _items
+          .map((item) =>
+              Constraints.base64Prefix + base64Encode(item.readAsBytesSync()))
+          .toList();
       postApi(editName.text, editDesc.text, editUrl.text, imagesData);
     }
   }
 
-  void postApi(String txtName,String txtDesc,String txtUrl, List<String> imagesData) async {
+  void postApi(String txtName, String txtDesc, String txtUrl,
+      List<String> imagesData) async {
     Map<String, dynamic> params = {
-      'cname':txtName,
-      'cdetails':txtDesc,
-      'burl':txtUrl,
-      'imgarray':imagesData,
+      'cname': txtName,
+      'cdetails': txtDesc,
+      'burl': txtUrl,
+      'imgarray': imagesData,
     };
-
 
     Map<String, String> requestHeaders = {
       'Content-type': 'application/json',
@@ -99,52 +100,51 @@ class _AddReviewState extends State<AddReview> {
     };
 
     try {
-      final response = await dio.post(Constraints.addCategoryUrl,data:params,
-          options: Options(headers: requestHeaders));
+      final response = await dio.post(Constraints.addCategoryUrl,
+          data: params, options: Options(headers: requestHeaders));
 
-      if(response.statusCode==200){
+      if (response.statusCode == 200) {
         final responseBody = jsonDecode(jsonEncode(response.data));
-        if(responseBody['status']) {
+        if (responseBody['status']) {
           pd.hide();
-          messageAlert(responseBody['message'],'Category');
+          messageAlert(responseBody['message'], 'Category');
         }
       }
     } on DioError catch (e) {
-      var errorMessage= jsonDecode(jsonEncode(e.response.data));
-      var statusCode= e.response.statusCode;
-      if(statusCode == 400){
+      var errorMessage = jsonDecode(jsonEncode(e.response.data));
+      var statusCode = e.response.statusCode;
+      if (statusCode == 400) {
         pd.hide();
         Global.toast(errorMessage['message']);
-      }else if(statusCode == 401){
+      } else if (statusCode == 401) {
         pd.hide();
         Global.toast(errorMessage['message']);
-      }else{
+      } else {
         pd.hide();
         Global.toast('Something went wrong');
       }
     }
   }
-  messageAlert(String msg,String ttl){
+
+  messageAlert(String msg, String ttl) {
     showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (BuildContext context){
-          return  WillPopScope(
+        builder: (BuildContext context) {
+          return WillPopScope(
               onWillPop: () async {
                 return false;
               },
               child: CupertinoAlertDialog(
-                title:Text(ttl),
-                content:Text(msg),
+                title: Text(ttl),
+                content: Text(msg),
                 actions: <Widget>[
                   CupertinoDialogAction(
                     isDefaultAction: true,
                     child: Column(
-                      children: <Widget>[
-                        Text('Okay')
-                      ],
+                      children: <Widget>[Text('Okay')],
                     ),
-                    onPressed: (){
+                    onPressed: () {
                       setState(() {
                         _clearAllItems();
                       });
@@ -153,15 +153,15 @@ class _AddReviewState extends State<AddReview> {
                   )
                 ],
               ));
-        }
-    );
+        });
   }
+
   void _clearAllItems() {
     for (var i = 0; i <= _items.length - 1; i++) {
       _key.currentState.removeItem(0,
-              (BuildContext context, Animation<double> animation) {
-            return Container();
-          });
+          (BuildContext context, Animation<double> animation) {
+        return Container();
+      });
     }
     _items.clear();
     isHide1 = true;
@@ -171,103 +171,110 @@ class _AddReviewState extends State<AddReview> {
     editUrl.clear();
   }
 
-
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-      appBar: AppBar(
-        titleSpacing: 2.0,
-        title: Text(
-          "Add Review",
-          style: TextStyle(
-            letterSpacing: 1.0,
-            fontSize: 22.0,
-            fontWeight: FontWeight.w700,
-            fontFamily: font,
-          ),
-        ),
-      ),
-      drawer: NavigationDrawer(),
-        body: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                Visibility(
-                    maintainSize: false,
-                    maintainAnimation: true,
-                    maintainState: true,
-                    visible: isHide1,
-                    child : uploadPlaceHolderImage()),
-                Visibility(
-                    maintainSize: false,
-                    maintainAnimation: true,
-                    maintainState: true,
-                    visible: isHide2,
-                    child : uploadImage()),
-
-                Divider(height: 2.0,color: Colors.black,),
-                getRow(),
-                Divider(height: 2.0,color: Colors.black,),
-                getEditBox(),
-              ],
-            )));
-  }
-
-
-  Widget getRow(){
-    return Container(
-        child: Row(children: <Widget>[
-          getProductImage('http://192.168.0.105/product/f47e8686-b793-4763-8ffd-3f39d9a1f84f_0.png'),
-          getContent("KA","IE", 0,0),
-        ]),
-    );
-  }
-
-
-
-  Widget getContent(String id, String title, int rating, int review) {
-    return Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(left: 10.0),
-            child: Text(
-              title,
-              style: TextStyle(
-                  fontFamily: font,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 16.0),
+    return Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          titleSpacing: 2.0,
+          title: Text(
+            "Add Review",
+            style: TextStyle(
+              letterSpacing: 1.0,
+              fontSize: 22.0,
+              fontWeight: FontWeight.w700,
+              fontFamily: font,
             ),
           ),
-          setStar(rating),
-          Text("Category NAme"),
-          Text("Desc"),
-        ],
+        ),
+        drawer: NavigationDrawer(),
+        body: SingleChildScrollView(
+            child: Column(
+          children: <Widget>[
+            Visibility(
+                maintainSize: false,
+                maintainAnimation: true,
+                maintainState: true,
+                visible: isHide1,
+                child: uploadPlaceHolderImage()),
+            Visibility(
+                maintainSize: false,
+                maintainAnimation: true,
+                maintainState: true,
+                visible: isHide2,
+                child: uploadImage()),
+
+            Divider(
+              height: 2.0,
+              color: Colors.black,
+            ),
+            getRow(),
+            Divider(
+              height: 32.0,
+              color: Colors.black,
+            ),
+             getEditBox(),
+          ],
+        )));
+  }
+
+  Widget getRow() {
+    return Container(
+      margin: EdgeInsets.only(top: 10,left: 10.0,right: 5.0),
+      child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            getProductImage(
+                'https://image3.mouthshut.com/images/imagesp/925748105s.jpg'),
+            getContent("Vu televisions", "IE", 0, 0),
+          ]),
+    );
+  }
+
+  Widget getContent(String id, String title, int rating, int review) {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.only(left: 10.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            TextWidget(
+              title: title,
+              isBold: true,
+              top: 0.0,
+            ),
+            setStar(rating),
+            TextWidget(title: "Electronics", color: Colors.blue, top: 0.0),
+            TextWidget(
+                title: "product/f47e8686-b793-4763-8ffd-3f39d9a1f84f_0.png",
+                top: 0.0),
+          ],
+        ),
       ),
     );
   }
+
   Widget getProductImage(String url) {
     return Container(
-        padding: EdgeInsets.only(left: 10.0, top: 10.0),
-        width: 170.0,
-        height: 130.0,
+        width: 140.0,
+        height: 100.0,
         child: CachedNetworkImage(
           imageUrl: url,
           fit: BoxFit.fill,
         ));
   }
-  Widget setStar(int rating) {
-    return Container(
-        margin: EdgeInsets.only(left: 10.0, right: 10.0, top: 1),
-        child: FlutterRatingBar(
-          initialRating: rating.toDouble(),
-          fillColor: Colors.amber,
-          itemPadding: EdgeInsets.symmetric(horizontal: 1.0),
-          itemSize: 25.0, onRatingUpdate: (double rating) {  },
-        ));
-  }
 
+  Widget setStar(int rating) {
+    return FlutterRatingBar(
+      initialRating: rating.toDouble(),
+      fillColor: Colors.amber,
+      itemPadding: EdgeInsets.symmetric(horizontal: 1.0),
+      itemSize: 25.0,
+      onRatingUpdate: (double rating) {},
+    );
+  }
 
   Widget getEditBox() {
     return Padding(
@@ -276,28 +283,34 @@ class _AddReviewState extends State<AddReview> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          TextWidget('Category Name'),
           TextFieldWidget(
-              hintText: 'Enter category name',
+              hintText: 'Tell us what you like or dislike about this product',
+              minLine: 6,
               controller: editName),
-          TextWidget('Category Description'),
-          TextFieldWidget(
-              minLine: 3,
-              hintText: 'Enter category description',
-              controller: editDesc),
-          TextWidget('Category urls'),
-          TextFieldWidget(
-              hintText: 'Enter category urls',
-              controller: editUrl),
-          ButtonWidget(title: "Add Category",
-            onPressed:callApi,
-          ),SizedBox(height: 100.0,)
-
+          SizedBox(height: 5.0),
+          audioWidget(),
+          SizedBox(height: 5.0),
+          TextFieldWidget(hintText: 'Enter You Tube Url', controller: editUrl),
+          ButtonWidget(
+            title: "Submit Review",
+            isBold:true,
+            onPressed: callApi,
+          ),
+          SizedBox(height: 100.0)
         ],
       ),
     );
   }
 
+
+  Widget audioWidget(){
+     return Row(
+        children: <Widget>[
+          TextWidget(title: "Like Audio Review-Start Recording", top: 0.0),
+          IconButton(icon: Icon(Icons.mic,color: Colors.redAccent,size: 26.0,),onPressed: (){},)
+        ],
+     );
+  }
 
 
 
@@ -313,11 +326,12 @@ class _AddReviewState extends State<AddReview> {
         ]),
         decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Colors.deepOrange[300], Colors.white],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            )));
+          colors: [Colors.deepOrange[300], Colors.white],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        )));
   }
+
   Widget uploadPlaceHolderImage() {
     return Container(
         width: double.infinity,
@@ -355,11 +369,12 @@ class _AddReviewState extends State<AddReview> {
         ),
         decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Colors.deepOrange[300], Colors.white],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            )));
+          colors: [Colors.deepOrange[300], Colors.white],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        )));
   }
+
   Widget addGestureDetector() {
     return GestureDetector(
         onTap: () => {_showOptions(context)},
@@ -370,23 +385,23 @@ class _AddReviewState extends State<AddReview> {
           height: 120.0,
           child: Center(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Icon(
-                    Icons.add_a_photo,
-                    size: 32.0,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Icon(
+                Icons.add_a_photo,
+                size: 32.0,
+                color: Colors.white,
+              ),
+              Text(
+                'Add Photos',
+                style: TextStyle(
                     color: Colors.white,
-                  ),
-                  Text(
-                    'Add Photos',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
-                        fontFamily: font),
-                  )
-                ],
-              )),
+                    fontWeight: FontWeight.w700,
+                    fontFamily: font),
+              )
+            ],
+          )),
           decoration: BoxDecoration(
             border: Border.all(
               color: Colors.blueAccent,
@@ -401,6 +416,7 @@ class _AddReviewState extends State<AddReview> {
           ),
         ));
   }
+
   Widget getListImage() {
     return AnimatedList(
         scrollDirection: Axis.horizontal,
@@ -416,6 +432,7 @@ class _AddReviewState extends State<AddReview> {
               child: _buildItem(_items[index], animation, index));
         });
   }
+
   Widget _buildItem(File item, Animation<double> animation, int index) {
     return SizeTransition(
       sizeFactor: animation,
@@ -455,6 +472,7 @@ class _AddReviewState extends State<AddReview> {
       ),
     );
   }
+
   void removeItem(int index) {
     setState(() {
       File removeItem = _items.removeAt(index);
@@ -463,28 +481,30 @@ class _AddReviewState extends State<AddReview> {
       };
       _key.currentState.removeItem(index, builder);
 
-      if(_items.length>0) {
+      if (_items.length > 0) {
         isHide1 = false;
-        isHide2=true;
-      }else {
+        isHide2 = true;
+      } else {
         isHide1 = true;
-        isHide2=false;
+        isHide2 = false;
       }
     });
   }
+
   void _addItem(_items) {
     setState(() {
       int i = _items.length > 0 ? _items.length : 0;
       _items.add(_image);
       _key.currentState.insertItem(i);
-      if(_items.length>0) {
+      if (_items.length > 0) {
         isHide1 = false;
-        isHide2=true;
+        isHide2 = true;
       }
     });
     _scrollController.animateTo(0.0,
         duration: const Duration(milliseconds: 1500), curve: Curves.easeOut);
   }
+
   void _showOptions(BuildContext context) {
     if (_items.length > 4) {
       Global.toast("You can not upload more than 5 photos.");
@@ -513,12 +533,13 @@ class _AddReviewState extends State<AddReview> {
           });
     }
   }
+
   void zoomImage(File list) {
     showGeneralDialog(
         context: context,
         barrierDismissible: true,
         barrierLabel:
-        MaterialLocalizations.of(context).modalBarrierDismissLabel,
+            MaterialLocalizations.of(context).modalBarrierDismissLabel,
         barrierColor: Colors.black45,
         transitionDuration: const Duration(milliseconds: 900),
         pageBuilder: (BuildContext buildContext, Animation animation,

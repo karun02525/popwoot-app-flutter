@@ -331,16 +331,16 @@ class _AddCategoryState extends State<AddCategory> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          TextWidget('Category Name'),
+          TextWidget(title:'Category Name'),
           TextFieldWidget(
               hintText: 'Enter category name',
               controller: editName),
-          TextWidget('Category Description'),
+          TextWidget(title:'Category Description'),
           TextFieldWidget(
               minLine: 3,
               hintText: 'Enter category description',
               controller: editDesc),
-          TextWidget('Category urls'),
+          TextWidget(title:'Category urls'),
           TextFieldWidget(
               hintText: 'Enter category urls',
               controller: editUrl),
