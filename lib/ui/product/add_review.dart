@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:popwoot/constraints/constraints.dart';
+import 'package:popwoot/ui/learn/audio_test.dart';
 import 'package:popwoot/ui/navigation/drawer_navigation.dart';
 import 'package:popwoot/ui/widgets/button_widget.dart';
 import 'package:popwoot/ui/widgets/global.dart';
@@ -28,9 +29,9 @@ class _AddReviewState extends State<AddReview> {
   final GlobalKey<AnimatedListState> _key = GlobalKey();
   ScrollController _scrollController = new ScrollController();
 
-  final editName = TextEditingController();
-  final editDesc = TextEditingController();
-  final editUrl = TextEditingController();
+  final editComment = TextEditingController();
+  final editYoutube = TextEditingController();
+  int ratingValue=0;
   ProgressDialog pd;
 
   Dio dio;
@@ -68,30 +69,40 @@ class _AddReviewState extends State<AddReview> {
 
   void callApi() async {
     //debugger();
-    if (editName.text.isEmpty) {
-      Global.toast("Please enter category Name");
-    } else if (editDesc.text.isEmpty) {
-      Global.toast("Please enter  category description");
+    if (editComment.text.isEmpty) {
+      Global.toast("Please enter review");
+    } else if (editYoutube.text.isEmpty) {
+      Global.toast("Please enter youtube url");
+    } else if (ratingValue == 0) {
+      Global.toast("Please do at least one star");
     } else if (_items.length == 0) {
       Global.toast("Please upload at least one photo");
     } else {
       await pd.show();
+
       final imagesData = _items
           .map((item) =>
               Constraints.base64Prefix + base64Encode(item.readAsBytesSync()))
           .toList();
-      postApi(editName.text, editDesc.text, editUrl.text, imagesData);
+
+      postApi(editComment.text, editYoutube.text,AppAudioTest.audio,imagesData);
     }
   }
 
-  void postApi(String txtName, String txtDesc, String txtUrl,
-      List<String> imagesData) async {
+  void postApi(String comment,String youtubeurl,String audio,List<String> imagesData) async {
     Map<String, dynamic> params = {
-      'cname': txtName,
-      'cdetails': txtDesc,
-      'burl': txtUrl,
+      'pid': '5ee864ea50f66a2288a3193b',
+      'pname': 'pname',
+      'pdesc': 'pdesc',
+      'comment': comment,
+      'astar': ratingValue,
+      'published': 1,
+      'youtubeurl': youtubeurl,
+      'audio': audio,
       'imgarray': imagesData,
     };
+
+    debugPrint("print param: "+params.toString());
 
     Map<String, String> requestHeaders = {
       'Content-type': 'application/json',
@@ -100,14 +111,14 @@ class _AddReviewState extends State<AddReview> {
     };
 
     try {
-      final response = await dio.post(Constraints.addCategoryUrl,
+      final response = await dio.post(Constraints.addReviewUrl,
           data: params, options: Options(headers: requestHeaders));
 
       if (response.statusCode == 200) {
         final responseBody = jsonDecode(jsonEncode(response.data));
         if (responseBody['status']) {
           pd.hide();
-          messageAlert(responseBody['message'], 'Category');
+          messageAlert(responseBody['message'], 'Add Review');
         }
       }
     } on DioError catch (e) {
@@ -166,9 +177,9 @@ class _AddReviewState extends State<AddReview> {
     _items.clear();
     isHide1 = true;
     isHide2 = false;
-    editName.clear();
-    editDesc.clear();
-    editUrl.clear();
+    ratingValue=0;
+    editComment.clear();
+    editYoutube.clear();
   }
 
   @override
@@ -272,7 +283,9 @@ class _AddReviewState extends State<AddReview> {
       fillColor: Colors.amber,
       itemPadding: EdgeInsets.symmetric(horizontal: 1.0),
       itemSize: 25.0,
-      onRatingUpdate: (double rating) {},
+      onRatingUpdate: (double rating) {
+        ratingValue=rating.toInt();
+      },
     );
   }
 
@@ -286,11 +299,11 @@ class _AddReviewState extends State<AddReview> {
           TextFieldWidget(
               hintText: 'Tell us what you like or dislike about this product',
               minLine: 6,
-              controller: editName),
+              controller: editComment),
           SizedBox(height: 5.0),
           audioWidget(),
           SizedBox(height: 5.0),
-          TextFieldWidget(hintText: 'Enter You Tube Url', controller: editUrl),
+          TextFieldWidget(hintText: 'Enter You Tube Url', controller: editYoutube),
           ButtonWidget(
             title: "Submit Review",
             isBold:true,
