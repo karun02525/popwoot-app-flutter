@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:popwoot/ui/model/ReviewModel.dart';
+import 'package:popwoot/constraints/constraints.dart';
+import 'package:popwoot/ui/widgets/global.dart';
 import '../../widgets/theme.dart';
 
 class Review extends StatefulWidget {
@@ -12,7 +16,9 @@ class Review extends StatefulWidget {
 }
 
 class _ReviewState extends State<Review> {
-  List<ReviewModel> items = fetchAllReview();
+  List items=[];
+  Dio dio;
+  bool _isLoading=true;
 
   String barcodeScanRes, _value = "What are you looking for";
   Future scanBarcodeNormal() async {
@@ -22,6 +28,52 @@ class _ReviewState extends State<Review> {
       _value = barcodeScanRes;
     });
   }
+
+  @override
+  void initState() {
+    super.initState();
+    dio = Dio();
+    getReviewSearchAllAsync();
+  }
+
+  void getReviewSearchAllAsync() async {
+    try {
+      final response = await dio.get(Constraints.getDefaultReviewUrl);
+      if (response.statusCode == 200) {
+        final responseBody = jsonDecode(jsonEncode(response.data));
+        if (responseBody['status']) {
+          debugPrint("print: error :" + responseBody.toString());
+         // hideLoader();
+          setState(() {
+            items = responseBody['data'];
+          });
+        }
+      }
+    } on DioError catch (e) {
+      var errorMessage = jsonDecode(jsonEncode(e.response.data));
+      var statusCode = e.response.statusCode;
+
+      debugPrint("print: error :" + errorMessage.toString());
+      debugPrint("print: statusCode :" + statusCode.toString());
+
+      if (statusCode == 400) {
+        hideLoader();
+        Global.toast(errorMessage['message']);
+      } else if (statusCode == 401) {
+        hideLoader();
+        Global.toast(errorMessage['message']);
+      } else {
+        hideLoader();
+        Global.toast('Something went wrong');
+      }
+    }
+  }
+  void hideLoader(){
+    setState(() {
+      _isLoading=false;
+    });
+  }
+
 
 
   @override
@@ -52,7 +104,7 @@ class _ReviewState extends State<Review> {
               ),
               Expanded(
                   child: ListView.builder(
-                      itemCount: items.length,
+                      itemCount: items?.length,
                       itemBuilder: (context, index) {
                         return buildCardView(context, index);
                       })),
@@ -69,14 +121,13 @@ class _ReviewState extends State<Review> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Row(children: <Widget>[
-              getImage(items[index].url),
-              getContent(items[index].id, items[index].title,
-                  items[index].rating, items[index].review),
+              getImage(Constraints.baseImageUrl+items[index]['ipath']),
+              getContent(items[index]['id'].toString(),items[index]['pname'].toString(), 1,2),
             ]),
             Padding(
               padding: const EdgeInsets.only(top: 15.0, left: 10),
               child: Text(
-                items[index].desc,
+                items[index]['pdesc'].toString(),
                 style: TextStyle(
                     fontFamily: font,
                     fontWeight: FontWeight.w100,
@@ -101,7 +152,7 @@ class _ReviewState extends State<Review> {
         ));
   }
 
-  Widget getContent(int id, String title, int rating, int review) {
+  Widget getContent(String id, String title, int rating, int review) {
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -156,7 +207,7 @@ class _ReviewState extends State<Review> {
           initialRating: rating.toDouble(),
           fillColor: Colors.amber,
           itemPadding: EdgeInsets.symmetric(horizontal: 1.0),
-          itemSize: 25.0,
+          itemSize: 25.0, onRatingUpdate: (double rating) {  },
         ));
   }
 
