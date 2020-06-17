@@ -134,13 +134,13 @@ class _HomeState extends State<Home> {
         children: <Widget>[
          items[index]['userimg'] !=null ? getProfileImage(items[index]['userimg']) :
          CircleAvatar(child: Text(items[index]['user'][0]),),
-         setContent("616374013841",items[index]['user'],items[index]['pname'],items[index]['rdate'])
+         setContent(items[index]['pid'],items[index]['user'],items[index]['pname'],items[index]['rdate'])
         ],
       ),
     );
   }
 
-  Widget setContent(String pcode,String name,String pname,String rdate) {
+  Widget setContent(String pid,String name,String pname,String rdate) {
     return Container(
       margin: EdgeInsets.only(left:10.0,top: 5),
       child: Column(
@@ -163,7 +163,7 @@ class _HomeState extends State<Home> {
                   MaterialPageRoute(
                       builder: (context) => ReviewDetails(),
                       settings: RouteSettings(
-                          arguments: pcode
+                          arguments: [pname,pid]
                       )
                   )
               );

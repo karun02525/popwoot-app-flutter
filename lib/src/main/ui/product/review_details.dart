@@ -18,7 +18,8 @@ class ReviewDetails extends StatefulWidget {
 }
 
 class _ReviewDetailsState extends State<ReviewDetails> {
-  List items;
+  List items = [];
+  dynamic productData;
   Dio dio;
   bool _isLoading = true;
 
@@ -26,16 +27,51 @@ class _ReviewDetailsState extends State<ReviewDetails> {
   void initState() {
     super.initState();
     dio = Dio();
-    getHomeApiAsync('616374013841');
   }
 
-  void getHomeApiAsync(String pcode) async {
+  void getProductApiAsync(String pcode) async {
     try {
-      final response = await dio.get('${Config.getHomeUrl}');
+      final response = await dio.get('${Config.getReviewDetailsUrl}/$pcode');
+      debugPrint('print api object : ${Config.getReviewDetailsUrl}/$pcode ');
+      if (response.statusCode == 200) {
+        final responseBody = jsonDecode(jsonEncode(response.data));
+        debugPrint('print api object :' + responseBody.toString());
+        if (responseBody['status']) {
+          getProductReviewApiAsync(pcode);
+          productData = responseBody['idata'];
+        }
+      }
+    } on DioError catch (e) {
+      var errorMessage = jsonDecode(jsonEncode(e.response.data));
+      var statusCode = e.response.statusCode;
+
+      debugPrint("print: error :" + errorMessage.toString());
+      debugPrint("print: statusCode :" + statusCode.toString());
+
+      if (statusCode == 400) {
+        hideLoader();
+        Global.toast(errorMessage['message']);
+      } else if (statusCode == 401) {
+        hideLoader();
+        Global.toast(errorMessage['message']);
+      } else {
+        hideLoader();
+        Global.toast('Something went wrong');
+      }
+    }
+  }
+
+  void getProductReviewApiAsync(String pcode) async {
+    try {
+      final response =
+          await dio.get('${Config.getReviewListDetailsUrl}/$pcode/1');
+      debugPrint('print api List : ${Config.getReviewListDetailsUrl}/$pcode/1');
+
       debugPrint('print api : ${Config.getSproductUrl}/$pcode ');
       if (response.statusCode == 200) {
         final responseBody = jsonDecode(jsonEncode(response.data));
         if (responseBody['status']) {
+          debugPrint('print api List :' + responseBody.toString());
           hideLoader();
           setState(() {
             items = responseBody['data'];
@@ -70,17 +106,20 @@ class _ReviewDetailsState extends State<ReviewDetails> {
 
   @override
   Widget build(BuildContext context) {
-    var pcode = ModalRoute.of(context).settings.arguments;
-    print("pcode.................."+pcode);
+    List data = ModalRoute.of(context).settings.arguments;
+    setState(() {
+      getProductApiAsync( data[1]);
+    });
 
     return Scaffold(
         appBar: AppBar(
             backgroundColor: Colors.white,
             brightness: Brightness.light,
             titleSpacing: 2.0,
+            centerTitle: true,
             leading: BackButton(color: Colors.black),
             title: TextWidget(
-                title: "Review",
+                title: "${data[0]}",
                 color: Colors.black,
                 fontSize: AppFonts.toolbarSize,
                 isBold: true)),
@@ -91,15 +130,15 @@ class _ReviewDetailsState extends State<ReviewDetails> {
                 ),
               )
             : ListView.builder(
-            itemCount: items.length,
-            itemBuilder: (context, index) {
-              if(index==0){
-                return buildHeader();
-              }
-              return buildProductCard(context, index);
-            }));
+                itemCount: items.length + 1,
+                itemBuilder: (context, index) {
+                  if (index == 0) {
+                    return buildHeader();
+                  }
+                  index -= 1;
+                  return buildProductCard(context, index);
+                }));
   }
-
 
   Widget buildProductCard(BuildContext context, int index) {
     return Container(
@@ -148,20 +187,17 @@ class _ReviewDetailsState extends State<ReviewDetails> {
               TextWidget(
                 title: name.toString().toUpperCase(),
                 fontSize: 13.0,
+                isBold: true,
               ),
               TextWidget(
-                title: '  reviewed   ',
+                title: '  reviewed            ',
                 fontSize: 12.0,
               ),
               TextWidget(
                 title: '@$rdate',
-                fontSize: 12.0,
+                fontSize: 10.0,
               )
             ],
-          ),
-          TextWidget(
-            title: pname,
-            isBold: true,
           ),
         ],
       ),
@@ -217,6 +253,7 @@ class _ReviewDetailsState extends State<ReviewDetails> {
       child: TextWidget(title: pdesc, fontSize: 14.0),
     );
   }
+
   Widget bottomView() {
     return Container(
       margin: EdgeInsets.only(left: 10.0, right: 10.0, top: 10),
@@ -256,28 +293,20 @@ class _ReviewDetailsState extends State<ReviewDetails> {
       ),
     );
   }
+
   Widget buildHeader() {
     return Container(
       color: Colors.white,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          Align(
-            alignment: Alignment.topLeft,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 10.0,top: 10.0),
-              child: TextWidget(
-              title: 'Water Pump',
-              isBold: true,
-          ),
-            )),
-          getBgImage(
-              'https://global.weir/assets/components/phpthumbof/cache/Multiflo%20Pump%204_cropped.02337b30f082168085da8ad180ce6017.png'),
+          getBgImage(Config.baseImageUrl + productData['ipath']),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              setStar("2"),
+              setStar(
+                  productData['astar'] == null ? "0" : productData['astar']),
               FlatButton.icon(
                 onPressed: () {},
                 splashColor: Colors.cyanAccent,
@@ -289,12 +318,16 @@ class _ReviewDetailsState extends State<ReviewDetails> {
               ),
             ],
           ),
-      Padding(
-        padding: const EdgeInsets.only(left: 10.0,right: 5.0,bottom: 10.0),
-        child: TextWidget(
-        title: 'Jeremy Hanhiniemi explores four unique pump design considerations which should be optimised in mobile mine dewatering pump designs. There are a number of essential factors to examine including operating and fuel costs, pump efficiency and wear, pump unit capital costs as well as diesel engine factors and performance.'
-        ),
-      ),
+          Align(
+            alignment: Alignment.topLeft,
+            child: Padding(
+              padding:
+                  const EdgeInsets.only(left: 10.0, top: 5.0, bottom: 10.0),
+              child: TextWidget(
+                  title:
+                      productData['pdesc'] == null ? "" : productData['pdesc']),
+            ),
+          ),
           Container(height: 3.0, color: Colors.grey[200]),
         ],
       ),

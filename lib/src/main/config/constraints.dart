@@ -13,6 +13,9 @@ class Config{
 
     static const String getHomeUrl=baseUrl+'/api/oauth/review/1';
 
+    static const String getReviewDetailsUrl=baseUrl+'/api/oauth/openproduct';
+    static const String getReviewListDetailsUrl=baseUrl+'/api/oauth/ireview';
+
     static const String getAllCategoryUrl=baseUrl+'/api/oauth/allcategory';
     static const String getDefaultReviewUrl=baseUrl+'/api/oauth/defaultreview/1/k';
 
