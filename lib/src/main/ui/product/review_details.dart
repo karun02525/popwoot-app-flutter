@@ -12,7 +12,6 @@ import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
 import 'package:popwoot/src/main/utils/global.dart';
 import 'package:popwoot/src/res/fonts.dart';
 
-
 class ReviewDetails extends StatefulWidget {
   @override
   _ReviewDetailsState createState() => _ReviewDetailsState();
@@ -74,27 +73,51 @@ class _ReviewDetailsState extends State<ReviewDetails> {
     pcode = ModalRoute.of(context).settings.arguments;
 
     return Scaffold(
-      appBar: AppBar(
-          backgroundColor: Colors.white,
-          brightness: Brightness.light,
-          titleSpacing: 2.0,
-          leading: BackButton(color: Colors.black),
-          title: TextWidget(title: "Review", color: Colors.black,fontSize: AppFonts.toolbarSize, isBold: true)),
-      body: _isLoading
-          ? Container(
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
-            )
-          : ListView.builder(
-              itemCount: items.length,
-              itemBuilder: (context, index) =>
-                  buildProductCard(context, index)),
-    );
+        appBar: AppBar(
+            backgroundColor: Colors.white,
+            brightness: Brightness.light,
+            titleSpacing: 2.0,
+            leading: BackButton(color: Colors.black),
+            title: TextWidget(
+                title: "Review",
+                color: Colors.black,
+                fontSize: AppFonts.toolbarSize,
+                isBold: true)),
+        body: _isLoading
+            ? Container(
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              )
+            : Container(child:Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            buildHeader(),
+            loadList()
+          ],
+        )
+
+
+        ));
+  }
+/*
+  ListView.builder(
+  itemCount: items.length,
+  itemBuilder: (context, index) =>
+  buildProductCard(context, index)),*/
+
+  Widget loadList(){
+    return Expanded(child:ListView.builder(
+        itemCount: items.length,
+        itemBuilder: (context, index) {
+          return buildProductCard(context, index);
+        }));
   }
 
   Widget buildProductCard(BuildContext context, int index) {
     return Container(
+      color: Colors.white,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -212,7 +235,6 @@ class _ReviewDetailsState extends State<ReviewDetails> {
       child: TextWidget(title: pdesc, fontSize: 14.0),
     );
   }
-
   Widget bottomView() {
     return Container(
       margin: EdgeInsets.only(left: 10.0, right: 10.0, top: 10),
@@ -248,6 +270,49 @@ class _ReviewDetailsState extends State<ReviewDetails> {
               style: TextStyle(color: Colors.grey[400], fontSize: 12.0),
             ),
           ),
+        ],
+      ),
+    );
+  }
+  Widget buildHeader() {
+    return Container(
+      color: Colors.white,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Align(
+            alignment: Alignment.topLeft,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 10.0,top: 10.0),
+              child: TextWidget(
+              title: 'Water Pump',
+              isBold: true,
+          ),
+            )),
+          getBgImage(
+              'https://global.weir/assets/components/phpthumbof/cache/Multiflo%20Pump%204_cropped.02337b30f082168085da8ad180ce6017.png'),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              setStar("2"),
+              FlatButton.icon(
+                onPressed: () {},
+                splashColor: Colors.cyanAccent,
+                icon: Icon(Icons.open_in_new, color: Colors.grey[600]),
+                label: Text(
+                  "Add Review (10)",
+                  style: TextStyle(color: Colors.grey[400], fontSize: 12.0),
+                ),
+              ),
+            ],
+          ),
+      Padding(
+        padding: const EdgeInsets.only(left: 10.0,right: 5.0),
+        child: TextWidget(
+        title: 'Jeremy Hanhiniemi explores four unique pump design considerations which should be optimised in mobile mine dewatering pump designs. There are a number of essential factors to examine including operating and fuel costs, pump efficiency and wear, pump unit capital costs as well as diesel engine factors and performance.'
+        ),
+      )
         ],
       ),
     );
