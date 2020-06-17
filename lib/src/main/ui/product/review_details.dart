@@ -21,18 +21,18 @@ class _ReviewDetailsState extends State<ReviewDetails> {
   List items;
   Dio dio;
   bool _isLoading = true;
-  String pcode;
 
   @override
   void initState() {
     super.initState();
     dio = Dio();
-    getHomeApiAsync();
+    getHomeApiAsync('616374013841');
   }
 
-  void getHomeApiAsync() async {
+  void getHomeApiAsync(String pcode) async {
     try {
-      final response = await dio.get(Config.getHomeUrl);
+      final response = await dio.get('${Config.getHomeUrl}');
+      debugPrint('print api : ${Config.getSproductUrl}/$pcode ');
       if (response.statusCode == 200) {
         final responseBody = jsonDecode(jsonEncode(response.data));
         if (responseBody['status']) {
@@ -70,7 +70,8 @@ class _ReviewDetailsState extends State<ReviewDetails> {
 
   @override
   Widget build(BuildContext context) {
-    pcode = ModalRoute.of(context).settings.arguments;
+    var pcode = ModalRoute.of(context).settings.arguments;
+    print("pcode.................."+pcode);
 
     return Scaffold(
         appBar: AppBar(
@@ -89,31 +90,16 @@ class _ReviewDetailsState extends State<ReviewDetails> {
                   child: CircularProgressIndicator(),
                 ),
               )
-            : Container(child:Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            buildHeader(),
-            loadList()
-          ],
-        )
-
-
-        ));
+            : ListView.builder(
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              if(index==0){
+                return buildHeader();
+              }
+              return buildProductCard(context, index);
+            }));
   }
-/*
-  ListView.builder(
-  itemCount: items.length,
-  itemBuilder: (context, index) =>
-  buildProductCard(context, index)),*/
 
-  Widget loadList(){
-    return Expanded(child:ListView.builder(
-        itemCount: items.length,
-        itemBuilder: (context, index) {
-          return buildProductCard(context, index);
-        }));
-  }
 
   Widget buildProductCard(BuildContext context, int index) {
     return Container(
@@ -123,14 +109,10 @@ class _ReviewDetailsState extends State<ReviewDetails> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           getHeadTitle(items, index),
-          getBgImage(Config.baseImageUrl + items[index]['ipath']),
           setStar(items[index]['astar']),
           descMess(items[index]['pdesc']),
           bottomView(),
-          Container(
-            height: 10,
-            color: Colors.grey[200],
-          ),
+          Container(height: 3.0, color: Colors.grey[200]),
         ],
       ),
     );
@@ -308,11 +290,12 @@ class _ReviewDetailsState extends State<ReviewDetails> {
             ],
           ),
       Padding(
-        padding: const EdgeInsets.only(left: 10.0,right: 5.0),
+        padding: const EdgeInsets.only(left: 10.0,right: 5.0,bottom: 10.0),
         child: TextWidget(
         title: 'Jeremy Hanhiniemi explores four unique pump design considerations which should be optimised in mobile mine dewatering pump designs. There are a number of essential factors to examine including operating and fuel costs, pump efficiency and wear, pump unit capital costs as well as diesel engine factors and performance.'
         ),
-      )
+      ),
+          Container(height: 3.0, color: Colors.grey[200]),
         ],
       ),
     );
