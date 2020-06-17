@@ -5,6 +5,7 @@ import 'file:///D:/project/popwoot_project/popwoot/lib/ui/navigation/tabs/home.d
 import 'file:///D:/project/popwoot_project/popwoot/lib/ui/navigation/tabs/profile.dart';
 import 'file:///D:/project/popwoot_project/popwoot/lib/ui/navigation/tabs/review.dart';
 import 'file:///D:/project/popwoot_project/popwoot/lib/ui/navigation/tabs/scanner.dart';
+import 'package:popwoot/ui/widgets/global.dart';
 
 class TabNavController extends StatefulWidget {
   @override
@@ -48,7 +49,7 @@ class _TabNavControllerState extends State<TabNavController> {
             backgroundColor: Colors.blue,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.center_focus_strong),
+            icon: Icon(Global.ic_scanner),
             title: Text("Scanner"),
             backgroundColor: Colors.blue,
           ),

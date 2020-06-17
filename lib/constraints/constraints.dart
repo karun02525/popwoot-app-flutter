@@ -13,5 +13,8 @@ class Constraints{
     static const String getAllCategoryUrl=baseUrl+'/api/oauth/allcategory';
     static const String getDefaultReviewUrl=baseUrl+'/api/oauth/defaultreview/1/k';
 
-    static const String token='eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1ZWU5MjFiMjUwZjY2YTExOTBjZTUwZWUiLCJzY29wZXMiOltdLCJleHAiOjE1OTIzNTQ4MTgsImlhdCI6MTU5MjMzNjgxOH0.8HBrjGiNrqHIZVnkxXTSvWsv0C3vR5j-CIZbwjmvdmorLD5hSI6mJwqhEMWPChMMBQeWQkisk1SHHojCIf_XKg';
+    static const String token=
+        'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1ZWU5YmNhNDUwZjY2YTIyYjRkM2FiODMiLCJzY29wZXMiOltdLCJleHAiOjE1OTIzOTQ0ODUsImlhdCI6MTU5MjM3NjQ4NX0.BAhL3ns7YB0SaZFfUaj5m3DVhL2OGDu4UN0IHqwcj1WwiiSiKIWh0rhJppVgdNytrXUrUblCsL7J4xzk8cZqDQ';
+
+
 }

@@ -1,30 +1,36 @@
 import 'dart:convert';
+import 'dart:io';
+import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:popwoot/constraints/constraints.dart';
-import 'package:popwoot/ui/model/HomeModel.dart';
+import 'package:popwoot/ui/learn/audio_test.dart';
 import 'package:popwoot/ui/navigation/drawer_navigation.dart';
-import 'package:popwoot/ui/product/review_details.dart';
+import 'package:popwoot/ui/widgets/button_widget.dart';
 import 'package:popwoot/ui/widgets/global.dart';
 import 'package:popwoot/ui/widgets/text_widget.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:popwoot/ui/widgets/textfield_widget.dart';
+import 'package:popwoot/ui/widgets/theme.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 
-import '../../widgets/theme.dart';
+import '../widgets/theme.dart';
 
-class Home extends StatefulWidget {
+class ReviewDetails extends StatefulWidget {
   @override
-  _HomeState createState() => _HomeState();
+  _ReviewDetailsState createState() => _ReviewDetailsState();
 }
 
-class _HomeState extends State<Home> {
+class _ReviewDetailsState extends State<ReviewDetails> {
+
   List items;
   Dio dio;
   bool _isLoading = true;
+  String pcode;
 
   @override
   void initState() {
@@ -73,15 +79,14 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarBrightness: Brightness.light));
+     pcode = ModalRoute.of(context).settings.arguments;
 
     return Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
           titleSpacing: 2.0,
           title: Text(
-            "PopWoot",
+            "Add Review",
             style: TextStyle(
               letterSpacing: 1.0,
               fontSize: 22.0,
@@ -89,32 +94,18 @@ class _HomeState extends State<Home> {
               fontFamily: font,
             ),
           ),
-          actions: <Widget>[
-            InkWell(
-              onTap: () {},
-              child: SizedBox(
-                width: 25.0,
-                child: Icon(Icons.search),
-              ),
-            ),
-            IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.notifications),
-            )
-          ],
         ),
-        drawer: NavigationDrawer(),
-        body: _isLoading
-            ? Container(
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              )
-            : ListView.builder(
-                    itemCount: items.length,
-                    itemBuilder: (context, index) =>
-                        buildProductCard(context, index)),
-              );
+        body:_isLoading
+    ? Container(
+    child: Center(
+    child: CircularProgressIndicator(),
+    ),
+    )
+        : ListView.builder(
+    itemCount: items.length,
+    itemBuilder: (context, index) =>
+    buildProductCard(context, index)),
+    );
   }
 
   Widget buildProductCard(BuildContext context, int index) {
@@ -124,7 +115,7 @@ class _HomeState extends State<Home> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           getHeadTitle(items, index),
-         getBgImage(Constraints.baseImageUrl+items[index]['ipath']),
+          getBgImage(Constraints.baseImageUrl+items[index]['ipath']),
           setStar(items[index]['astar']),
           descMess(items[index]['pdesc']),
           bottomView(),
@@ -142,16 +133,16 @@ class _HomeState extends State<Home> {
       margin: EdgeInsets.only(left:10.0,top: 5),
       child: Row(
         children: <Widget>[
-         items[index]['userimg'] !=null ? getProfileImage(items[index]['userimg']) :
-         CircleAvatar(child: Text(items[index]['user'][0]),),
+          items[index]['userimg'] !=null ? getProfileImage(items[index]['userimg']) :
+          CircleAvatar(child: Text(items[index]['user'][0]),),
 
-         setContent("",items[index]['user'],items[index]['pname'],items[index]['rdate'])
+          setContent(items[index]['user'],items[index]['pname'],items[index]['rdate'])
         ],
       ),
     );
   }
 
-  Widget setContent(String pcode,String name,String pname,String rdate) {
+  Widget setContent(String name,String pname,String rdate) {
     return Container(
       margin: EdgeInsets.only(left:10.0,top: 5),
       child: Column(
@@ -166,22 +157,7 @@ class _HomeState extends State<Home> {
               TextWidget(title: '@$rdate',fontSize: 12.0,)
             ],
           ),
-
-
-          RaisedButton(
-            onPressed: (){
-              Navigator.push(context,
-                  MaterialPageRoute(
-                      builder: (context) => ReviewDetails(),
-                      settings: RouteSettings(
-                          arguments: pcode
-                      )
-                  )
-              );
-            },
-            child:TextWidget(title:pname,isBold: true,)
-          )
-
+          TextWidget(title:pname,isBold: true,),
         ],
       ),
     );

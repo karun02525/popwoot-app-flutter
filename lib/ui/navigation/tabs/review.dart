@@ -252,7 +252,7 @@ class _ReviewState extends State<Review> {
           padding: const EdgeInsets.only(top:10.0),
           child: IconButton(
             onPressed: scanBarcodeNormal,
-            icon: Icon(Icons.filter_center_focus),
+            icon:Icon(Global.ic_scanner),
           ),
         )
       ],
