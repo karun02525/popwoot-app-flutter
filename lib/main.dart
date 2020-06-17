@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:popwoot/services/connectivity_service.dart';
-import 'package:popwoot/ui/navigation/tab_nav_controller.dart';
-import 'package:popwoot/ui/product/add_category.dart';
-import 'package:popwoot/ui/product/add_product.dart';
-import 'package:popwoot/ui/product/add_review.dart';
-import 'package:popwoot/ui/widgets/global.dart';
+import 'package:popwoot/src/main/services/connectivity_service.dart';
+import 'package:popwoot/src/main/ui/navigation/tab_nav_controller.dart';
+import 'package:popwoot/src/main/ui/product/add_category.dart';
+import 'package:popwoot/src/main/ui/product/add_product.dart';
+import 'package:popwoot/src/main/ui/product/add_review.dart';
+import 'package:popwoot/src/res/colors.dart';
 import 'package:provider/provider.dart';
 
 void main() => runApp(LaunchApp());
@@ -16,7 +16,7 @@ class LaunchApp extends StatelessWidget {
     return StreamProvider( create: (_) => ConnectivityService().connectionStatusController.stream,
       child:MaterialApp(
         theme: ThemeData(
-            primaryColor: Global.appColor, accentColor: Colors.blue),
+            primaryColor: AppColor.appColor, accentColor: Colors.blue),
         debugShowCheckedModeBanner: false,
         home: TabNavController(),
         routes: {
