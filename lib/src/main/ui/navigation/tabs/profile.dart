@@ -78,11 +78,6 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     var connectionStatus = Provider.of<ConnectivityStatus>(context);
     return Scaffold(
-        appBar: AppBar(
-          titleSpacing: 2.0,
-          centerTitle: true,
-          title: TextWidget(title: "Category",fontSize:AppFonts.toolbarSize,isBold: true),
-        ),
         body: Column(
           children: <Widget>[
             Text('Connection Status: $connectionStatus'),
@@ -90,7 +85,7 @@ class _ProfileState extends State<Profile> {
                     ConnectivityStatus
                         .Wifi // Check status and show different buttons
                 ? FlatButton(
-                    child: Text('Sync Large files'),
+                    child: Text('Testing files'),
                     color: Colors.blue[600],
                     onPressed: () {})
                 : FlatButton(

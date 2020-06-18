@@ -96,11 +96,6 @@ class _ScannerState extends State<Scanner> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          brightness: Brightness.light,
-          centerTitle: true,
-            title: TextWidget(title: "Scanner", color: Colors.black,fontSize: AppFonts.toolbarSize, isBold: true)),
         body: Container(
           margin: EdgeInsets.only(top: 5, bottom: 5),
           child:_isLoading ? Container(child: Center(child: CircularProgressIndicator()))

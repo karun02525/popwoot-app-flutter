@@ -9,11 +9,11 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
 import 'package:popwoot/src/main/ui/product/add_review.dart';
+import 'package:popwoot/src/main/ui/widgets/image_load_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
 import 'package:popwoot/src/main/utils/global.dart';
 import 'package:popwoot/src/res/app_icons.dart';
 import 'package:popwoot/src/res/fonts.dart';
-
 
 class Review extends StatefulWidget {
   @override
@@ -21,7 +21,9 @@ class Review extends StatefulWidget {
 }
 
 class _ReviewState extends State<Review> {
+  var _serachController = TextEditingController();
   List items = [];
+  List _serachItem = [];
   Dio dio;
   bool _isLoading = true;
 
@@ -49,7 +51,7 @@ class _ReviewState extends State<Review> {
         final responseBody = jsonDecode(jsonEncode(response.data));
         if (responseBody['status']) {
           debugPrint("print: error :" + responseBody.toString());
-          // hideLoader();
+          hideLoader();
           setState(() {
             items = responseBody['data'];
           });
@@ -84,53 +86,57 @@ class _ReviewState extends State<Review> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          backgroundColor: Colors.white,
-          brightness: Brightness.light,
-          centerTitle: true,
-          title: TextWidget(
-              title: "Search & Review", color: Colors.black,fontSize:AppFonts.toolbarSize, isBold: true)),
-      body: Container(
-          margin: EdgeInsets.only(bottom: 5),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              getSearch(),
-              Divider(
-                height: 10,
-                color: Colors.black,
+      body: _isLoading
+          ? Container(
+              child: Center(
+                child: CircularProgressIndicator(),
               ),
-              Expanded(
-                  child: ListView.builder(
-                      itemCount: items?.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                            child: buildCardView(context, index),
-                            onTap: () => Scaffold.of(context).showSnackBar(
-                                SnackBar(content: Text(index.toString()))));
-                      })),
-            ],
-          )),
+            )
+          : Container(
+              color: Colors.white,
+              margin: EdgeInsets.only(bottom: 5),
+              child: Column(
+                children: <Widget>[
+                  Expanded(
+                      child: ListView.builder(
+                          itemCount: items?.length,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                                child: buildCardView(context, index),
+                                onTap: () => Scaffold.of(context).showSnackBar(
+                                    SnackBar(content: Text(index.toString()))));
+                          })),
+                ],
+              )),
     );
   }
 
   Widget buildCardView(BuildContext context, int index) {
+    final i = items[index];
     return Container(
         margin: EdgeInsets.only(left: 5, right: 5),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Row(children: <Widget>[
-              getImage(Config.baseImageUrl + items[index]['ipath']),
-              getContent(items[index]['pid'], items[index]['pname'],
-                  items[index]['pdesc'], items[index]['ipath'], 1, 2),
+              Expanded(
+                child: getContent(
+                    i['pid'], i['pname'], i['pdesc'], i['ipath'], 1, 2),
+                flex: 1,
+              ),
+              Expanded(
+                child: getImage(Config.baseImageUrl + i['ipath']),
+                flex: -1,
+              )
             ]),
             Padding(
               padding: const EdgeInsets.only(top: 15.0, left: 10),
-              child: TextWidget(title: items[index]['pdesc'].toString(),fontSize: 13.0),
+              child: TextWidget(title: i['pdesc'].toString(), fontSize: 13.0),
             ),
+
+            ratingReview(),
+
             Divider(
               height: 25.0,
             ),
@@ -138,14 +144,40 @@ class _ReviewState extends State<Review> {
         ));
   }
 
+  Widget ratingReview() {
+    return Row(
+      children: <Widget>[
+        setStar(3),
+        FlatButton.icon(
+            onPressed: () {
+              /*       Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AddReview(),
+                        settings: RouteSettings(
+                            arguments: [pid, pname, pdesc, ipath])));*/
+            },
+            splashColor: Colors.cyanAccent,
+            icon: Icon(
+              Icons.open_in_new,
+              size: 20.0,
+            ),
+            label: TextWidget(
+              title: "Add Review",
+              color: Colors.grey[400],
+              fontSize: 14.0,
+            )),
+      ],
+    );
+  }
+
   Widget getImage(String url) {
     return Container(
-        padding: EdgeInsets.only(left: 10.0, top: 10.0),
-        width: 170.0,
-        height: 130.0,
-        child: CachedNetworkImage(
+        padding: EdgeInsets.only(left: 10.0),
+        width: 110.0,
+        height: 90.0,
+        child: ImageLoadWidget(
           imageUrl: url,
-          fit: BoxFit.fill,
         ));
   }
 
@@ -160,29 +192,6 @@ class _ReviewState extends State<Review> {
               padding: const EdgeInsets.only(left: 10.0),
               child:
                   TextWidget(title: pname, color: Colors.black, isBold: true)),
-          setStar(rating),
-          FlatButton.icon(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => AddReview(),
-                        settings: RouteSettings(
-                            arguments: [pid, pname, pdesc, ipath])));
-                /* Navigator.pushNamed(context, '/add_review',
-                  arguments: 'karun..............'
-                );*/
-              },
-              splashColor: Colors.cyanAccent,
-              icon: Icon(
-                Icons.open_in_new,
-                size: 20.0,
-              ),
-              label: TextWidget(
-                title: "Add Review",
-                color: Colors.grey[400],
-                fontSize: 14.0,
-              )),
           Padding(
               padding: const EdgeInsets.only(left: 10.0),
               child: TextWidget(
@@ -218,6 +227,7 @@ class _ReviewState extends State<Review> {
             width: 300.0,
             child: TextField(
               onChanged: null,
+              controller: _serachController,
               decoration: InputDecoration(
                   labelText: _value,
                   border: InputBorder.none,

@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
 import 'package:popwoot/src/main/ui/product/review_details.dart';
+import 'package:popwoot/src/main/ui/widgets/search_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
 import 'package:popwoot/src/main/utils/global.dart';
 import 'package:popwoot/src/res/fonts.dart';
@@ -76,24 +77,6 @@ class _HomeState extends State<Home> {
         statusBarBrightness: Brightness.light));
 
     return Scaffold(
-        appBar: AppBar(
-          titleSpacing: 2.0,
-          title: TextWidget(title: "PopWoot",fontSize:AppFonts.toolbarSize,isBold: true),
-          actions: <Widget>[
-            InkWell(
-              onTap: () {},
-              child: SizedBox(
-                width: 25.0,
-                child: Icon(Icons.search),
-              ),
-            ),
-            IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.notifications),
-            )
-          ],
-        ),
-        drawer: NavigationDrawer(),
         body: _isLoading
             ? Container(
                 child: Center(

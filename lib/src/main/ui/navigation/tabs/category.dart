@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
 import 'package:popwoot/src/main/ui/model/CategoryModel.dart';
+import 'package:popwoot/src/main/ui/widgets/image_load_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
 import 'package:popwoot/src/main/utils/global.dart';
 import 'package:popwoot/src/res/fonts.dart';
@@ -71,13 +72,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        brightness: Brightness.light,
-        centerTitle: true,
-        title: TextWidget(title: "Category", color: Colors.black,fontSize:AppFonts.toolbarSize,isBold: true),
-      ),
-      body: Container(
+      body: _isLoading ? Container(child: Center(child: CircularProgressIndicator(),),) :
+      Container(
         margin: EdgeInsets.only(top: 5, bottom: 5),
         child: ListView.builder(
             itemCount: categoryList.length,
@@ -87,19 +83,20 @@ class _CategoryScreenState extends State<CategoryScreen> {
   }
 
   Widget buildCardView(BuildContext context, int index) {
+    final i =categoryList[index];
     return Container(
         margin: EdgeInsets.only(left: 5, right: 5),
         child: Card(
           elevation: 3,
           child: ListTile(
-            leading: CachedNetworkImage(
-              imageUrl: Config.baseImageUrl+categoryList[index]['cimage'],fit: BoxFit.fill,),
+            leading: ImageLoadWidget(
+              imageUrl: Config.baseImageUrl+i['cimage']),
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 TextWidget(
-                  title:categoryList[index]['cname'],
+                  title:i['cname'],
                   isBold: true,
                   fontSize: 12.0),
 
@@ -111,7 +108,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
             subtitle: Padding(
               padding: const EdgeInsets.only(bottom: 8.0),
               child: TextWidget(
-               title: categoryList[index]['cdetails'])
+               title: i['cdetails'])
             ),
           ),
         ));

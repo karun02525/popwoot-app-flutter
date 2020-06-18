@@ -5,7 +5,10 @@ import 'package:popwoot/src/main/ui/navigation/tabs/home.dart';
 import 'package:popwoot/src/main/ui/navigation/tabs/profile.dart';
 import 'package:popwoot/src/main/ui/navigation/tabs/review.dart';
 import 'package:popwoot/src/main/ui/navigation/tabs/scanner.dart';
+import 'package:popwoot/src/main/ui/widgets/search_widget.dart';
 import 'package:popwoot/src/res/app_icons.dart';
+
+import 'drawer_navigation.dart';
 
 class TabNavController extends StatefulWidget {
   @override
@@ -25,6 +28,18 @@ class _TabNavControllerState extends State<TabNavController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
+      appBar: AppBar(
+        titleSpacing: 2.0,
+        title: TextSearchWidget(),
+        actions: <Widget>[
+          IconButton(
+            onPressed: () {},
+            icon: Icon(Icons.notifications),
+          )
+        ],
+      ),
+      drawer: NavigationDrawer(),
       backgroundColor: Colors.white,
       body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
