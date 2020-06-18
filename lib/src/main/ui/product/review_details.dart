@@ -7,7 +7,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
-import 'package:popwoot/src/main/config/constraints.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
 import 'package:popwoot/src/main/utils/global.dart';
 import 'package:popwoot/src/res/fonts.dart';
@@ -67,7 +66,6 @@ class _ReviewDetailsState extends State<ReviewDetails> {
           await dio.get('${Config.getReviewListDetailsUrl}/$pcode/1');
       debugPrint('print api List : ${Config.getReviewListDetailsUrl}/$pcode/1');
 
-      debugPrint('print api : ${Config.getSproductUrl}/$pcode ');
       if (response.statusCode == 200) {
         final responseBody = jsonDecode(jsonEncode(response.data));
         if (responseBody['status']) {

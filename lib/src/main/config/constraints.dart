@@ -8,7 +8,7 @@ class Config{
     static const String addCategoryUrl=baseUrl+'/api/cauth/addcategory';
     static const String addProductUrl=baseUrl+'/api/cauth/addproduct';
     static const String addReviewUrl=baseUrl+'/api/cauth/addreview';
-    static const String getSproductUrl=baseUrl+'/api/oauth/sproduct';
+    static const String getScannerUrl=baseUrl+'/api/oauth/sproduct';
 
 
     static const String getHomeUrl=baseUrl+'/api/oauth/review/1';
@@ -20,7 +20,6 @@ class Config{
     static const String getDefaultReviewUrl=baseUrl+'/api/oauth/defaultreview/1/k';
 
     static const String token=
-        'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1ZWU5YmNhNDUwZjY2YTIyYjRkM2FiODMiLCJzY29wZXMiOltdLCJleHAiOjE1OTIzOTQ0ODUsImlhdCI6MTU5MjM3NjQ4NX0.BAhL3ns7YB0SaZFfUaj5m3DVhL2OGDu4UN0IHqwcj1WwiiSiKIWh0rhJppVgdNytrXUrUblCsL7J4xzk8cZqDQ';
-
+        'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1ZWU5YmNhNDUwZjY2YTIyYjRkM2FiODMiLCJzY29wZXMiOltdLCJleHAiOjE1OTI0ODI1ODksImlhdCI6MTU5MjQ2NDU4OX0.yh5S_kEpZzgfr_vWacfT8JFI4Flh1BRla6aO5FlQSsuVU3NXrxpsdlo5YFzfzQ1N0ammcJs6eC6FaYYZ-jMbDQ';
 
 }
