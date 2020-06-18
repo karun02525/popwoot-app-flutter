@@ -23,6 +23,7 @@ class TextFieldWidget extends StatelessWidget {
       return Container(
         child: TextField(
           maxLines: minLine,
+          onChanged: onChanged,
           style: TextStyle(
               fontFamily: AppFonts.font,
               fontSize: 15,
@@ -49,6 +50,7 @@ class TextFieldWidget extends StatelessWidget {
                   fontWeight: FontWeight.w700),
               controller: controller,
               autofocus: true,
+              onChanged: onChanged,
               autocorrect: false,
               decoration: InputDecoration(
                 contentPadding: EdgeInsets.fromLTRB(10.0, 10.0, 20.0, 10.0),

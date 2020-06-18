@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,28 +24,57 @@ class GlobalSearch extends StatefulWidget {
 }
 
 class _GlobalSearchState extends State<GlobalSearch> {
-  List categoryList;
+  List items = [];
+  bool _isVisible = false;
   Dio dio;
-  bool _isLoading = true;
+  bool _isLoading = false;
+  var _searchController = TextEditingController();
+
+  onSearch(String text) async {
+    setState(() {
+      if (text.isEmpty) {
+        _isVisible = false;
+        items.clear();
+      } else {
+        if(text.length>3) {
+          getCategoryAllAsync(text);
+          _isVisible = true;
+        }
+      }
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
 
   @override
   void initState() {
     super.initState();
     dio = Dio();
-    getCategoryAllAsync();
   }
 
-  void getCategoryAllAsync() async {
+  void getCategoryAllAsync(String query) async {
+    _isLoading = true;
     try {
-      final response = await dio.get(Config.getAllCategoryUrl);
+      final String _url = "api.github.com";
+      final uri = Uri.https(_url, '/search/repositories', {
+        'q': query,
+        'sort': 'stars',
+        'order': 'desc',
+        'page': '0',
+        'per_page': '25'
+      });
+      debugPrint("Github...." + uri.toString());
+
+      final response = await dio.get(uri.toString());
       if (response.statusCode == 200) {
         final responseBody = jsonDecode(jsonEncode(response.data));
-        if (responseBody['status']) {
-          hideLoader();
-          setState(() {
-            categoryList = responseBody['data'];
-          });
-        }
+        hideLoader();
+        setState(() {
+          items = responseBody['items'];
+        });
       }
     } on DioError catch (e) {
       var errorMessage = jsonDecode(jsonEncode(e.response.data));
@@ -86,16 +116,25 @@ class _GlobalSearchState extends State<GlobalSearch> {
               Expanded(
                   child: TextFieldWidget(
                     hintText: 'Search...',
+                    controller: _searchController,
                     isRound: false,
+                    onChanged: (value) {
+                      onSearch(value);
+                    },
                   ),
                   flex: 8),
               Expanded(
-                  child: IconButton(
-                      icon: Icon(
-                        Icons.cancel,
-                        color: Colors.black,
-                      ),
-                      onPressed: () {}),
+                  child: Visibility(
+                      visible: _isVisible,
+                      child: IconButton(
+                          icon: Icon(
+                            Icons.cancel,
+                            color: Colors.black,
+                          ),
+                          onPressed: () {
+                            _searchController.clear();
+                            onSearch('');
+                          })),
                   flex: 1),
               Expanded(
                   child: IconButton(
@@ -111,41 +150,39 @@ class _GlobalSearchState extends State<GlobalSearch> {
                 child: CircularProgressIndicator(),
               ),
             )
-          : Container(
-              margin: EdgeInsets.only(top: 5, bottom: 5),
-              child: ListView.builder(
-                  itemCount: categoryList.length,
-                  itemBuilder: (context, index) =>
-                      buildCardView(context, index)),
-            ),
+          : items.length == 0
+              ? Container(
+                  child: Center(
+                  child: Text("No data available"),
+                ))
+              : Container(
+                  margin: EdgeInsets.only(top: 5, bottom: 5),
+                  child: ListView.builder(
+                      itemCount: items.length,
+                      itemBuilder: (context, index) =>
+                          buildCardView(context, index)),
+                ),
     );
   }
 
   Widget buildCardView(BuildContext context, int index) {
-    final i = categoryList[index];
+    final i = items[index];
     return Container(
         margin: EdgeInsets.only(left: 5, right: 5),
         child: Card(
           elevation: 3,
           child: ListTile(
-            leading:
-                ImageLoadWidget(imageUrl: Config.baseImageUrl + i['cimage']),
+            leading: CachedNetworkImage(imageUrl: i['owner']['avatar_url']),
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                TextWidget(title: i['cname'], isBold: true, fontSize: 12.0),
-                FlatButton(
-                    onPressed: () {},
-                    child: TextWidget(
-                        title: 'Follow',
-                        color: Colors.grey[400],
-                        fontSize: 12.0))
+                TextWidget(title: i['name'], isBold: true, fontSize: 12.0),
               ],
             ),
             subtitle: Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
-                child: TextWidget(title: i['cdetails'])),
+                child: TextWidget(title: i['description']==null?"No Content":i['description'])),
           ),
         ));
   }

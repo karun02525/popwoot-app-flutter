@@ -40,6 +40,8 @@ dependencies:
   dio: ^3.0.9
   path: any
   progress_dialog: ^1.2.4
+  date_format: "^1.0.4"
+  url_launcher: "^3.0.1"
 
 
 
