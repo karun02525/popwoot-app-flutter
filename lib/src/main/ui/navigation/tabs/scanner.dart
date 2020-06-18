@@ -34,38 +34,41 @@ class _ScannerState extends State<Scanner> {
        "#ff6666", "Cancel", true, ScanMode.DEFAULT);
    if (barcodeScanRes != "-1") {
      getScanProductApiAsync(barcodeScanRes);
+   }else{
+     hideLoader();
    }
  }
    void getScanProductApiAsync(String pcode) async {
      try {
-       final response = await dio.get('${Config.getReviewDetailsUrl}/$pcode');
-       debugPrint('print api object : ${Config.getReviewDetailsUrl}/$pcode ');
+       final response = await dio.get('${Config.getScannerUrl}/$pcode');
+       debugPrint('print Scanner api object : ${Config.getScannerUrl}/$pcode ');
        if (response.statusCode == 200) {
          final responseBody = jsonDecode(jsonEncode(response.data));
-         debugPrint('print api object :' + responseBody.toString());
+         debugPrint('print Scanner api object :' + responseBody.toString());
          if (responseBody['status']) {
            _isLoading = true;
-           var data=responseBody['data'];
-         /*  Navigator.push(context,
+           var data=responseBody['idata'];
+           Navigator.push(context,
                MaterialPageRoute(
                    builder: (context) => ReviewDetails(),
                    settings: RouteSettings(
-                       arguments: ["Scanner", '5ee7dc0550f66a2dc4e0c856']
+                       arguments: [data['pname'],data['pid']]
                    )
                )
-           );*/
-
-           // productData = responseBody['idata'];
+           );
          }
        }
      } on DioError catch (e) {
        var errorMessage = jsonDecode(jsonEncode(e.response.data));
        var statusCode = e.response.statusCode;
 
-       debugPrint("print: error :" + errorMessage.toString());
-       debugPrint("print: statusCode :" + statusCode.toString());
+       debugPrint("print:Scanner  error :" + errorMessage.toString());
+       debugPrint("print: Scanner statusCode :" + statusCode.toString());
 
        if (statusCode == 400) {
+         hideLoader();
+         Global.toast(errorMessage['message']);
+       } if (statusCode == 404) {
          hideLoader();
          Global.toast(errorMessage['message']);
        } else if (statusCode == 401) {
