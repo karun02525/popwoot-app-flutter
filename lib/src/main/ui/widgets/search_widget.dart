@@ -22,22 +22,37 @@ class TextSearchWidget extends StatelessWidget {
     return Container(
       height: 38.0,
       color: Colors.white,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          SizedBox(width: 10.0,),
-          Expanded(child: Icon(Icons.search,color: Colors.black, size: 25.0),flex: 0,),
-          SizedBox(width: 12.0,),
-          Expanded(child: TextWidget(title:"Search",color: Colors.black,)),
-          Expanded(
-              child: IconButton(
-            onPressed: () {},
-            icon: Icon(AppIcons.ic_scanner,color: Colors.black),
-          ),flex: -1
-          ),
-        ],
-      ),
+      child: InkWell(
+          onTap: () {
+            Navigator.pushNamed(context, '/search');
+          },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              SizedBox(
+                width: 10.0,
+              ),
+              Expanded(
+                child: Icon(Icons.search, color: Colors.black, size: 25.0),
+                flex: 0,
+              ),
+              SizedBox(
+                width: 12.0,
+              ),
+              Expanded(
+                  child: TextWidget(
+                title: "Search",
+                color: Colors.black,
+              )),
+              Expanded(
+                  child: IconButton(
+                    onPressed: () {},
+                    icon: Icon(AppIcons.ic_scanner, color: Colors.black),
+                  ),
+                  flex: -1),
+            ],
+          )),
     );
   }
 }

@@ -1,16 +1,12 @@
 import 'dart:convert';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
-import 'package:popwoot/src/main/ui/model/CategoryModel.dart';
 import 'package:popwoot/src/main/ui/widgets/image_load_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
 import 'package:popwoot/src/main/utils/global.dart';
-import 'package:popwoot/src/res/fonts.dart';
 
 class CategoryScreen extends StatefulWidget {
   @override

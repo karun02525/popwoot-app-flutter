@@ -5,6 +5,7 @@ import 'package:popwoot/src/main/ui/navigation/tab_nav_controller.dart';
 import 'package:popwoot/src/main/ui/product/add_category.dart';
 import 'package:popwoot/src/main/ui/product/add_product.dart';
 import 'package:popwoot/src/main/ui/product/add_review.dart';
+import 'package:popwoot/src/main/ui/product/global_search.dart';
 import 'package:popwoot/src/res/colors.dart';
 import 'package:provider/provider.dart';
 
@@ -23,7 +24,8 @@ class LaunchApp extends StatelessWidget {
           '/home':(context) => TabNavController(),
           '/add_category':(context) => AddCategory(),
           '/add_product':(context) => AddProduct(),
-          '/add_review':(context) => AddReview()
+          '/add_review':(context) => AddReview(),
+          '/search':(context) => GlobalSearch()
         },
       ));
   }

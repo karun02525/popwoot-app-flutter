@@ -24,7 +24,8 @@ class _ReviewState extends State<Review> {
   Dio dio;
   bool _isLoading = true;
 
-  String barcodeScanRes, _value = "What are you looking for";
+  String barcodeScanRes,
+      _value = "What are you looking for";
 
   Future scanBarcodeNormal() async {
     barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
@@ -85,32 +86,33 @@ class _ReviewState extends State<Review> {
     return Scaffold(
       body: _isLoading
           ? Container(
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
-            )
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      )
           : Container(
-              color: Colors.white,
-              child: Column(
-                children: <Widget>[
-                  Expanded(
-                      child: ListView.builder(
-                          itemCount: items?.length,
-                          itemBuilder: (context, index) {
-                            return GestureDetector(
-                                child: buildCardView(context, index),
-                                onTap: () => Scaffold.of(context).showSnackBar(
+          color: Colors.white,
+          child: Column(
+            children: <Widget>[
+              Expanded(
+                  child: ListView.builder(
+                      itemCount: items?.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                            child: buildCardView(context, index),
+                            onTap: () =>
+                                Scaffold.of(context).showSnackBar(
                                     SnackBar(content: Text(index.toString()))));
-                          })),
-                ],
-              )),
+                      })),
+            ],
+          )),
     );
   }
 
   Widget buildCardView(BuildContext context, int index) {
     final item = items[index];
     return Container(
-        margin: EdgeInsets.only(left: 10, right: 10,top: 5),
+        margin: EdgeInsets.only(left: 10, right: 10, top: 5),
         child: Column(
           children: <Widget>[
             Row(
@@ -149,7 +151,7 @@ class _ReviewState extends State<Review> {
         children: <Widget>[
           TextWidget(title: item['pname'], color: Colors.black, isBold: true),
           TextWidget(
-              title:item['pdesc'],
+              title: item['pdesc'],
               fontSize: 13.0,
               maxLines: 2,
               overflow: TextOverflow.ellipsis),
@@ -163,46 +165,11 @@ class _ReviewState extends State<Review> {
   Widget ratingAndReview(item) {
     return Row(
       children: <Widget>[
-        RatingWidget(rating:item['nrating']),
-        AddReviewWidget(data: [item['pid'],item['pname'],item['pdesc'],item['ipath']])
+        RatingWidget(rating: item['nrating']),
+        AddReviewWidget(
+            data: [item['pid'], item['pname'], item['pdesc'], item['ipath']])
       ],
     );
   }
 
-
-
-
-
-
-
-  getSearch() {
-    return Container(
-        child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(left: 8.0),
-          child: Icon(Icons.search),
-        ),
-        SizedBox(
-            width: 300.0,
-            child: TextField(
-              onChanged: null,
-              controller: _serachController,
-              decoration: InputDecoration(
-                  labelText: _value,
-                  border: InputBorder.none,
-                  hintText: 'What are you looking for'),
-            )),
-        Padding(
-          padding: const EdgeInsets.only(top: 10.0),
-          child: IconButton(
-            onPressed: scanBarcodeNormal,
-            icon: Icon(AppIcons.ic_scanner),
-          ),
-        )
-      ],
-    ));
-  }
 }
