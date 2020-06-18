@@ -10,6 +10,7 @@ import 'package:popwoot/src/main/config/constraints.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
 import 'package:popwoot/src/main/ui/product/add_review.dart';
 import 'package:popwoot/src/main/ui/widgets/image_load_widget.dart';
+import 'package:popwoot/src/main/ui/widgets/rating_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
 import 'package:popwoot/src/main/utils/global.dart';
 import 'package:popwoot/src/res/app_icons.dart';
@@ -114,7 +115,7 @@ class _ReviewState extends State<Review> {
   Widget buildCardView(BuildContext context, int index) {
     final i = items[index];
     return Container(
-        margin: EdgeInsets.only(left: 5, right: 5),
+        margin: EdgeInsets.only(left: 10, right: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -130,13 +131,7 @@ class _ReviewState extends State<Review> {
                 flex: -1,
               )
             ]),
-            Padding(
-              padding: const EdgeInsets.only(top: 15.0, left: 10),
-              child: TextWidget(title: i['pdesc'].toString(), fontSize: 13.0),
-            ),
-
             ratingReview(),
-
             Divider(
               height: 25.0,
             ),
@@ -173,12 +168,9 @@ class _ReviewState extends State<Review> {
 
   Widget getImage(String url) {
     return Container(
-        padding: EdgeInsets.only(left: 10.0),
         width: 110.0,
         height: 90.0,
-        child: ImageLoadWidget(
-          imageUrl: url,
-        ));
+        child: ImageLoadWidget(imageUrl: url));
   }
 
   Widget getContent(String pid, String pname, String pdesc, String ipath,
@@ -188,29 +180,16 @@ class _ReviewState extends State<Review> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Padding(
-              padding: const EdgeInsets.only(left: 10.0),
-              child:
-                  TextWidget(title: pname, color: Colors.black, isBold: true)),
-          Padding(
-              padding: const EdgeInsets.only(left: 10.0),
-              child: TextWidget(
-                  title: "mentioned in $review reviews", color: Colors.black)),
+          TextWidget(title: pname, color: Colors.black, isBold: true),
+          TextWidget(title: pdesc, fontSize: 13.0, maxLines: 2,overflow:TextOverflow.ellipsis),
+          TextWidget(title: "mentioned in $review reviews")
         ],
       ),
     );
   }
 
   Widget setStar(int rating) {
-    return Container(
-        margin: EdgeInsets.only(left: 10.0, right: 10.0, top: 1),
-        child: FlutterRatingBar(
-          initialRating: rating.toDouble(),
-          fillColor: Colors.amber,
-          itemPadding: EdgeInsets.symmetric(horizontal: 1.0),
-          itemSize: 25.0,
-          onRatingUpdate: (double rating) {},
-        ));
+    return RatingWidget(isDisable: true,);
   }
 
   getSearch() {
