@@ -91,7 +91,6 @@ class _ReviewState extends State<Review> {
             )
           : Container(
               color: Colors.white,
-              margin: EdgeInsets.only(bottom: 5),
               child: Column(
                 children: <Widget>[
                   Expanded(
@@ -111,7 +110,7 @@ class _ReviewState extends State<Review> {
   Widget buildCardView(BuildContext context, int index) {
     final item = items[index];
     return Container(
-        margin: EdgeInsets.only(left: 10, right: 10),
+        margin: EdgeInsets.only(left: 10, right: 10,top: 5),
         child: Column(
           children: <Widget>[
             Row(
