@@ -8,12 +8,12 @@ class RatingWidget extends StatelessWidget {
   final Function onPressed;
   final bool isDisable;
 
-  RatingWidget({this.rating="0", this.value, this.onPressed, this.isDisable = false});
+  RatingWidget({this.rating, this.value, this.onPressed, this.isDisable = false});
 
   @override
   Widget build(BuildContext context) {
     return FlutterRatingBar(
-      initialRating: double.parse(rating),
+      initialRating: double.parse(rating==null?"0":rating),
       fillColor: Colors.amber,
       itemPadding: EdgeInsets.symmetric(horizontal: 1.0),
       itemSize: 25.0,

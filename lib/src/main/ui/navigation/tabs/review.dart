@@ -1,20 +1,16 @@
 import 'dart:convert';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
-import 'package:popwoot/src/main/config/constraints.dart';
-import 'package:popwoot/src/main/ui/product/add_review.dart';
+import 'package:popwoot/src/main/ui/widgets/add_review_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/image_load_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/rating_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
 import 'package:popwoot/src/main/utils/global.dart';
 import 'package:popwoot/src/res/app_icons.dart';
-import 'package:popwoot/src/res/fonts.dart';
 
 class Review extends StatefulWidget {
   @override
@@ -113,25 +109,24 @@ class _ReviewState extends State<Review> {
   }
 
   Widget buildCardView(BuildContext context, int index) {
-    final i = items[index];
+    final item = items[index];
     return Container(
         margin: EdgeInsets.only(left: 10, right: 10),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Row(children: <Widget>[
-              Expanded(
-                child: getContent(
-                    i['pid'], i['pname'], i['pdesc'], i['ipath'], 1, 2),
-                flex: 1,
-              ),
-              Expanded(
-                child: getImage(Config.baseImageUrl + i['ipath']),
-                flex: -1,
-              )
-            ]),
-            ratingReview(),
+            Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Expanded(
+                    child: getContent(item),
+                    flex: 1,
+                  ),
+                  Expanded(
+                    child: getImage(item),
+                    flex: -1,
+                  )
+                ]),
             Divider(
               height: 25.0,
             ),
@@ -139,58 +134,47 @@ class _ReviewState extends State<Review> {
         ));
   }
 
-  Widget ratingReview() {
-    return Row(
-      children: <Widget>[
-        setStar(3),
-        FlatButton.icon(
-            onPressed: () {
-              /*       Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => AddReview(),
-                        settings: RouteSettings(
-                            arguments: [pid, pname, pdesc, ipath])));*/
-            },
-            splashColor: Colors.cyanAccent,
-            icon: Icon(
-              Icons.open_in_new,
-              size: 20.0,
-            ),
-            label: TextWidget(
-              title: "Add Review",
-              color: Colors.grey[400],
-              fontSize: 14.0,
-            )),
-      ],
-    );
-  }
-
-  Widget getImage(String url) {
+  Widget getImage(item) {
     return Container(
+        color: Colors.grey[100],
         width: 110.0,
         height: 90.0,
-        child: ImageLoadWidget(imageUrl: url));
+        child: ImageLoadWidget(imageUrl: item['ipath']));
   }
 
-  Widget getContent(String pid, String pname, String pdesc, String ipath,
-      int rating, int review) {
+  Widget getContent(item) {
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          TextWidget(title: pname, color: Colors.black, isBold: true),
-          TextWidget(title: pdesc, fontSize: 13.0, maxLines: 2,overflow:TextOverflow.ellipsis),
-          TextWidget(title: "mentioned in $review reviews")
+          TextWidget(title: item['pname'], color: Colors.black, isBold: true),
+          TextWidget(
+              title:item['pdesc'],
+              fontSize: 13.0,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis),
+          ratingAndReview(item),
+          TextWidget(title: "mentioned in 0reviews"),
         ],
       ),
     );
   }
 
-  Widget setStar(int rating) {
-    return RatingWidget(isDisable: true,);
+  Widget ratingAndReview(item) {
+    return Row(
+      children: <Widget>[
+        RatingWidget(rating:item['nrating']),
+        AddReviewWidget(data: [item['pid'],item['pname'],item['pdesc'],item['ipath']])
+      ],
+    );
   }
+
+
+
+
+
+
 
   getSearch() {
     return Container(

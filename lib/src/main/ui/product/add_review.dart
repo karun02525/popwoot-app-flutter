@@ -11,6 +11,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
 import 'package:popwoot/src/main/ui/learn/audio_test.dart';
 import 'package:popwoot/src/main/ui/widgets/button_widget.dart';
+import 'package:popwoot/src/main/ui/widgets/image_load_widget.dart';
+import 'package:popwoot/src/main/ui/widgets/rating_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/textfield_widget.dart';
 import 'package:popwoot/src/main/utils/global.dart';
@@ -238,7 +240,7 @@ class _AddReviewState extends State<AddReview> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            getProductImage(Config.baseImageUrl+ipath),
+            getImage(),
             getContent(),
           ]),
     );
@@ -252,29 +254,21 @@ class _AddReviewState extends State<AddReview> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            TextWidget(
-              title: pname,
-              isBold: true,
-              top: 0.0,
-            ),
-            setStar(0),
-            TextWidget(
-                title: pdesc,
-                top: 0.0),
+            TextWidget(title: pname, isBold: true),
+            RatingWidget(rating:"0"),
+            TextWidget(title: pdesc),
           ],
         ),
       ),
     );
   }
 
-  Widget getProductImage(String url) {
+  Widget getImage() {
     return Container(
-        width: 140.0,
-        height: 100.0,
-        child: CachedNetworkImage(
-          imageUrl: url,
-          fit: BoxFit.fill,
-        ));
+        color: Colors.grey[100],
+        width: 110.0,
+        height: 90.0,
+        child: ImageLoadWidget(imageUrl: ipath));
   }
 
   Widget setStar(int rating) {
