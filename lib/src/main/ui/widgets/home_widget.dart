@@ -9,28 +9,19 @@ import 'package:popwoot/src/res/app_icons.dart';
 import 'image_load_widget.dart';
 
 class HomeWidget extends StatelessWidget {
-  final BuildContext context;
   final List items;
-
-  HomeWidget({this.context, this.items});
+  final int index;
+  HomeWidget({this.items,this.index,});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: ListView.builder(
-          itemCount: items.length,
-          itemBuilder: (context, index) => buildProductCard(context, index)),
-    );
-  }
-
-  Widget buildProductCard(BuildContext context, int index) {
     var item = items[index];
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          getHeadTitle(item),
+          getHeadTitle(context,item),
           getBgImage(item['ipath']),
           RatingWidget(rating: item['astar']),
           descMess(item['pdesc']),
@@ -41,19 +32,19 @@ class HomeWidget extends StatelessWidget {
     );
   }
 
-  Widget getHeadTitle(item) {
+  Widget getHeadTitle(context,item) {
     return Container(
       margin: EdgeInsets.only(left: 10.0, top: 5),
       child: Row(
         children: <Widget>[
           ImageLoadWidget(imageUrl:item['userimg'],name:item['user'],isProfile: true),
-          setContent(item['pid'], item['user'], item['pname'], item['rdate'])
+          setContent(context,item['pid'], item['user'], item['pname'], item['rdate'])
         ],
       ),
     );
   }
 
-  Widget setContent(String pid, String name, String pname, String rdate) {
+  Widget setContent(context,String pid, String name, String pname, String rdate) {
     return Container(
       margin: EdgeInsets.only(left: 10.0, top: 5),
       child: Column(

@@ -121,8 +121,7 @@ class _ReviewDetailsState extends State<ReviewDetails> {
                 color: Colors.black,
                 fontSize: AppFonts.toolbarSize,
                 isBold: true)),
-        body: _isLoading
-            ? Container(
+        body: _isLoading ? Container(
                 child: Center(
                   child: CircularProgressIndicator(),
                 ),

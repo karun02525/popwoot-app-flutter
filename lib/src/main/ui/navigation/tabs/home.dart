@@ -71,12 +71,10 @@ class _HomeState extends State<Home> {
 
     return Scaffold(
         body: _isLoading
-            ? Container(
-          child: Center(
-            child: CircularProgressIndicator(),
-          ),
-        )
-            : HomeWidget(context: context, items: items)
+            ? Container(child: Center(child: CircularProgressIndicator()))
+            :  ListView.builder(
+            itemCount: items.length,
+            itemBuilder: (context, index) => HomeWidget(items:items,index:index))
     );
   }
 }
