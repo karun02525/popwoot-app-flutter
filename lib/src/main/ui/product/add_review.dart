@@ -255,7 +255,7 @@ class _AddReviewState extends State<AddReview> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             TextWidget(title: pname, isBold: true),
-            RatingWidget(rating:"0"),
+            RatingWidget(rating:"0",isDisable: true,),
             TextWidget(title: pdesc),
           ],
         ),
@@ -271,17 +271,6 @@ class _AddReviewState extends State<AddReview> {
         child: ImageLoadWidget(imageUrl: ipath));
   }
 
-  Widget setStar(int rating) {
-    return FlutterRatingBar(
-      initialRating: rating.toDouble(),
-      fillColor: Colors.amber,
-      itemPadding: EdgeInsets.symmetric(horizontal: 1.0),
-      itemSize: 25.0,
-      onRatingUpdate: (double rating) {
-        ratingValue=rating.toInt();
-      },
-    );
-  }
 
   Widget getEditBox() {
     return Padding(

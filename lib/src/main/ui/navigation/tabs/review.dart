@@ -44,7 +44,7 @@ class _ReviewState extends State<Review> {
 
   void getReviewSearchAllAsync() async {
     try {
-      final response = await dio.get(Config.getDefaultReviewUrl);
+      final response = await dio.get(Config.getDefaultReviewUrl+'/1/k');
       if (response.statusCode == 200) {
         final responseBody = jsonDecode(jsonEncode(response.data));
         if (responseBody['status']) {
@@ -80,6 +80,7 @@ class _ReviewState extends State<Review> {
       _isLoading = false;
     });
   }
+
 
   @override
   Widget build(BuildContext context) {

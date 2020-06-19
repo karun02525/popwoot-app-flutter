@@ -5,6 +5,7 @@ class Config{
     static const baseUrl='http://192.168.0.105:8087';
     static const baseImageUrl='http://192.168.0.105';
 
+    static const String authenticateUrl=baseUrl+'/api/oauth/authenticate';
     static const String addCategoryUrl=baseUrl+'/api/cauth/addcategory';
     static const String addProductUrl=baseUrl+'/api/cauth/addproduct';
     static const String addReviewUrl=baseUrl+'/api/cauth/addreview';
@@ -17,9 +18,8 @@ class Config{
     static const String getReviewListDetailsUrl=baseUrl+'/api/oauth/ireview';
 
     static const String getAllCategoryUrl=baseUrl+'/api/oauth/allcategory';
-    static const String getDefaultReviewUrl=baseUrl+'/api/oauth/defaultreview/1/k';
+    static const String getDefaultReviewUrl=baseUrl+'/api/oauth/defaultreview';
 
     static const String token=
-        'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1ZWU5YmNhNDUwZjY2YTIyYjRkM2FiODMiLCJzY29wZXMiOltdLCJleHAiOjE1OTI0ODI1ODksImlhdCI6MTU5MjQ2NDU4OX0.yh5S_kEpZzgfr_vWacfT8JFI4Flh1BRla6aO5FlQSsuVU3NXrxpsdlo5YFzfzQ1N0ammcJs6eC6FaYYZ-jMbDQ';
-
+   'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1ZWU5YmNhNDUwZjY2YTIyYjRkM2FiODMiLCJzY29wZXMiOltdLCJleHAiOjExNzcwNTIzOSwiaWF0IjoxNTkyNTYxNzE5fQ.s1-1tqi4MWD6WFjig1mh5D9C-rNQgBaaN5fJ9bkFYrXeKbAb1F93jJW6MBljIyFS9y4A3IdxqzSNQ7Ur04_F8w';
 }

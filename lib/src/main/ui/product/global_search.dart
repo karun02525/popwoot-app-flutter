@@ -12,8 +12,10 @@ import 'package:popwoot/src/main/config/constraints.dart';
 import 'package:popwoot/src/main/ui/navigation/drawer_navigation.dart';
 import 'package:popwoot/src/main/ui/product/review_details.dart';
 import 'package:popwoot/src/main/ui/product/scanner_barcode.dart';
+import 'package:popwoot/src/main/ui/widgets/add_review_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/button_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/image_load_widget.dart';
+import 'package:popwoot/src/main/ui/widgets/rating_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/textfield_widget.dart';
 import 'package:popwoot/src/main/utils/global.dart';
@@ -40,26 +42,17 @@ class _GlobalSearchState extends State<GlobalSearch> {
     dio = Dio();
   }
 
-
     void getCategoryAllAsync(String query) async {
     _isLoading = true;
     try {
-      final String _url = "api.github.com";
-      final uri = Uri.https(_url, '/search/repositories', {
-        'q': query,
-        'sort': 'stars',
-        'order': 'desc',
-        'page': '0',
-        'per_page': '25'
-      });
-      debugPrint("Github...." + uri.toString());
+      final response = await dio.get('${Config.getDefaultReviewUrl}/2/$query');
+      debugPrint('print api object : ${Config.getDefaultReviewUrl}/2/$query ');
 
-      final response = await dio.get(uri.toString());
       if (response.statusCode == 200) {
         final responseBody = jsonDecode(jsonEncode(response.data));
         hideLoader();
         setState(() {
-          items = responseBody['items'];
+          items = responseBody['data'];
         });
       }
     } on DioError catch (e) {
@@ -155,12 +148,12 @@ class _GlobalSearchState extends State<GlobalSearch> {
           : items.length == 0
               ? Container(
                   child: Center(
-                  child: Text("No data available"),
+                  child: TextWidget(title:"No data available"),
                 ))
               : Container(
                   margin: EdgeInsets.only(top: 5, bottom: 5),
                   child: ListView.builder(
-                      itemCount: items.length,
+                      itemCount: items?.length,
                       itemBuilder: (context, index) =>
                           buildCardView(context, index)),
                 ),
@@ -168,24 +161,66 @@ class _GlobalSearchState extends State<GlobalSearch> {
   }
 
   Widget buildCardView(BuildContext context, int index) {
-    final i = items[index];
+    final item = items[index];
     return Container(
-        margin: EdgeInsets.only(left: 5, right: 5),
-        child: Card(
-          elevation: 3,
-          child: ListTile(
-            leading: CachedNetworkImage(imageUrl: i['owner']['avatar_url']),
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                TextWidget(title: i['name'], isBold: true, fontSize: 12.0),
-              ],
+        margin: EdgeInsets.only(left: 10, right: 10, top: 5),
+        child: Column(
+          children: <Widget>[
+            Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Expanded(
+                    child: getContent(item),
+                    flex: 1,
+                  ),
+                  Expanded(
+                    child: getImage(item),
+                    flex: -1,
+                  )
+                ]),
+            Divider(
+              height: 25.0,
             ),
-            subtitle: Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: TextWidget(title: i['description']==null?"No Content":i['description'])),
-          ),
+          ],
         ));
   }
+
+  Widget getImage(item) {
+    return Container(
+        color: Colors.grey[100],
+        width: 110.0,
+        height: 90.0,
+        child: ImageLoadWidget(imageUrl: item['ipath']));
+  }
+
+  Widget getContent(item) {
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          TextWidget(title: item['pname'], color: Colors.black, isBold: true),
+          TextWidget(
+              title: item['pdesc'],
+              fontSize: 13.0,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis),
+          ratingAndReview(item),
+          TextWidget(title: "mentioned in 0reviews"),
+        ],
+      ),
+    );
+  }
+
+  Widget ratingAndReview(item) {
+    return Row(
+      children: <Widget>[
+        RatingWidget(rating: item['nrating']),
+        AddReviewWidget(
+            data: [item['pid'], item['pname'], item['pdesc'], item['ipath']])
+      ],
+    );
+  }
+
 }
