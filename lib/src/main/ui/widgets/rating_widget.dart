@@ -14,7 +14,8 @@ class RatingWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return FlutterRatingBar(
       initialRating: double.parse(rating==null?"0":rating),
-      fillColor: Colors.amber,
+      fillColor: Colors.black,
+      borderColor: Colors.grey,
       itemPadding: EdgeInsets.symmetric(horizontal: 1.0),
       itemSize: 25.0,
       ignoreGestures: !isDisable,

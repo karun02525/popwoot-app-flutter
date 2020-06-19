@@ -16,29 +16,23 @@ class HomeLikeCmt extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(left: 10.0, right: 10.0, top: 10),
+      margin: EdgeInsets.only(left: 10.0, right: 10.0, top: 5.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Icon(Icons.mic_none),
+          Icon(AppIcons.ic_mic, size: 20.0,),
+          Icon(AppIcons.ic_youtube, size: 20.0,),
           FlatButton.icon(
             onPressed: () {},
             splashColor: Colors.cyanAccent,
-            icon: Icon(Icons.favorite_border, color: Colors.grey[600]),
-            label: Text(
-              "1 Like",
-              style: TextStyle(color: Colors.grey[400], fontSize: 12.0),
-            ),
-          ),
+            icon: Icon(Icons.favorite_border, size: 20.0, color: Colors.grey[600]),
+            label:TextWidget(title: "1 Like", color: Colors.grey[600], fontSize: 12.0)),
           FlatButton.icon(
             onPressed: () {},
             splashColor: Colors.cyanAccent,
-            icon: Icon(Icons.chat_bubble_outline, color: Colors.grey[600]),
-            label: Text(
-              "0 comments",
-              style: TextStyle(color: Colors.grey[400], fontSize: 12.0),
-            ),
+            icon: Icon(AppIcons.ic_comment, size: 20.0, color: Colors.grey[600]),
+            label:TextWidget(title: "0 comments", color: Colors.grey[600], fontSize: 12.0)
           ),
           AddReviewWidget(data:item)
         ],
@@ -46,3 +40,4 @@ class HomeLikeCmt extends StatelessWidget {
     );
   }
 }
+

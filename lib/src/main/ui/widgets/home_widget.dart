@@ -25,18 +25,35 @@ class HomeWidget extends StatelessWidget {
         children: <Widget>[
           getHeadTitle(context,item),
           ImageLoadWidget(imageUrl:item['ipath']),
-          RatingWidget(rating: item['astar']),
-          descMess(item['pdesc']),
-          HomeLikeCmt(item: item),
+          paddingView(item),
           Container(height: 10, color: Colors.grey[200]),
         ],
       ),
     );
   }
 
+  Widget paddingView(item){
+    return Container(
+      margin: EdgeInsets.only(left:7.0,top: 5.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          RatingWidget(rating: item['astar']),
+          Padding(
+            padding: const EdgeInsets.only(left: 5.0),
+            child: TextWidget(title: item['pdesc'], fontSize: 14.0),
+          ),
+          HomeLikeCmt(item: item),
+        ],
+      ),
+    );
+  }
+
+
   Widget getHeadTitle(context,item) {
     return Container(
-      margin: EdgeInsets.only(left: 10.0, top: 5),
+      margin: EdgeInsets.all(5.0),
       child: Row(
         children: <Widget>[
           ImageLoadWidget(imageUrl:item['userimg'],name:item['user'],isProfile: true),
@@ -48,7 +65,6 @@ class HomeWidget extends StatelessWidget {
 
   Widget setContent(context,String pid, String name, String pname, String rdate) {
     return Container(
-      margin: EdgeInsets.only(left: 10.0, top: 5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -87,25 +103,8 @@ class HomeWidget extends StatelessWidget {
     );
   }
 
-
-  Widget getBgImage(String bgUrl) {
-    return Container(
-        width: double.infinity,
-        height: 200.0,
-        margin: EdgeInsets.only(top: 8.0),
-        child: ImageLoadWidget(imageUrl: bgUrl));
-  }
-
-  Widget descMess(String pdesc) {
-    return Container(
-      margin: EdgeInsets.only(left: 10.0, right: 10.0, top: 10),
-      child: TextWidget(title: pdesc, fontSize: 14.0),
-    );
-  }
-
   Widget bottomView(item) {
     return Container(
-      margin: EdgeInsets.only(left: 10.0, right: 10.0, top: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.center,

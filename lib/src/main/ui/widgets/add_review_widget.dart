@@ -24,7 +24,7 @@ class AddReviewWidget extends StatelessWidget {
         label: TextWidget(
           title: "Add Review",
           color: Colors.grey[600],
-          fontSize: 14.0,
+          fontSize: 12.0,
         ));
   }
 }

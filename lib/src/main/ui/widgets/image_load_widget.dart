@@ -33,7 +33,7 @@ class ImageLoadWidget extends StatelessWidget {
     return Container(
         width: 40.0,
         height: 40.0,
-        margin: EdgeInsets.only(left: 13, top: 10.0, bottom: 2),
+        margin: EdgeInsets.only(right:5.0),
         child: imageUrl == null
             ? CircleAvatar(child: Text(name.toString().toUpperCase()[0]))
             : CachedNetworkImage(
@@ -50,17 +50,3 @@ class ImageLoadWidget extends StatelessWidget {
               ));
   }
 }
-
-/*
-CachedNetworkImage(
-imageBuilder: (context, imageProvider) => Container(
-decoration: BoxDecoration(
-shape: BoxShape.circle,
-image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
-),
-),
-errorWidget: (context, url, error) => errorCircle(name),
-placeholder: (context, url) => CircularProgressIndicator(),
-imageUrl: imageUrl == null ? errorCircle(name) : Config.baseImageUrl+imageUrl,
-fit: BoxFit.fill,
-)*/

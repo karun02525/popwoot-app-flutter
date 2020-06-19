@@ -150,27 +150,41 @@ class _ReviewDetailsState extends State<ReviewDetails> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           getHeadTitle(item, index),
-          RatingWidget(rating: item['astar']),
-          descMess(item['pdesc']),
-          HomeLikeCmt(item: item),
+          paddingView(item),
           Container(height: 3.0, color: Colors.grey[200]),
         ],
       ),
     );
   }
 
+  Widget paddingView(item){
+    return Container(
+      margin: EdgeInsets.only(left:7.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          RatingWidget(rating: item['astar']),
+          Padding(
+            padding: const EdgeInsets.only(left: 5.0),
+            child: TextWidget(title: item['pdesc'], fontSize: 14.0),
+          ),
+          HomeLikeCmt(item: item),
+        ],
+      ),
+    );
+  }
+
+
+
+
   Widget getHeadTitle(item, index) {
     return Container(
-      margin: EdgeInsets.only(left: 10.0, top: 5),
+      margin: EdgeInsets.all(5.0),
       child: Row(
         children: <Widget>[
-          item['userimg'] != null
-              ? getProfileImage(item['userimg'])
-              : CircleAvatar(
-                  child: Text(item['user'][0]),
-                ),
-          setContent(item['user'], item['pname'],
-              item['rdate'])
+          ImageLoadWidget(imageUrl:item['userimg'],name:item['user'],isProfile: true),
+          setContent(item['user'], item['pname'], item['rdate'])
         ],
       ),
     );
@@ -178,7 +192,7 @@ class _ReviewDetailsState extends State<ReviewDetails> {
 
   Widget setContent(String name, String pname, String rdate) {
     return Container(
-      margin: EdgeInsets.only(left: 10.0, top: 5),
+
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -205,59 +219,30 @@ class _ReviewDetailsState extends State<ReviewDetails> {
       ),
     );
   }
-
-  Widget getProfileImage(String profileUrl) {
-    return Container(
-        width: 40.0,
-        height: 40.0,
-        margin: EdgeInsets.only(left: 13, top: 10.0, bottom: 2),
-        child: CachedNetworkImage(
-          imageBuilder: (context, imageProvider) => Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
-            ),
-          ),
-          placeholder: (context, url) => CircularProgressIndicator(),
-          imageUrl: profileUrl,
-        ));
-  }
-
-
-  Widget descMess(String pdesc) {
-    return Container(
-      margin: EdgeInsets.only(left: 10.0, right: 10.0, top: 10),
-      child: TextWidget(title: pdesc, fontSize: 14.0),
-    );
-  }
-
-
   Widget buildHeader(item) {
     return Container(
       color: Colors.white,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
+         children: <Widget>[
           ImageLoadWidget(imageUrl:productData['ipath']),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              RatingWidget(rating:item['astar']),
+              Padding(
+                padding: const EdgeInsets.only(left:5.0),
+                child: RatingWidget(rating:item['astar']),
+              ),
               AddReviewWidget(data:item)
             ],
           ),
           Align(
             alignment: Alignment.topLeft,
-            child: Padding(
-              padding:
-                  const EdgeInsets.only(left: 10.0, top: 5.0, bottom: 10.0),
+            child: Padding(padding: EdgeInsets.only(left: 10.0,bottom: 10.0),
               child: TextWidget(
-                  title:
-                      productData['pdesc'] == null ? "" : productData['pdesc']),
+                  title: productData['pdesc'] == null ? "" : productData['pdesc']),
             ),
           ),
-          Container(height: 3.0, color: Colors.grey[200]),
+          Container(height: 10.0, color: Colors.grey[200]),
         ],
       ),
     );
