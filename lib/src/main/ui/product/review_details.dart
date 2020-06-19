@@ -7,6 +7,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
+import 'package:popwoot/src/main/ui/widgets/add_review_widget.dart';
+import 'package:popwoot/src/main/ui/widgets/home_like_widget.dart';
+import 'package:popwoot/src/main/ui/widgets/rating_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
 import 'package:popwoot/src/main/utils/global.dart';
 import 'package:popwoot/src/res/fonts.dart';
@@ -130,7 +133,7 @@ class _ReviewDetailsState extends State<ReviewDetails> {
                 itemCount: items.length + 1,
                 itemBuilder: (context, index) {
                   if (index == 0) {
-                    return buildHeader();
+                    return buildHeader(productData);
                   }
                   index -= 1;
                   return buildProductCard(context, index);
@@ -138,34 +141,35 @@ class _ReviewDetailsState extends State<ReviewDetails> {
   }
 
   Widget buildProductCard(BuildContext context, int index) {
+    var item=items[index];
     return Container(
       color: Colors.white,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          getHeadTitle(items, index),
-          setStar(items[index]['astar']),
-          descMess(items[index]['pdesc']),
-          bottomView(),
+          getHeadTitle(item, index),
+          RatingWidget(rating: item['astar']),
+          descMess(item['pdesc']),
+          HomeLikeCmt(item: item),
           Container(height: 3.0, color: Colors.grey[200]),
         ],
       ),
     );
   }
 
-  Widget getHeadTitle(List items, index) {
+  Widget getHeadTitle(item, index) {
     return Container(
       margin: EdgeInsets.only(left: 10.0, top: 5),
       child: Row(
         children: <Widget>[
-          items[index]['userimg'] != null
-              ? getProfileImage(items[index]['userimg'])
+          item['userimg'] != null
+              ? getProfileImage(item['userimg'])
               : CircleAvatar(
-                  child: Text(items[index]['user'][0]),
+                  child: Text(item['user'][0]),
                 ),
-          setContent(items[index]['user'], items[index]['pname'],
-              items[index]['rdate'])
+          setContent(item['user'], item['pname'],
+              item['rdate'])
         ],
       ),
     );
@@ -230,19 +234,6 @@ class _ReviewDetailsState extends State<ReviewDetails> {
     );
   }
 
-  Widget setStar(String astar) {
-    return Container(
-        margin: EdgeInsets.only(left: 10.0, right: 10.0, top: 10),
-        child: FlutterRatingBar(
-          initialRating: double.parse(astar),
-          fillColor: Colors.amber,
-          borderColor: Colors.amber.withAlpha(50),
-          tapOnlyMode: true,
-          itemPadding: EdgeInsets.symmetric(horizontal: 1.0),
-          itemSize: 25.0,
-          onRatingUpdate: (double rating) {},
-        ));
-  }
 
   Widget descMess(String pdesc) {
     return Container(
@@ -251,47 +242,8 @@ class _ReviewDetailsState extends State<ReviewDetails> {
     );
   }
 
-  Widget bottomView() {
-    return Container(
-      margin: EdgeInsets.only(left: 10.0, right: 10.0, top: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Icon(Icons.mic_none),
-          FlatButton.icon(
-            onPressed: () {},
-            splashColor: Colors.cyanAccent,
-            icon: Icon(Icons.favorite_border, color: Colors.grey[600]),
-            label: Text(
-              "1 Like",
-              style: TextStyle(color: Colors.grey[400], fontSize: 12.0),
-            ),
-          ),
-          FlatButton.icon(
-            onPressed: () {},
-            splashColor: Colors.cyanAccent,
-            icon: Icon(Icons.chat_bubble_outline, color: Colors.grey[600]),
-            label: Text(
-              "0 comments",
-              style: TextStyle(color: Colors.grey[400], fontSize: 12.0),
-            ),
-          ),
-          FlatButton.icon(
-            onPressed: () {},
-            splashColor: Colors.cyanAccent,
-            icon: Icon(Icons.open_in_new, color: Colors.grey[600]),
-            label: Text(
-              "Add Review",
-              style: TextStyle(color: Colors.grey[400], fontSize: 12.0),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
-  Widget buildHeader() {
+  Widget buildHeader(item) {
     return Container(
       color: Colors.white,
       child: Column(
@@ -302,17 +254,8 @@ class _ReviewDetailsState extends State<ReviewDetails> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              setStar(
-                  productData['astar'] == null ? "0" : productData['astar']),
-              FlatButton.icon(
-                onPressed: () {},
-                splashColor: Colors.cyanAccent,
-                icon: Icon(Icons.open_in_new, color: Colors.grey[600]),
-                label: Text(
-                  "Add Review (10)",
-                  style: TextStyle(color: Colors.grey[400], fontSize: 12.0),
-                ),
-              ),
+              RatingWidget(rating:item['astar']),
+              AddReviewWidget(data:item)
             ],
           ),
           Align(

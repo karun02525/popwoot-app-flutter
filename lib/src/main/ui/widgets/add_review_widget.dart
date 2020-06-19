@@ -5,8 +5,7 @@ import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
 import 'package:popwoot/src/res/app_icons.dart';
 
 class AddReviewWidget extends StatelessWidget {
-  final  List<String> data;
-
+  final data;
   AddReviewWidget({this.data});
 
   @override
@@ -18,7 +17,7 @@ class AddReviewWidget extends StatelessWidget {
               MaterialPageRoute(
                   builder: (context) => AddReview(),
                   settings: RouteSettings(
-                      arguments: [data[0],data[1],data[2],data[3]])));
+                      arguments: [data['pid'],data['pname'],data['pdesc'],data['ipath']])));
         },
         splashColor: Colors.cyanAccent,
         icon: Icon(AppIcons.ic_add_review, size: 20.0, color: Colors.grey[600]),

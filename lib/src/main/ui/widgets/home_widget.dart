@@ -6,6 +6,8 @@ import 'package:popwoot/src/main/ui/widgets/rating_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
 import 'package:popwoot/src/res/app_icons.dart';
 
+import 'add_review_widget.dart';
+import 'home_like_widget.dart';
 import 'image_load_widget.dart';
 
 class HomeWidget extends StatelessWidget {
@@ -25,7 +27,7 @@ class HomeWidget extends StatelessWidget {
           getBgImage(item['ipath']),
           RatingWidget(rating: item['astar']),
           descMess(item['pdesc']),
-          bottomView(),
+          HomeLikeCmt(item: item),
           Container(height: 10, color: Colors.grey[200]),
         ],
       ),
@@ -86,13 +88,6 @@ class HomeWidget extends StatelessWidget {
   }
 
 
-
-/*
-
-  child:item['userimg'] == null ? CircleAvatar(child: Text(item['user'][0]),)
-      : ImageLoadWidget(imageUrl: item['userimg'])
-*/
-
   Widget getBgImage(String bgUrl) {
     return Container(
         width: double.infinity,
@@ -108,7 +103,7 @@ class HomeWidget extends StatelessWidget {
     );
   }
 
-  Widget bottomView() {
+  Widget bottomView(item) {
     return Container(
       margin: EdgeInsets.only(left: 10.0, right: 10.0, top: 10),
       child: Row(
@@ -134,15 +129,7 @@ class HomeWidget extends StatelessWidget {
               style: TextStyle(color: Colors.grey[400], fontSize: 12.0),
             ),
           ),
-          FlatButton.icon(
-            onPressed: () {},
-            splashColor: Colors.cyanAccent,
-            icon: Icon(Icons.open_in_new, color: Colors.grey[600]),
-            label: Text(
-              "Add Review",
-              style: TextStyle(color: Colors.grey[400], fontSize: 12.0),
-            ),
-          ),
+          AddReviewWidget(data: [item['pid'], item['pname'], item['pdesc'], item['ipath']])
         ],
       ),
     );
