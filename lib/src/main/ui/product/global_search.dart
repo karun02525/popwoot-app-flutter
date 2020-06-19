@@ -201,13 +201,16 @@ class _GlobalSearchState extends State<GlobalSearch> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           TextWidget(title: item['pname'], color: Colors.black, isBold: true),
+          SizedBox(height: 5.0),
           TextWidget(
               title: item['pdesc'],
               fontSize: 13.0,
               maxLines: 2,
               overflow: TextOverflow.ellipsis),
+          SizedBox(height: 5.0),
           ratingAndReview(item),
-          TextWidget(title: "mentioned in 0reviews"),
+          SizedBox(height: 5.0),
+          TextWidget(title: "mentioned in 0 reviews"),
         ],
       ),
     );

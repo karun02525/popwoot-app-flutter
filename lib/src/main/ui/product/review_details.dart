@@ -227,12 +227,16 @@ class _ReviewDetailsState extends State<ReviewDetails> {
           ImageLoadWidget(imageUrl:productData['ipath']),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(left:5.0),
+                padding: const EdgeInsets.only(left:5.0,top: 5.0),
                 child: RatingWidget(rating:item['astar']),
               ),
-              AddReviewWidget(data:item)
+              Padding(
+                padding: const EdgeInsets.only(right:10.0,top: 5.0),
+                child: AddReviewWidget(data:item),
+              )
             ],
           ),
           Align(

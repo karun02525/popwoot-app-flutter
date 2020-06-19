@@ -12,16 +12,19 @@ class RatingWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FlutterRatingBar(
-      initialRating: double.parse(rating==null?"0":rating),
-      fillColor: Colors.black,
-      borderColor: Colors.grey,
-      itemPadding: EdgeInsets.symmetric(horizontal: 1.0),
-      itemSize: 25.0,
-      ignoreGestures: !isDisable,
-      onRatingUpdate: (double rating) {
-        value= rating;
-      },
+    return Container(
+      margin: EdgeInsets.only(right: 20.0),
+      child: FlutterRatingBar(
+        initialRating: double.parse(rating==null?"0":rating),
+        fillColor: Colors.black,
+        borderColor: Colors.grey,
+        itemPadding: EdgeInsets.symmetric(horizontal: 1.0),
+        itemSize: 20.0,
+        ignoreGestures: !isDisable,
+        onRatingUpdate: (double rating) {
+          value= rating;
+        },
+      ),
     );
   }
 }
