@@ -9,6 +9,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
 import 'package:popwoot/src/main/ui/widgets/add_review_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/home_like_widget.dart';
+import 'package:popwoot/src/main/ui/widgets/image_load_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/rating_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
 import 'package:popwoot/src/main/utils/global.dart';
@@ -222,18 +223,6 @@ class _ReviewDetailsState extends State<ReviewDetails> {
         ));
   }
 
-  Widget getBgImage(String bgUrl) {
-    return Container(
-      width: double.infinity,
-      height: 200.0,
-      margin: EdgeInsets.only(top: 8.0),
-      child: CachedNetworkImage(
-        fit: BoxFit.fill,
-        imageUrl: bgUrl,
-      ),
-    );
-  }
-
 
   Widget descMess(String pdesc) {
     return Container(
@@ -249,7 +238,7 @@ class _ReviewDetailsState extends State<ReviewDetails> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          getBgImage(Config.baseImageUrl + productData['ipath']),
+          ImageLoadWidget(imageUrl:productData['ipath']),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,

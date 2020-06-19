@@ -24,7 +24,7 @@ class HomeWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           getHeadTitle(context,item),
-          getBgImage(item['ipath']),
+          ImageLoadWidget(imageUrl:item['ipath']),
           RatingWidget(rating: item['astar']),
           descMess(item['pdesc']),
           HomeLikeCmt(item: item),
