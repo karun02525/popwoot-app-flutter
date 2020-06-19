@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:popwoot/src/main/ui/product/scanner_barcode.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
 import 'package:popwoot/src/res/app_icons.dart';
 import 'package:popwoot/src/res/fonts.dart';
@@ -47,7 +48,7 @@ class TextSearchWidget extends StatelessWidget {
               )),
               Expanded(
                   child: IconButton(
-                    onPressed: () {},
+                    onPressed: () {ScannerController(context: context);},
                     icon: Icon(AppIcons.ic_scanner, color: Colors.black),
                   ),
                   flex: -1),

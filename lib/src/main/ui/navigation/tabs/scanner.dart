@@ -19,8 +19,7 @@ class Scanner extends StatefulWidget {
 class _ScannerState extends State<Scanner> {
   Dio dio;
   bool _isLoading = true;
-  String barcodeScanRes,
-      _value = "";
+  String barcodeScanRes;
 
   @override
   void initState() {

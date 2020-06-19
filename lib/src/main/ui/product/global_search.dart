@@ -6,9 +6,12 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
 import 'package:popwoot/src/main/ui/navigation/drawer_navigation.dart';
+import 'package:popwoot/src/main/ui/product/review_details.dart';
+import 'package:popwoot/src/main/ui/product/scanner_barcode.dart';
 import 'package:popwoot/src/main/ui/widgets/button_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/image_load_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
@@ -29,25 +32,7 @@ class _GlobalSearchState extends State<GlobalSearch> {
   Dio dio;
   bool _isLoading = false;
   var _searchController = TextEditingController();
-
-  onSearch(String text) async {
-    setState(() {
-      if (text.isEmpty) {
-        _isVisible = false;
-        items.clear();
-      } else {
-        if(text.length>3) {
-          getCategoryAllAsync(text);
-          _isVisible = true;
-        }
-      }
-    });
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-  }
+  final globalKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -55,7 +40,8 @@ class _GlobalSearchState extends State<GlobalSearch> {
     dio = Dio();
   }
 
-  void getCategoryAllAsync(String query) async {
+
+    void getCategoryAllAsync(String query) async {
     _isLoading = true;
     try {
       final String _url = "api.github.com";
@@ -80,9 +66,6 @@ class _GlobalSearchState extends State<GlobalSearch> {
       var errorMessage = jsonDecode(jsonEncode(e.response.data));
       var statusCode = e.response.statusCode;
 
-      debugPrint("print: error :" + errorMessage.toString());
-      debugPrint("print: statusCode :" + statusCode.toString());
-
       if (statusCode == 400) {
         hideLoader();
         Global.toast(errorMessage['message']);
@@ -102,9 +85,26 @@ class _GlobalSearchState extends State<GlobalSearch> {
     });
   }
 
+
+  onSearch(String text) async {
+    setState(() {
+      if (text.isEmpty) {
+        _isVisible = false;
+        items.clear();
+      } else {
+        if(text.length>3) {
+          getCategoryAllAsync(text);
+          _isVisible = true;
+        }
+      }
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: globalKey,
       appBar: AppBar(
           backgroundColor: Colors.white,
           brightness: Brightness.light,
@@ -138,7 +138,9 @@ class _GlobalSearchState extends State<GlobalSearch> {
                   flex: 1),
               Expanded(
                   child: IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      ScannerController(context: context,globalKey: globalKey);
+                    },
                     icon: Icon(AppIcons.ic_scanner, color: Colors.black),
                   ),
                   flex: 2),

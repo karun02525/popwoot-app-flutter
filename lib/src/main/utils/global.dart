@@ -17,6 +17,11 @@ class Global {
     );
   }
 
+  static void snackBar(BuildContext context,String message){
+    Scaffold.of(context).showSnackBar(
+        SnackBar(content: Text(message==null ? '---':message)));
+  }
+
   static void showSnackBar(BuildContext context,String message){
     Scaffold.of(context).showSnackBar(SnackBar(
       content: Text('Show Snackbar'),
