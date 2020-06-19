@@ -1,24 +1,85 @@
+import 'dart:convert';
+import 'dart:developer';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:popwoot/src/main/ui/product/add_review.dart';
-import 'package:popwoot/src/main/ui/product/review_details.dart';
-import 'package:popwoot/src/main/ui/widgets/rating_widget.dart';
-import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
+import 'package:popwoot/src/main/config/constraints.dart';
+import 'package:popwoot/src/main/utils/global.dart';
 import 'package:popwoot/src/res/app_icons.dart';
 
 import 'add_review_widget.dart';
 import 'icon_widget.dart';
-import 'image_load_widget.dart';
-
-class HomeLikeCmt extends StatelessWidget {
+class HomeLikeCmt extends StatefulWidget {
   final item;
 
   HomeLikeCmt({this.item});
 
   @override
+  _HomeLikeCmtState createState() => _HomeLikeCmtState();
+}
+
+class _HomeLikeCmtState extends State<HomeLikeCmt> {
+  dynamic likeData;
+  Dio dio;
+  bool isLike = false;
+  int likeCount = 122;
+  String likeMsg = "Like";
+  String rid="";
+
+  @override
+  void initState() {
+    super.initState();
+    dio = Dio();
+  }
+
+  void doLikeApiAsync() async {
+    try {
+      final response = await dio.get('${Config.doReviewLikeUrl}/$rid');
+      debugPrint('print api object : ${Config.doReviewLikeUrl}/$rid ');
+      if (response.statusCode == 200) {
+        final responseBody = jsonDecode(jsonEncode(response.data));
+        debugPrint('print Review Like :' + responseBody.toString());
+        if (responseBody['status']) {
+          setState(() {
+            likeData = responseBody['data'];
+          });
+        }
+      }
+    } on DioError catch (e) {
+      var errorMessage = jsonDecode(jsonEncode(e.response.data));
+      var statusCode = e.response.statusCode;
+
+      if (statusCode == 400) {
+        Global.toast(errorMessage['message']);
+      } else if (statusCode == 401) {
+        Global.toast(errorMessage['message']);
+      } else {
+        Global.toast('Something went wrong');
+      }
+    }
+  }
+
+  void doLikeToggle() {
+    doLikeApiAsync();
+    setState(() {
+      if (isLike == false) {
+        likeCount++;
+        likeMsg = 'Like';
+        isLike = true;
+      } else {
+        likeCount--;
+        likeMsg = 'Unlike';
+        isLike = false;
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    rid=widget.item['id'];
     return Container(
-      margin: EdgeInsets.only(top: 8.0,bottom: 5.0),
+      margin: EdgeInsets.only(top: 8.0, bottom: 5.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -26,16 +87,17 @@ class HomeLikeCmt extends StatelessWidget {
           Icon(AppIcons.ic_mic, size: 20.0),
           AppIcons.ic_youtube,
           IconWidget(
-            icon: Icons.favorite_border,
-            mgs: 'Like',
-            onTap: (){},
-          ),
+              icon: isLike ? Icons.favorite : Icons.favorite_border,
+              mgs: '$likeMsg $likeCount',
+              onTap: () {
+                doLikeToggle();
+              }),
           IconWidget(
             icon: AppIcons.ic_comment,
             mgs: 'Comment 12',
-            onTap: (){},
+            onTap: () {},
           ),
-          AddReviewWidget(data: item),
+          AddReviewWidget(data: widget.item),
         ],
       ),
     );

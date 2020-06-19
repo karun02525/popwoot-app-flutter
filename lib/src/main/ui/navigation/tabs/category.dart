@@ -16,8 +16,7 @@ class CategoryScreen extends StatefulWidget {
 class _CategoryScreenState extends State<CategoryScreen> {
   List categoryList;
   Dio dio;
-  bool _isLoading=true;
-
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -57,55 +56,58 @@ class _CategoryScreenState extends State<CategoryScreen> {
       }
     }
   }
-  void hideLoader(){
+
+  void hideLoader() {
     setState(() {
-      _isLoading=false;
+      _isLoading = false;
     });
   }
-
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _isLoading ? Container(child: Center(child: CircularProgressIndicator(),),) :
-      Container(
-        margin: EdgeInsets.only(top: 5, bottom: 5),
-        child: ListView.builder(
-            itemCount: categoryList.length,
-            itemBuilder: (context, index) => buildCardView(context, index)),
-      ),
+      body: _isLoading
+          ? Container(
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            )
+          : Container(
+              margin: EdgeInsets.only(top: 5, bottom: 5),
+              child: ListView.builder(
+                  itemCount: categoryList.length,
+                  itemBuilder: (context, index) =>
+                      buildCardView(context, index)),
+            ),
     );
   }
 
   Widget buildCardView(BuildContext context, int index) {
-    final i =categoryList[index];
+    final i = categoryList[index];
     return Container(
-        margin: EdgeInsets.only(left: 5, right: 5),
+        margin: EdgeInsets.only(left: 2, right: 5),
         child: Card(
           elevation: 3,
           child: ListTile(
-            leading: ImageLoadWidget(
-              imageUrl: Config.baseImageUrl+i['cimage']),
+            leading: SizedBox(
+                width: 80.0,
+                child: ImageLoadWidget(imageUrl: i['cimage'])),
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                TextWidget(
-                  title:i['cname'],
-                  isBold: true,
-                  fontSize: 12.0),
-
+                TextWidget(title: i['cname'], isBold: true, fontSize: 12.0),
                 FlatButton(
-                  onPressed: (){},
-                  child:TextWidget(title:'Follow',color: Colors.grey[400],fontSize: 12.0))
+                    onPressed: () {},
+                    child: TextWidget(
+                        title: 'Follow',
+                        color: Colors.grey[400],
+                        fontSize: 12.0))
               ],
             ),
             subtitle: Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
-              child: TextWidget(
-               title: i['cdetails'])
-            ),
+                padding: const EdgeInsets.only(bottom: 5.0),
+                child: TextWidget(title: i['cdetails'])),
           ),
         ));
   }

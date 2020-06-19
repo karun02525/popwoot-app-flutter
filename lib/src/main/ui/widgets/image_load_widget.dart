@@ -9,7 +9,7 @@ class ImageLoadWidget extends StatelessWidget {
   String name;
 
   ImageLoadWidget(
-      {@required this.imageUrl, this.isProfile = false, this.name = "P"});
+      {@required this.imageUrl, this.isProfile = false, this.name = "Popwoot"});
 
   @override
   Widget build(BuildContext context) {
@@ -19,11 +19,8 @@ class ImageLoadWidget extends StatelessWidget {
             height: 230.0,
             width: double.infinity,
             child: CachedNetworkImage(
-              imageUrl: imageUrl != null
-                  ? Config.baseImageUrl + imageUrl
-                  : Image(image: AssetImage('assets/images/no_image.jpg')),
+              imageUrl: Config.baseImageUrl + imageUrl,
               fit: BoxFit.fill,
-              // placeholder: (context, url) => CircularProgressIndicator(),
               errorWidget: (context, url, error) =>
                   Image(image: AssetImage('assets/images/no_image.jpg')),
             ));

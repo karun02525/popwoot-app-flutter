@@ -10,6 +10,7 @@ class Config{
     static const String addProductUrl=baseUrl+'/api/cauth/addproduct';
     static const String addReviewUrl=baseUrl+'/api/cauth/addreview';
     static const String getScannerUrl=baseUrl+'/api/oauth/sproduct';
+    static const String doReviewLikeUrl=baseUrl+'/api/cauth/rlike';
 
 
     static const String getHomeUrl=baseUrl+'/api/oauth/review/1';
@@ -21,5 +22,5 @@ class Config{
     static const String getDefaultReviewUrl=baseUrl+'/api/oauth/defaultreview';
 
     static const String token=
-   'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1ZWU5YmNhNDUwZjY2YTIyYjRkM2FiODMiLCJzY29wZXMiOltdLCJleHAiOjExNzcwNTIzOSwiaWF0IjoxNTkyNTYxNzE5fQ.s1-1tqi4MWD6WFjig1mh5D9C-rNQgBaaN5fJ9bkFYrXeKbAb1F93jJW6MBljIyFS9y4A3IdxqzSNQ7Ur04_F8w';
+        'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1ZWU5YmNhNDUwZjY2YTIyYjRkM2FiODMiLCJzY29wZXMiOltdLCJleHAiOjExNzc0OTA3MiwiaWF0IjoxNTkyNjA1NTUyfQ.G4trRHF_D3X4YVYXMakL_yxCsqUQOlrfevuo8OSGxZu9x5DPbMFT1mX4XjPX8Y-U7dcrUiyqlUCzbk_9VojHuw';
 }
