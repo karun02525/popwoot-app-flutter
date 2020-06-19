@@ -23,7 +23,7 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
   dynamic likeData;
   Dio dio;
   bool isLike = false;
-  int likeCount = 122;
+  int likeCount = 0;
   String likeMsg = "Like";
   String rid="";
 
@@ -35,8 +35,21 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
 
   void doLikeApiAsync() async {
     try {
-      final response = await dio.get('${Config.doReviewLikeUrl}/$rid');
+
+      Map<String, String> requestHeaders = {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+        'authorization': 'Bearer ${Config.token}'
+      };
+
       debugPrint('print api object : ${Config.doReviewLikeUrl}/$rid ');
+      debugPrint('print api object authorization :'+requestHeaders.toString());
+
+      final response = await dio.get('${Config.doReviewLikeUrl}/$rid',
+          options: Options(headers: requestHeaders));
+
+
+
       if (response.statusCode == 200) {
         final responseBody = jsonDecode(jsonEncode(response.data));
         debugPrint('print Review Like :' + responseBody.toString());
@@ -78,6 +91,7 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
   @override
   Widget build(BuildContext context) {
     rid=widget.item['id'];
+
     return Container(
       margin: EdgeInsets.only(top: 8.0, bottom: 5.0),
       child: Row(
@@ -88,7 +102,7 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
           AppIcons.ic_youtube,
           IconWidget(
               icon: isLike ? Icons.favorite : Icons.favorite_border,
-              mgs: '$likeMsg $likeCount',
+              mgs: '$likeMsg ${likeCount.toString()}',
               onTap: () {
                 doLikeToggle();
               }),

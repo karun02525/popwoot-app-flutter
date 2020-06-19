@@ -22,5 +22,5 @@ class Config{
     static const String getDefaultReviewUrl=baseUrl+'/api/oauth/defaultreview';
 
     static const String token=
-        'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1ZWU5YmNhNDUwZjY2YTIyYjRkM2FiODMiLCJzY29wZXMiOltdLCJleHAiOjExNzc0OTA3MiwiaWF0IjoxNTkyNjA1NTUyfQ.G4trRHF_D3X4YVYXMakL_yxCsqUQOlrfevuo8OSGxZu9x5DPbMFT1mX4XjPX8Y-U7dcrUiyqlUCzbk_9VojHuw';
+        'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1ZWU5YmNhNDUwZjY2YTIyYjRkM2FiODMiLCJzY29wZXMiOltdLCJleHAiOjE1OTI2MjQwMjYsImlhdCI6MTU5MjYwNjAyNn0.5PIU-ziItBlpy99qY4ygkRRZIHbNSfk5cxWlh7Efg9Dy60fgaqPRowxkDdXStv8CfJPnPKvjUlht39X9h0lk4g';
 }
