@@ -1,13 +1,12 @@
 import 'dart:convert';
-import 'dart:developer';
-import 'dart:io' show Platform;
+
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
 import 'package:popwoot/src/main/utils/global.dart';
+import 'package:popwoot/src/main/utils/utils.dart';
 import 'package:popwoot/src/res/app_icons.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'add_review_widget.dart';
 import 'icon_widget.dart';
@@ -33,19 +32,32 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
   String rid = '';
   bool _isYoutube = false;
   String youtubeLink = '';
+  bool _isRecoding = false;
+  String recodingURI = '';
 
   @override
   void initState() {
     super.initState();
     dio = Dio();
+
+    parseData();
+  }
+
+  void parseData() {
     rid = item['id'];
     likeCount = item['nlike'] == null ? 0 : item['nlike'];
     youtubeLink = item['youtubeurl'] == null ? '' : item['youtubeurl'];
+    recodingURI = item['audio'] == null ? '' : item['audio'];
 
     if (youtubeLink.toString().contains('https://youtu')) {
       _isYoutube = true;
     } else
       _isYoutube = false;
+
+    if (recodingURI.toString().contains('.3gp')) {
+      _isRecoding = true;
+    } else
+      _isRecoding = false;
   }
 
   void doLikeApiAsync() async {
@@ -115,25 +127,7 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
     });
   }
 
-  _launchURL() async {
-    if (Platform.isIOS) {
-      if (await canLaunch(youtubeLink)) {
-        await launch(youtubeLink, forceSafariVC: false);
-      } else {
-        if (await canLaunch(youtubeLink)) {
-          await launch(youtubeLink);
-        } else {
-          throw 'Could not launch https://www.youtube.com/channel/UCwXdFgeE9KYzlDdR7TG9cMw';
-        }
-      }
-    } else {
-      if (await canLaunch(youtubeLink)) {
-        await launch(youtubeLink);
-      } else {
-        throw 'Could not launch $youtubeLink';
-      }
-    }
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -143,12 +137,19 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Icon(AppIcons.ic_mic, size: 20.0),
+          Visibility(
+              visible: _isRecoding,
+              child: InkWell(
+                splashColor: Colors.cyanAccent,
+                onTap: () {
+                },
+                child: Icon(AppIcons.ic_mic, size: 20.0),
+              )),
           Visibility(
               child: InkWell(
-                 splashColor: Colors.cyanAccent,
+                  splashColor: Colors.cyanAccent,
                   onTap: () {
-                    _launchURL();
+                    Utils.openYoutube(youtubeLink);
                   },
                   child: AppIcons.ic_youtube),
               visible: _isYoutube),
