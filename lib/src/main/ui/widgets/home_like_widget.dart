@@ -10,32 +10,37 @@ import 'package:popwoot/src/res/app_icons.dart';
 
 import 'add_review_widget.dart';
 import 'icon_widget.dart';
+
 class HomeLikeCmt extends StatefulWidget {
   final item;
 
-  HomeLikeCmt({this.item});
+  HomeLikeCmt({Key key, this.item}) : super(key: key);
 
   @override
-  _HomeLikeCmtState createState() => _HomeLikeCmtState();
+  _HomeLikeCmtState createState() => _HomeLikeCmtState(item);
 }
 
 class _HomeLikeCmtState extends State<HomeLikeCmt> {
+  dynamic item;
+  _HomeLikeCmtState(this.item);
+
   dynamic likeData;
   Dio dio;
   bool isLike = false;
   int likeCount = 0;
   String likeMsg = "Like";
-  String rid="";
+  String rid = '';
 
   @override
   void initState() {
     super.initState();
     dio = Dio();
+    rid = item['id'];
+    likeCount = item['nlike'] == null ? 0 : item['nlike'];
   }
 
   void doLikeApiAsync() async {
     try {
-
       Map<String, String> requestHeaders = {
         'Content-type': 'application/json',
         'Accept': 'application/json',
@@ -43,17 +48,17 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
       };
 
       debugPrint('print api object : ${Config.doReviewLikeUrl}/$rid ');
-      debugPrint('print api object authorization :'+requestHeaders.toString());
+      debugPrint(
+          'print api object authorization :' + requestHeaders.toString());
 
       final response = await dio.get('${Config.doReviewLikeUrl}/$rid',
           options: Options(headers: requestHeaders));
-
-
 
       if (response.statusCode == 200) {
         final responseBody = jsonDecode(jsonEncode(response.data));
         debugPrint('print Review Like :' + responseBody.toString());
         if (responseBody['status']) {
+         // doLikeOrDlike(true);
           setState(() {
             likeData = responseBody['data'];
           });
@@ -64,10 +69,13 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
       var statusCode = e.response.statusCode;
 
       if (statusCode == 400) {
+        doLikeOrDlike(false);
         Global.toast(errorMessage['message']);
       } else if (statusCode == 401) {
+        doLikeOrDlike(false);
         Global.toast(errorMessage['message']);
       } else {
+        doLikeOrDlike(false);
         Global.toast('Something went wrong');
       }
     }
@@ -77,21 +85,31 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
     doLikeApiAsync();
     setState(() {
       if (isLike == false) {
-        likeCount++;
-        likeMsg = 'Like';
+        doLikeOrDlike(true);
         isLike = true;
       } else {
-        likeCount--;
-        likeMsg = 'Unlike';
+        doLikeOrDlike(false);
         isLike = false;
       }
     });
   }
 
+  void doLikeOrDlike(bool flag){
+    setState(() {
+      if (flag) {
+        likeCount++;
+        likeMsg = 'Like';
+      } else {
+        likeCount--;
+        likeMsg = 'Unlike';
+      }
+    });
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
-    rid=widget.item['id'];
-
     return Container(
       margin: EdgeInsets.only(top: 8.0, bottom: 5.0),
       child: Row(
@@ -111,7 +129,7 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
             mgs: 'Comment 12',
             onTap: () {},
           ),
-          AddReviewWidget(data: widget.item),
+          AddReviewWidget(data: item),
         ],
       ),
     );
