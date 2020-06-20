@@ -42,6 +42,7 @@ dependencies:
   progress_dialog: ^1.2.4
   date_format: "^1.0.4"
   url_launcher: ^5.4.11
+  audioplayers: ^0.15.1
 
 
 
@@ -68,7 +69,9 @@ flutter:
   assets:
     - assets/images/
   #   - images/a_dot_ham.jpeg
-
+    - assets/audio.mp3
+    - assets/audio2.mp3
+    - assets/messenger.mp3
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -34,14 +35,18 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
   String youtubeLink = '';
   bool _isRecoding = false;
   String recodingURI = '';
+  AudioPlayer audioPlayer;
+  String url='http://192.168.0.105/review/0d1bbb67-ba17-4876-9396-85c4c1384266audio_0.3gp';
+
 
   @override
   void initState() {
     super.initState();
     dio = Dio();
-
+    audioPlayer = AudioPlayer();
     parseData();
   }
+
 
   void parseData() {
     rid = item['id'];
@@ -129,6 +134,7 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
 
 
 
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -137,14 +143,13 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Visibility(
+      /*    Visibility(
               visible: _isRecoding,
               child: InkWell(
                 splashColor: Colors.cyanAccent,
-                onTap: () {
-                },
+                onTap: () {},
                 child: Icon(AppIcons.ic_mic, size: 20.0),
-              )),
+              )),*/
           Visibility(
               child: InkWell(
                   splashColor: Colors.cyanAccent,

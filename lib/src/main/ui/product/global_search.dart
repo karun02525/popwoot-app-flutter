@@ -217,12 +217,15 @@ class _GlobalSearchState extends State<GlobalSearch> {
   }
 
   Widget ratingAndReview(item) {
-    return Row(
-      children: <Widget>[
-        RatingWidget(rating: item['nrating']),
-        AddReviewWidget(
-            data: [item['pid'], item['pname'], item['pdesc'], item['ipath']])
-      ],
+    return Container(
+      margin: EdgeInsets.only(right: 10.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          RatingWidget(rating: item['astar']),
+          AddReviewWidget(data: [item['pid'], item['pname'], item['pdesc'], item['ipath']])
+        ],
+      ),
     );
   }
 
