@@ -31,6 +31,7 @@ class _AddCommentState extends State<AddComment> {
   final FocusNode _focusNode = FocusNode();
 
   bool _isVisible = true;
+  String pid='';
 
   @override
   void initState() {
@@ -38,15 +39,15 @@ class _AddCommentState extends State<AddComment> {
     dio = Dio();
   }
 
-  void getProductApiAsync(String pcode) async {
+  void getProductApiAsync() async {
     try {
-      final response = await dio.get('${Config.getReviewDetailsUrl}/$pcode');
-      debugPrint('print api object : ${Config.getReviewDetailsUrl}/$pcode ');
+      final response = await dio.get('${Config.getReviewDetailsUrl}/$pid');
+      debugPrint('print api object : ${Config.getReviewDetailsUrl}/$pid ');
       if (response.statusCode == 200) {
         final responseBody = jsonDecode(jsonEncode(response.data));
         debugPrint('print api object :' + responseBody.toString());
         if (responseBody['status']) {
-          getProductReviewApiAsync(pcode);
+          getProductReviewApiAsync();
           productData = responseBody['idata'];
         }
       }
@@ -70,11 +71,11 @@ class _AddCommentState extends State<AddComment> {
     }
   }
 
-  void getProductReviewApiAsync(String pcode) async {
+  void getProductReviewApiAsync() async {
     try {
       final response =
-          await dio.get('${Config.getReviewListDetailsUrl}/$pcode/1');
-      debugPrint('print api List : ${Config.getReviewListDetailsUrl}/$pcode/1');
+          await dio.get('${Config.getReviewListDetailsUrl}/$pid/1');
+      debugPrint('print api List : ${Config.getReviewListDetailsUrl}/$pid/1');
 
       if (response.statusCode == 200) {
         final responseBody = jsonDecode(jsonEncode(response.data));
@@ -90,9 +91,6 @@ class _AddCommentState extends State<AddComment> {
       var errorMessage = jsonDecode(jsonEncode(e.response.data));
       var statusCode = e.response.statusCode;
 
-      debugPrint("print: error :" + errorMessage.toString());
-      debugPrint("print: statusCode :" + statusCode.toString());
-
       if (statusCode == 400) {
         hideLoader();
         Global.toast(errorMessage['message']);
@@ -106,6 +104,52 @@ class _AddCommentState extends State<AddComment> {
     }
   }
 
+  //..................Post Api.........
+
+
+  void postApiCall(String mgs) async{
+    Map<String, dynamic> params = {
+      'rid':productData['id']==null ? '0':productData['id'],
+      'comment': mgs,
+    };
+
+    Map<String, String> requestHeaders = {
+      'Content-type': 'application/json',
+      'Accept': 'application/json',
+      'authorization': 'Bearer ${Config.token}'
+    };
+    debugPrint("Comment Screen Param: "+params.toString());
+
+    try {
+      final response = await dio.post(Config.doReviewCommentUrl,
+          data: params, options: Options(headers: requestHeaders));
+
+      if (response.statusCode == 200) {
+        final responseBody = jsonDecode(jsonEncode(response.data));
+        debugPrint("Comment Screen responseBody : "+responseBody.toString());
+        if (responseBody['status']) {
+          getProductReviewApiAsync();
+          hideLoader();
+        }
+      }
+    } on DioError catch (e) {
+      var errorMessage = jsonDecode(jsonEncode(e.response.data));
+      var statusCode = e.response.statusCode;
+      if (statusCode == 400) {
+         hideLoader();
+        Global.toast(errorMessage['message']);
+      } else if (statusCode == 401) {
+         hideLoader();
+        Global.toast(errorMessage['message']);
+      } else {
+         hideLoader();
+        Global.toast('Something went wrong');
+      }
+    }
+
+  }
+
+
   void hideLoader() {
     setState(() {
       _isLoading = false;
@@ -115,9 +159,10 @@ class _AddCommentState extends State<AddComment> {
   @override
   Widget build(BuildContext context) {
     List data = ModalRoute.of(context).settings.arguments;
-    String pid = data[1];
+    debugPrint("Comment Screen: "+data.toString());
     setState(() {
-      getProductApiAsync(pid);
+      pid = data[1];
+      getProductApiAsync();
     });
 
     return Scaffold(
@@ -325,7 +370,8 @@ class _AddCommentState extends State<AddComment> {
   }
 
   void _handleSubmitted(String text) {
-    _textController.clear();
+    postApiCall(text);
+  //  _textController.clear();
     _focusNode.requestFocus();
   }
 }
