@@ -25,4 +25,7 @@ class Config{
         'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1ZWU5YmNhNDUwZjY2YTIyYjRkM2FiODMiLCJzY29wZXMiOltdLCJleHAiOjE1OTI2NTQyODIsImlhdCI6MTU5MjYzNjI4Mn0.iP19_aihv9TLNso3Rls5e2ZLj7gktaNApHdnXC5Atm9-s4NNvO4PvdQhVz99RAMFxxiduagCJyuI102Y2e3f6g';
 
 
+
+    static const String avatar1='https://yt3.ggpht.com/a/AGF-l79qOCl2IUTeTXzxfd5R_x83FZildu-caGbqAw=s900-c-k-c0xffffffff-no-rj-mo';
+    static const String avatar='https://www.mobiletoones.com/downloads/wallpapers/people_wallpapers/preview/44/65525-karunkumar.jpg';
 }

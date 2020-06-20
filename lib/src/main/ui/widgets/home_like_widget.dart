@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
+import 'package:popwoot/src/main/ui/product/add_comment.dart';
 import 'package:popwoot/src/main/utils/global.dart';
 import 'package:popwoot/src/main/utils/utils.dart';
 import 'package:popwoot/src/res/app_icons.dart';
@@ -36,8 +37,8 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
   bool _isRecoding = false;
   String recodingURI = '';
   AudioPlayer audioPlayer;
-  String url='http://192.168.0.105/review/0d1bbb67-ba17-4876-9396-85c4c1384266audio_0.3gp';
-
+  String url =
+      'http://192.168.0.105/review/0d1bbb67-ba17-4876-9396-85c4c1384266audio_0.3gp';
 
   @override
   void initState() {
@@ -46,7 +47,6 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
     audioPlayer = AudioPlayer();
     parseData();
   }
-
 
   void parseData() {
     rid = item['id'];
@@ -132,9 +132,6 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
     });
   }
 
-
-
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -143,7 +140,7 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-      /*    Visibility(
+          /*    Visibility(
               visible: _isRecoding,
               child: InkWell(
                 splashColor: Colors.cyanAccent,
@@ -167,7 +164,14 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
           IconWidget(
             icon: AppIcons.ic_comment,
             mgs: 'Comment 12',
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => AddComment(),
+                      settings: RouteSettings(
+                          arguments: [item['pname'], item['pid']])));
+            },
           ),
           AddReviewWidget(data: item),
         ],
