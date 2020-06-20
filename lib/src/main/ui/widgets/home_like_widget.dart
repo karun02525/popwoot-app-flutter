@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'dart:developer';
-
+import 'dart:io' show Platform;
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
 import 'package:popwoot/src/main/utils/global.dart';
 import 'package:popwoot/src/res/app_icons.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'add_review_widget.dart';
 import 'icon_widget.dart';
@@ -30,6 +31,8 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
   int likeCount = 0;
   String likeMsg = "Like";
   String rid = '';
+  bool _isYoutube = false;
+  String youtubeLink = '';
 
   @override
   void initState() {
@@ -37,6 +40,12 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
     dio = Dio();
     rid = item['id'];
     likeCount = item['nlike'] == null ? 0 : item['nlike'];
+    youtubeLink = item['youtubeurl'] == null ? '' : item['youtubeurl'];
+
+    if (youtubeLink.toString().contains('https://youtu')) {
+      _isYoutube = true;
+    } else
+      _isYoutube = false;
   }
 
   void doLikeApiAsync() async {
@@ -58,7 +67,7 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
         final responseBody = jsonDecode(jsonEncode(response.data));
         debugPrint('print Review Like :' + responseBody.toString());
         if (responseBody['status']) {
-         // doLikeOrDlike(true);
+          // doLikeOrDlike(true);
           setState(() {
             likeData = responseBody['data'];
           });
@@ -94,7 +103,7 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
     });
   }
 
-  void doLikeOrDlike(bool flag){
+  void doLikeOrDlike(bool flag) {
     setState(() {
       if (flag) {
         likeCount++;
@@ -106,18 +115,43 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
     });
   }
 
-
+  _launchURL() async {
+    if (Platform.isIOS) {
+      if (await canLaunch(youtubeLink)) {
+        await launch(youtubeLink, forceSafariVC: false);
+      } else {
+        if (await canLaunch(youtubeLink)) {
+          await launch(youtubeLink);
+        } else {
+          throw 'Could not launch https://www.youtube.com/channel/UCwXdFgeE9KYzlDdR7TG9cMw';
+        }
+      }
+    } else {
+      if (await canLaunch(youtubeLink)) {
+        await launch(youtubeLink);
+      } else {
+        throw 'Could not launch $youtubeLink';
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(top: 8.0, bottom: 5.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Icon(AppIcons.ic_mic, size: 20.0),
-          AppIcons.ic_youtube,
+          Visibility(
+              child: InkWell(
+                 splashColor: Colors.cyanAccent,
+                  onTap: () {
+                    _launchURL();
+                  },
+                  child: AppIcons.ic_youtube),
+              visible: _isYoutube),
           IconWidget(
               icon: isLike ? Icons.favorite : Icons.favorite_border,
               mgs: '$likeMsg ${likeCount.toString()}',

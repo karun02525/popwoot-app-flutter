@@ -102,35 +102,4 @@ class HomeWidget extends StatelessWidget {
       ),
     );
   }
-
-  Widget bottomView(item) {
-    return Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Icon(Icons.mic_none),
-          FlatButton.icon(
-            onPressed: () {},
-            splashColor: Colors.cyanAccent,
-            icon: Icon(Icons.favorite_border, color: Colors.grey[600]),
-            label: Text(
-              "1 Like",
-              style: TextStyle(color: Colors.grey[400], fontSize: 12.0),
-            ),
-          ),
-          FlatButton.icon(
-            onPressed: () {},
-            splashColor: Colors.cyanAccent,
-            icon: Icon(Icons.chat_bubble_outline, color: Colors.grey[600]),
-            label: Text(
-              "0 comments",
-              style: TextStyle(color: Colors.grey[400], fontSize: 12.0),
-            ),
-          ),
-          AddReviewWidget(data: [item['pid'], item['pname'], item['pdesc'], item['ipath']])
-        ],
-      ),
-    );
-  }
 }
