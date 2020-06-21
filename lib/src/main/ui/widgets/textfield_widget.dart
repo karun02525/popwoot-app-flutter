@@ -63,6 +63,10 @@ class TextFieldWidget extends StatelessWidget {
                   enabledBorder: InputBorder.none,
                   errorBorder: InputBorder.none,
                   disabledBorder: InputBorder.none,
+                  hintStyle: TextStyle(
+                    color: color,
+                    fontSize: 15.0,
+                  ),
                   fillColor: color,
                   filled: false)));
     }
