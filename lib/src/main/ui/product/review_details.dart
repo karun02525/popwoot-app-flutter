@@ -115,14 +115,11 @@ class _ReviewDetailsState extends State<ReviewDetails> {
 
     return Scaffold(
         appBar: AppBar(
-            backgroundColor: Colors.white,
             brightness: Brightness.light,
             titleSpacing: 2.0,
             centerTitle: true,
-            leading: BackButton(color: Colors.black),
             title: TextWidget(
                 title: "${data[0]}",
-                color: Colors.black,
                 fontSize: AppFonts.toolbarSize,
                 isBold: true)),
         body: _isLoading ? Container(

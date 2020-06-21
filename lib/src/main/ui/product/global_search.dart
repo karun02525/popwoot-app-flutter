@@ -99,15 +99,14 @@ class _GlobalSearchState extends State<GlobalSearch> {
     return Scaffold(
       key: globalKey,
       appBar: AppBar(
-          backgroundColor: Colors.white,
           brightness: Brightness.light,
           titleSpacing: 2.0,
           centerTitle: true,
-          leading: BackButton(color: Colors.black),
           title: Row(
             children: <Widget>[
               Expanded(
                   child: TextFieldWidget(
+                    color: Colors.white,
                     hintText: 'Search...',
                     controller: _searchController,
                     isRound: false,
@@ -122,7 +121,7 @@ class _GlobalSearchState extends State<GlobalSearch> {
                       child: IconButton(
                           icon: Icon(
                             Icons.cancel,
-                            color: Colors.black,
+                            color: Colors.white,
                           ),
                           onPressed: () {
                             _searchController.clear();
@@ -134,7 +133,7 @@ class _GlobalSearchState extends State<GlobalSearch> {
                     onPressed: () {
                       ScannerController(context: context,globalKey: globalKey);
                     },
-                    icon: Icon(AppIcons.ic_scanner, color: Colors.black),
+                    icon: Icon(AppIcons.ic_scanner, color: Colors.white),
                   ),
                   flex: 2),
             ],

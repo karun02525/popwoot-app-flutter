@@ -46,7 +46,7 @@ class ImageLoadWidget extends StatelessWidget {
                         image: imageProvider, fit: BoxFit.cover),
                   ),
                 ),
-                placeholder: (context, url) => CircularProgressIndicator(),
+              //  placeholder: (context, url) => CircularProgressIndicator(),
                 imageUrl: imageUrl,
                 fit: BoxFit.fill,
               ));

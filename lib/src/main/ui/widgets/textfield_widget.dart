@@ -8,6 +8,7 @@ class TextFieldWidget extends StatelessWidget {
   final int minLine;
   final Function onChanged;
   final TextEditingController controller;
+  Color color;
 
   TextFieldWidget({
     this.isRound = true,
@@ -15,6 +16,7 @@ class TextFieldWidget extends StatelessWidget {
     this.minLine,
     this.onChanged,
     this.controller,
+    this.color,
   });
 
   @override
@@ -47,20 +49,22 @@ class TextFieldWidget extends StatelessWidget {
                   fontFamily: AppFonts.font,
                   fontSize: 15,
                   height: 1.4,
+                  color: color,
                   fontWeight: FontWeight.w700),
               controller: controller,
               autofocus: true,
               onChanged: onChanged,
               autocorrect: false,
               decoration: InputDecoration(
-                contentPadding: EdgeInsets.fromLTRB(10.0, 10.0, 20.0, 10.0),
-                hintText: hintText,
-                border: InputBorder.none,
-                focusedBorder: InputBorder.none,
-                enabledBorder: InputBorder.none,
-                errorBorder: InputBorder.none,
-                disabledBorder: InputBorder.none,
-              )));
+                  contentPadding: EdgeInsets.fromLTRB(10.0, 10.0, 20.0, 10.0),
+                  hintText: hintText,
+                  border: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  errorBorder: InputBorder.none,
+                  disabledBorder: InputBorder.none,
+                  fillColor: color,
+                  filled: false)));
     }
   }
 }

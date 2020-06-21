@@ -35,18 +35,11 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
   bool _isYoutube = false;
   String youtubeLink = '';
   int commentCount = 0;
-  bool _isRecoding = false;
-  String recodingURI = '';
-
-
-  AudioPlayer audioPlayer;
-  String url = 'http://192.168.0.105/review/0d1bbb67-ba17-4876-9396-85c4c1384266audio_0.3gp';
 
   @override
   void initState() {
     super.initState();
     dio = Dio();
-    audioPlayer = AudioPlayer();
     parseData();
   }
 
@@ -55,20 +48,15 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
     likeCount = item['nlike'] == null ? 0 : item['nlike'];
     commentCount = item['ncomment'] == null ? 0 : item['ncomment'];
     youtubeLink = item['youtubeurl'] == null ? '' : item['youtubeurl'];
-    //recodingURI = item['audio'] == null ? '' : item['audio'];
-    var doRating = item['nrating'] == null ? 0 : item['nrating'];
+    if (item['nrating'] == 'Y') {
 
+    }
 
 
     if (youtubeLink.toString().contains('https://youtu')) {
       _isYoutube = true;
     } else
       _isYoutube = false;
-
-    if (recodingURI.toString().contains('.3gp')) {
-      _isRecoding = true;
-    } else
-      _isRecoding = false;
   }
 
   void doLikeApiAsync() async {
@@ -141,13 +129,6 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          /*    Visibility(
-              visible: _isRecoding,
-              child: InkWell(
-                splashColor: Colors.cyanAccent,
-                onTap: () {},
-                child: Icon(AppIcons.ic_mic, size: 20.0),
-              )),*/
           Visibility(
               child: InkWell(
                   splashColor: Colors.cyanAccent,

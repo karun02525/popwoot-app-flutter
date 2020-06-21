@@ -198,7 +198,6 @@ class _AddReviewState extends State<AddReview> {
     ipath=data[3];
 
     return Scaffold(
-        backgroundColor: Colors.white,
         appBar: AppBar(
           titleSpacing: 2.0,
           title: TextWidget(title: "Add Review", fontSize:AppFonts.toolbarSize,isBold: true),
@@ -219,15 +218,8 @@ class _AddReviewState extends State<AddReview> {
                 visible: isHide2,
                 child: uploadImage()),
 
-            Divider(
-              height: 2.0,
-              color: Colors.black,
-            ),
             getRow(),
-            Divider(
-              height: 32.0,
-              color: Colors.black,
-            ),
+
              getEditBox(),
           ],
         )));
