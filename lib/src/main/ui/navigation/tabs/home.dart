@@ -22,7 +22,6 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     dio = Dio();
-    getHomeApiAsync();
   }
 
   void getHomeApiAsync() async {
@@ -68,6 +67,10 @@ class _HomeState extends State<Home> {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarBrightness: Brightness.light));
+
+      setState(() {
+        getHomeApiAsync();
+      });
 
     return Scaffold(
         body: _isLoading

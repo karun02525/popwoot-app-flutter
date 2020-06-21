@@ -1,9 +1,11 @@
 
 class Config{
 
+
+    static const api_youtube='AIzaSyAiSJV9ZHpFN8AwzpUDyorMVegUMS1corw';
     static const String base64Prefix='data:image/png;base64,';
-    static const baseUrl='http://192.168.43.139:8087';
-    static const baseImageUrl='http://192.168.43.139';
+    static const baseUrl='http://192.168.1.2:8087';
+    static const baseImageUrl='http://192.168.1.2';
 
     static const String authenticateUrl=baseUrl+'/api/oauth/authenticate';
     static const String addCategoryUrl=baseUrl+'/api/cauth/addcategory';

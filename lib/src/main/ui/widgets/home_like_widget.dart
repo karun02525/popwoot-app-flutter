@@ -55,7 +55,10 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
     likeCount = item['nlike'] == null ? 0 : item['nlike'];
     commentCount = item['ncomment'] == null ? 0 : item['ncomment'];
     youtubeLink = item['youtubeurl'] == null ? '' : item['youtubeurl'];
-    recodingURI = item['audio'] == null ? '' : item['audio'];
+    //recodingURI = item['audio'] == null ? '' : item['audio'];
+    var doRating = item['nrating'] == null ? 0 : item['nrating'];
+
+
 
     if (youtubeLink.toString().contains('https://youtu')) {
       _isYoutube = true;
@@ -76,16 +79,11 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
         'authorization': 'Bearer ${Config.token}'
       };
 
-      debugPrint('print api object : ${Config.doReviewLikeUrl}/$rid ');
-      debugPrint(
-          'print api object authorization :' + requestHeaders.toString());
-
       final response = await dio.get('${Config.doReviewLikeUrl}/$rid',
           options: Options(headers: requestHeaders));
 
       if (response.statusCode == 200) {
         final responseBody = jsonDecode(jsonEncode(response.data));
-        debugPrint('print Review Like :' + responseBody.toString());
         if (responseBody['status']) {
           // doLikeOrDlike(true);
           setState(() {
@@ -127,10 +125,10 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
     setState(() {
       if (flag) {
         likeCount++;
-        likeMsg = 'Like';
+        likeMsg = 'Likes';
       } else {
         likeCount--;
-        likeMsg = 'Unlike';
+        likeMsg = 'Unlikes';
       }
     });
   }
@@ -154,19 +152,20 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
               child: InkWell(
                   splashColor: Colors.cyanAccent,
                   onTap: () {
-                    Utils.openYoutube(youtubeLink);
+                    Utils.plaYoutube(youtubeLink);
+                   // Utils.openYoutube(youtubeLink);
                   },
                   child: AppIcons.ic_youtube),
               visible: _isYoutube),
           IconWidget(
               icon: isLike ? Icons.favorite : Icons.favorite_border,
-              mgs: '$likeMsg ${likeCount.toString()}',
+              mgs: '${likeCount} $likeMsg',
               onTap: () {
                 doLikeToggle();
               }),
           IconWidget(
             icon: AppIcons.ic_comment,
-            mgs: 'Comment $commentCount',
+            mgs: '$commentCount Comment',
             onTap: () {
               Navigator.push(
                   context,
