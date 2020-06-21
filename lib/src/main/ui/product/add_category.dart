@@ -173,7 +173,7 @@ class _AddCategoryState extends State<AddCategory> {
     return  Scaffold(
       appBar: AppBar(
         titleSpacing: 2.0,
-          title: TextWidget(title: "Add Category", color: Colors.black,fontSize: AppFonts.toolbarSize, isBold: true)),
+          title: TextWidget(title: "Add Category",fontSize: AppFonts.toolbarSize, isBold: true)),
       drawer: NavigationDrawer(),
         body: SingleChildScrollView(
             child: Column(

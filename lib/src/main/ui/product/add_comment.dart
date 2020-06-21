@@ -29,7 +29,7 @@ class _AddCommentState extends State<AddComment> {
 
   final _textController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
-  String rid='';
+  String rid = '';
 
   @override
   void initState() {
@@ -94,10 +94,9 @@ class _AddCommentState extends State<AddComment> {
 
   //..................Post Api.........
 
-
-  void postApiCall(String mgs) async{
+  void postApiCall(String mgs) async {
     Map<String, dynamic> params = {
-      'rid':rid,
+      'rid': rid,
       'comment': mgs,
     };
 
@@ -106,7 +105,7 @@ class _AddCommentState extends State<AddComment> {
       'Accept': 'application/json',
       'authorization': 'Bearer ${Config.token}'
     };
-    debugPrint("Comment Screen Param: "+params.toString());
+    debugPrint("Comment Screen Param: " + params.toString());
 
     try {
       final response = await dio.post(Config.doReviewCommentUrl,
@@ -114,7 +113,7 @@ class _AddCommentState extends State<AddComment> {
 
       if (response.statusCode == 200) {
         final responseBody = jsonDecode(jsonEncode(response.data));
-        debugPrint("Comment Screen responseBody : "+responseBody.toString());
+        debugPrint("Comment Screen responseBody : " + responseBody.toString());
         if (responseBody['status']) {
           getProductReviewApiAsync();
         }
@@ -130,9 +129,7 @@ class _AddCommentState extends State<AddComment> {
         Global.toast('Something went wrong');
       }
     }
-
   }
-
 
   void hideLoader() {
     setState(() {
@@ -143,7 +140,7 @@ class _AddCommentState extends State<AddComment> {
   @override
   Widget build(BuildContext context) {
     List data = ModalRoute.of(context).settings.arguments;
-    debugPrint("Comment Screen: "+data.toString());
+    debugPrint("Comment Screen: " + data.toString());
     setState(() {
       rid = data[1];
       getProductApiAsync();
@@ -210,7 +207,7 @@ class _AddCommentState extends State<AddComment> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.only(left: 5.0,bottom: 8.0),
+            padding: const EdgeInsets.only(left: 5.0, bottom: 8.0),
             child: TextWidget(title: item['comment'], fontSize: 14.0),
           ),
         ],
@@ -223,40 +220,33 @@ class _AddCommentState extends State<AddComment> {
       margin: EdgeInsets.all(5.0),
       child: Row(
         children: <Widget>[
-          ImageLoadWidget(imageUrl: item['userimg'], name: item['user'], isProfile: true),
-          setContent(item['user'],item['rdate'])
+          ImageLoadWidget(
+              imageUrl: item['userimg'], name: item['user'], isProfile: true),
+          setContent(item['user'], item['rdate'])
         ],
       ),
     );
   }
 
   Widget setContent(String name, String rdate) {
-    return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              TextWidget(
-                title: name.toString().toUpperCase(),
-                fontSize: 13.0,
-                isBold: true,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left:18.0),
-                child: TextWidget(
-                  title: '@$rdate',
-                  fontSize: 10.0,
-                ),
-              )
-            ],
-          ),
-          TextWidget(
-            title: 'Commented',
-            fontSize: 10.0,
-          ),
-        ]
-    );
+    return Row(children: <Widget>[
+      TextWidget(
+        title: name.toString().toUpperCase(),
+        fontSize: 13.0,
+        isBold: true,
+      ),
+      TextWidget(
+        title: '   Commented',
+        fontSize: 10.0,
+      ),
+      Padding(
+        padding: const EdgeInsets.only(left: 18.0),
+        child: TextWidget(
+          title: '@$rdate',
+          fontSize: 10.0,
+        ),
+      )
+    ]);
   }
 
   Widget buildHeader(item) {
@@ -301,13 +291,15 @@ class _AddCommentState extends State<AddComment> {
         color: Colors.orange[100],
         child: Row(
           children: [
-            Padding(padding: EdgeInsets.only(left: 5.0), child:ImageLoadWidget(imageUrl:Config.avatar1,name:'Kaju',isProfile: true)),
+            Padding(
+                padding: EdgeInsets.only(left: 5.0),
+                child: ImageLoadWidget(
+                    imageUrl: Config.avatar1, name: 'Kaju', isProfile: true)),
             Flexible(
               child: TextField(
                 controller: _textController,
                 onSubmitted: _handleSubmitted,
-                decoration:
-                    InputDecoration.collapsed(hintText: 'Comment'),
+                decoration: InputDecoration.collapsed(hintText: 'Comment'),
                 focusNode: _focusNode,
               ),
             ),
@@ -324,9 +316,9 @@ class _AddCommentState extends State<AddComment> {
   }
 
   void _handleSubmitted(String text) {
-    if(text.isEmpty){
+    if (text.isEmpty) {
       Global.toast('Please type some comment');
-    }else {
+    } else {
       _focusNode.unfocus();
       _textController.clear();
       postApiCall(text);

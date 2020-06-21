@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
+import 'package:popwoot/src/main/ui/product/product_list.dart';
 import 'package:popwoot/src/main/ui/widgets/image_load_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
 import 'package:popwoot/src/main/utils/global.dart';
@@ -41,7 +42,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
       var errorMessage = jsonDecode(jsonEncode(e.response.data));
       var statusCode = e.response.statusCode;
 
-      debugPrint("print: error :" + errorMessage.toString());
+
       debugPrint("print: statusCode :" + statusCode.toString());
 
       if (statusCode == 400) {
@@ -76,8 +77,18 @@ class _CategoryScreenState extends State<CategoryScreen> {
               margin: EdgeInsets.only(top: 5, bottom: 5),
               child: ListView.builder(
                   itemCount: categoryList.length,
-                  itemBuilder: (context, index) =>
-                      buildCardView(context, index)),
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ProductList(),
+                                  settings: RouteSettings(
+                                      arguments: [categoryList[index]['cname'],categoryList[index]['id']])));
+                        },
+                        child: buildCardView(context, index));
+                  }),
             ),
     );
   }
@@ -90,8 +101,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
           elevation: 3,
           child: ListTile(
             leading: SizedBox(
-                width: 80.0,
-                child: ImageLoadWidget(imageUrl: i['cimage'])),
+                width: 80.0, child: ImageLoadWidget(imageUrl: i['cimage'])),
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,

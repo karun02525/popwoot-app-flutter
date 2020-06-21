@@ -23,10 +23,10 @@ class AddReviewWidget extends StatelessWidget {
               MaterialPageRoute(
                   builder: (context) => AddReview(),
                   settings: RouteSettings(arguments: [
-                    data['pid'],
-                    data['pname'],
-                    data['pdesc'],
-                    data['ipath']
+                    data['pid']==null ? '---':data['pid'],
+                    data['pname']==null ? '---':data['pname'],
+                    data['pdesc']==null ? '---':data['pdesc'],
+                    data['ipath']==null ? '---':data['ipath'],
                   ])));
         },
       ),

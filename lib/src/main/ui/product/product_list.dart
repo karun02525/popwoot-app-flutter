@@ -4,9 +4,11 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
+import 'package:popwoot/src/main/ui/widgets/add_review_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/image_load_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
 import 'package:popwoot/src/main/utils/global.dart';
+import 'package:popwoot/src/res/fonts.dart';
 
 class ProductList extends StatefulWidget {
   @override
@@ -14,35 +16,36 @@ class ProductList extends StatefulWidget {
 }
 
 class _ProductListState extends State<ProductList> {
-  List categoryList;
+  List productList = [];
   Dio dio;
   bool _isLoading = true;
+  String cid = '';
 
   @override
   void initState() {
     super.initState();
     dio = Dio();
-    getCategoryAllAsync();
   }
 
-  void getCategoryAllAsync() async {
+  void getProductAllAsync() async {
     try {
-      final response = await dio.get(Config.getAllCategoryUrl);
+      final response = await dio.get('${Config.geProductsUrl}/$cid');
+      debugPrint("product list url: : '${Config.geProductsUrl}/$cid'");
+
       if (response.statusCode == 200) {
         final responseBody = jsonDecode(jsonEncode(response.data));
+        debugPrint("product list response :" + responseBody.toString());
+
         if (responseBody['status']) {
           hideLoader();
           setState(() {
-            categoryList = responseBody['data'];
+            productList = responseBody['data'];
           });
         }
       }
     } on DioError catch (e) {
       var errorMessage = jsonDecode(jsonEncode(e.response.data));
       var statusCode = e.response.statusCode;
-
-      debugPrint("print: error :" + errorMessage.toString());
-      debugPrint("print: statusCode :" + statusCode.toString());
 
       if (statusCode == 400) {
         hideLoader();
@@ -65,49 +68,62 @@ class _ProductListState extends State<ProductList> {
 
   @override
   Widget build(BuildContext context) {
+    List data = ModalRoute.of(context).settings.arguments;
+    cid = data[1];
+    debugPrint("product list:" + data.toString());
+    getProductAllAsync();
+
     return Scaffold(
+      appBar: AppBar(
+          titleSpacing: 2.0,
+          title: TextWidget(
+              title: data[0], fontSize: AppFonts.toolbarSize, isBold: true)),
       body: _isLoading
           ? Container(
-        child: Center(
-          child: CircularProgressIndicator(),
-        ),
-      )
-          : Container(
-        margin: EdgeInsets.only(top: 5, bottom: 5),
-        child: ListView.builder(
-            itemCount: categoryList.length,
-            itemBuilder: (context, index) =>
-                buildCardView(context, index)),
-      ),
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            )
+          : productList.length == 0
+              ? Container(
+                  child: Center(
+                  child: TextWidget(title: "No data available"),
+                ))
+              : Container(
+                  margin: EdgeInsets.only(top: 5, bottom: 5),
+                  child: ListView.builder(
+                      itemCount: productList.length,
+                      itemBuilder: (context, index) =>
+                          buildCardView(context, index)),
+                ),
     );
   }
 
   Widget buildCardView(BuildContext context, int index) {
-    final i = categoryList[index];
+    final i = productList[index];
     return Container(
         margin: EdgeInsets.only(left: 2, right: 5),
         child: Card(
           elevation: 3,
           child: ListTile(
             leading: SizedBox(
-                width: 80.0,
-                child: ImageLoadWidget(imageUrl: i['cimage'])),
+                width: 80.0, child: ImageLoadWidget(imageUrl: i['imgpath'])),
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                TextWidget(title: i['cname'], isBold: true, fontSize: 12.0),
-                FlatButton(
-                    onPressed: () {},
-                    child: TextWidget(
-                        title: 'Follow',
-                        color: Colors.grey[400],
-                        fontSize: 12.0))
+                TextWidget(title: i['pname'], isBold: true, fontSize: 14.0),
+                AddReviewWidget(data: {
+                  "pid": i['id'],
+                  "pname": i['pname'],
+                  "pdesc": i['pdescription'],
+                  "ipath": i['imgpath'],
+                }),
               ],
             ),
             subtitle: Padding(
                 padding: const EdgeInsets.only(bottom: 5.0),
-                child: TextWidget(title: i['cdetails'])),
+                child: TextWidget(title: i['pdescription'], fontSize: 12.0)),
           ),
         ));
   }
