@@ -122,7 +122,7 @@ class _ProductListState extends State<ProductList> {
               ],
             ),
             subtitle: Padding(
-                padding: const EdgeInsets.only(bottom: 5.0),
+                padding: const EdgeInsets.only(top:5.0,bottom: 5.0),
                 child: TextWidget(title: i['pdescription'], fontSize: 12.0)),
           ),
         ));

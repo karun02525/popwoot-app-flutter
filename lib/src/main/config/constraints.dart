@@ -27,6 +27,9 @@ class Config{
     static const String getAllCommentUrl=baseUrl+'/api/oauth/allcomment';
 
     static const String getAllCategoryUrl=baseUrl+'/api/oauth/allcategory';
+    static const String getFollowUrl=baseUrl+'/api/cauth/cfollow';
+
+
     static const String geProductsUrl=baseUrl+'/api/oauth/products';
     static const String getDefaultReviewUrl=baseUrl+'/api/oauth/defaultreview';
 

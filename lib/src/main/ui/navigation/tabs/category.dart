@@ -58,6 +58,38 @@ class _CategoryScreenState extends State<CategoryScreen> {
     }
   }
 
+  void getFollowAsync(String cid) async {
+    try {
+      final response = await dio.get('${Config.getFollowUrl}/$cid');
+      if (response.statusCode == 200) {
+        final responseBody = jsonDecode(jsonEncode(response.data));
+        if (responseBody['status']) {
+          hideLoader();
+          setState(() {
+            categoryList = responseBody['data'];
+          });
+        }
+      }
+    } on DioError catch (e) {
+      var errorMessage = jsonDecode(jsonEncode(e.response.data));
+      var statusCode = e.response.statusCode;
+
+
+      debugPrint("print: statusCode :" + statusCode.toString());
+
+      if (statusCode == 400) {
+        hideLoader();
+        Global.toast(errorMessage['message']);
+      } else if (statusCode == 401) {
+        hideLoader();
+        Global.toast(errorMessage['message']);
+      } else {
+        hideLoader();
+        Global.toast('Something went wrong');
+      }
+    }
+  }
+
   void hideLoader() {
     setState(() {
       _isLoading = false;
@@ -108,7 +140,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
               children: <Widget>[
                 TextWidget(title: i['cname'], isBold: true, fontSize: 12.0),
                 FlatButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      getFollowAsync(i['id']);
+                    },
                     child: TextWidget(
                         title: 'Follow',
                         color: Colors.grey[400],
