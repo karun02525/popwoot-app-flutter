@@ -44,6 +44,7 @@ class HomeWidget extends StatelessWidget {
             padding: const EdgeInsets.only(left: 5.0),
             child: TextWidget(title: item['pdesc'], fontSize: 14.0),
           ),
+          Divider(),
           HomeLikeCmt(item: item),
         ],
       ),

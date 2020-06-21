@@ -29,9 +29,7 @@ class _AddCommentState extends State<AddComment> {
 
   final _textController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
-
-  bool _isVisible = true;
-  String pid='';
+  String rid='';
 
   @override
   void initState() {
@@ -41,11 +39,9 @@ class _AddCommentState extends State<AddComment> {
 
   void getProductApiAsync() async {
     try {
-      final response = await dio.get('${Config.getReviewDetailsUrl}/$pid');
-      debugPrint('print api object : ${Config.getReviewDetailsUrl}/$pid ');
+      final response = await dio.get('${Config.getReviewCommentUrl}/$rid');
       if (response.statusCode == 200) {
         final responseBody = jsonDecode(jsonEncode(response.data));
-        debugPrint('print api object :' + responseBody.toString());
         if (responseBody['status']) {
           getProductReviewApiAsync();
           productData = responseBody['idata'];
@@ -54,10 +50,6 @@ class _AddCommentState extends State<AddComment> {
     } on DioError catch (e) {
       var errorMessage = jsonDecode(jsonEncode(e.response.data));
       var statusCode = e.response.statusCode;
-
-      debugPrint("print: error :" + errorMessage.toString());
-      debugPrint("print: statusCode :" + statusCode.toString());
-
       if (statusCode == 400) {
         hideLoader();
         Global.toast(errorMessage['message']);
@@ -73,15 +65,11 @@ class _AddCommentState extends State<AddComment> {
 
   void getProductReviewApiAsync() async {
     try {
-      final response =
-          await dio.get('${Config.getReviewListDetailsUrl}/$pid/1');
-      debugPrint('print api List : ${Config.getReviewListDetailsUrl}/$pid/1');
-
+      final response = await dio.get('${Config.getAllCommentUrl}/$rid/1');
       if (response.statusCode == 200) {
+        hideLoader();
         final responseBody = jsonDecode(jsonEncode(response.data));
         if (responseBody['status']) {
-          debugPrint('print api List :' + responseBody.toString());
-          hideLoader();
           setState(() {
             items = responseBody['data'];
           });
@@ -109,7 +97,7 @@ class _AddCommentState extends State<AddComment> {
 
   void postApiCall(String mgs) async{
     Map<String, dynamic> params = {
-      'rid':productData['id']==null ? '0':productData['id'],
+      'rid':rid,
       'comment': mgs,
     };
 
@@ -129,20 +117,16 @@ class _AddCommentState extends State<AddComment> {
         debugPrint("Comment Screen responseBody : "+responseBody.toString());
         if (responseBody['status']) {
           getProductReviewApiAsync();
-          hideLoader();
         }
       }
     } on DioError catch (e) {
       var errorMessage = jsonDecode(jsonEncode(e.response.data));
       var statusCode = e.response.statusCode;
       if (statusCode == 400) {
-         hideLoader();
         Global.toast(errorMessage['message']);
       } else if (statusCode == 401) {
-         hideLoader();
         Global.toast(errorMessage['message']);
       } else {
-         hideLoader();
         Global.toast('Something went wrong');
       }
     }
@@ -161,7 +145,7 @@ class _AddCommentState extends State<AddComment> {
     List data = ModalRoute.of(context).settings.arguments;
     debugPrint("Comment Screen: "+data.toString());
     setState(() {
-      pid = data[1];
+      rid = data[1];
       getProductApiAsync();
     });
 
@@ -228,12 +212,10 @@ class _AddCommentState extends State<AddComment> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          RatingWidget(rating: item['astar']),
           Padding(
-            padding: const EdgeInsets.only(left: 5.0),
-            child: TextWidget(title: item['pdesc'], fontSize: 14.0),
+            padding: const EdgeInsets.only(left: 5.0,bottom: 8.0),
+            child: TextWidget(title: item['comment'], fontSize: 14.0),
           ),
-          HomeLikeCmt(item: item),
         ],
       ),
     );
@@ -244,40 +226,39 @@ class _AddCommentState extends State<AddComment> {
       margin: EdgeInsets.all(5.0),
       child: Row(
         children: <Widget>[
-          ImageLoadWidget(
-              imageUrl: item['userimg'], name: item['user'], isProfile: true),
-          setContent(item['user'], item['pname'], item['rdate'])
+          ImageLoadWidget(imageUrl: item['userimg'], name: item['user'], isProfile: true),
+          setContent(item['user'],item['rdate'])
         ],
       ),
     );
   }
 
-  Widget setContent(String name, String pname, String rdate) {
-    return Container(
-      child: Column(
+  Widget setContent(String name, String rdate) {
+    return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
               TextWidget(
                 title: name.toString().toUpperCase(),
                 fontSize: 13.0,
                 isBold: true,
               ),
-              TextWidget(
-                title: '  reviewed            ',
-                fontSize: 12.0,
-              ),
-              TextWidget(
-                title: '@$rdate',
-                fontSize: 10.0,
+              Padding(
+                padding: const EdgeInsets.only(left:18.0),
+                child: TextWidget(
+                  title: '@$rdate',
+                  fontSize: 10.0,
+                ),
               )
             ],
           ),
-        ],
-      ),
+          TextWidget(
+            title: 'Commented',
+            fontSize: 10.0,
+          ),
+        ]
     );
   }
 
@@ -316,30 +297,6 @@ class _AddCommentState extends State<AddComment> {
     );
   }
 
-  Widget bottomNavigationBarComment() {
-    return AnimatedContainer(
-      duration: Duration(milliseconds: 200),
-      height: _isVisible ? 60 : 0.0,
-      child: BottomAppBar(
-        color: Colors.deepOrange[200],
-        elevation: 5.0,
-        child: Container(
-            height: 60,
-            width: double.infinity,
-            child: ListTile(
-              leading: ImageLoadWidget(
-                  imageUrl: Config.avatar, name: 'Kaju', isProfile: true),
-              title: TextField(
-                  decoration: new InputDecoration(
-                      filled: true,
-                      hintStyle: new TextStyle(color: Colors.grey[800]),
-                      hintText: "Type in your text",
-                      fillColor: Colors.white70)),
-            )),
-      ),
-    );
-  }
-
   Widget _buildTextComposer() {
     return IconTheme(
       data: IconThemeData(color: Theme.of(context).accentColor),
@@ -370,23 +327,12 @@ class _AddCommentState extends State<AddComment> {
   }
 
   void _handleSubmitted(String text) {
-    postApiCall(text);
-  //  _textController.clear();
-    _focusNode.requestFocus();
+    if(text.isEmpty){
+      Global.toast('Please type some comment');
+    }else {
+      _focusNode.unfocus();
+      _textController.clear();
+      postApiCall(text);
+    }
   }
 }
-
-/*
-
-    return  Container(
-       width: double.infinity,
-         child: Row(
-           children: [
-             ImageLoadWidget(imageUrl:Config.avatar,name:'Kaju',isProfile: true),
-             TextField(decoration: InputDecoration(
-                hintText: "Enter comment"
-             ),
-             )
-           ],
-         )
-    );*/

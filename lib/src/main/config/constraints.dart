@@ -2,8 +2,8 @@
 class Config{
 
     static const String base64Prefix='data:image/png;base64,';
-    static const baseUrl='http://192.168.0.105:8087';
-    static const baseImageUrl='http://192.168.0.105';
+    static const baseUrl='http://192.168.43.139:8087';
+    static const baseImageUrl='http://192.168.43.139';
 
     static const String authenticateUrl=baseUrl+'/api/oauth/authenticate';
     static const String addCategoryUrl=baseUrl+'/api/cauth/addcategory';
@@ -20,12 +20,15 @@ class Config{
     static const String getReviewDetailsUrl=baseUrl+'/api/oauth/openproduct';
     static const String getReviewListDetailsUrl=baseUrl+'/api/oauth/ireview';
 
+
+    static const String getReviewCommentUrl=baseUrl+'/api/oauth/ireviewc';
+    static const String getAllCommentUrl=baseUrl+'/api/oauth/allcomment';
+
     static const String getAllCategoryUrl=baseUrl+'/api/oauth/allcategory';
     static const String getDefaultReviewUrl=baseUrl+'/api/oauth/defaultreview';
 
     static const String token=
-    'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1ZWU5YmNhNDUwZjY2YTIyYjRkM2FiODMiLCJzY29wZXMiOltdLCJleHAiOjE1OTI3MDgwMDYsImlhdCI6MTU5MjY5MDAwNn0.nIO4H6mJHw2bZOreGgjJCwLZ6QZTtXeJyjggCi0EoO7TFEobZACjAs84KctkkMEsGLeiC4iBuFIEukFV9aS4PA';
-
+    'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1ZWVmMjk4YzAyOGY4ZjE5MjA1MDFmMTgiLCJzY29wZXMiOltdLCJleHAiOjE1OTI3NTAwNDUsImlhdCI6MTU5MjczMjA0NX0.FOxRdYmu5u1gSf2zKFKwc471vX4DhdbjDxQBimxCjW-FU9x0G1lGUTsOV6VLjvhAmMeI0a8QvvHU-kDAZzJ35Q';
 
 
     static const String avatar1='https://yt3.ggpht.com/a/AGF-l79qOCl2IUTeTXzxfd5R_x83FZildu-caGbqAw=s900-c-k-c0xffffffff-no-rj-mo';

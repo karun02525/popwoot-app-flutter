@@ -34,11 +34,13 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
   String rid = '';
   bool _isYoutube = false;
   String youtubeLink = '';
+  int commentCount = 0;
   bool _isRecoding = false;
   String recodingURI = '';
+
+
   AudioPlayer audioPlayer;
-  String url =
-      'http://192.168.0.105/review/0d1bbb67-ba17-4876-9396-85c4c1384266audio_0.3gp';
+  String url = 'http://192.168.0.105/review/0d1bbb67-ba17-4876-9396-85c4c1384266audio_0.3gp';
 
   @override
   void initState() {
@@ -51,6 +53,7 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
   void parseData() {
     rid = item['id'];
     likeCount = item['nlike'] == null ? 0 : item['nlike'];
+    commentCount = item['ncomment'] == null ? 0 : item['ncomment'];
     youtubeLink = item['youtubeurl'] == null ? '' : item['youtubeurl'];
     recodingURI = item['audio'] == null ? '' : item['audio'];
 
@@ -135,7 +138,7 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 8.0, bottom: 5.0),
+      margin: EdgeInsets.only(bottom: 8.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -163,14 +166,14 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
               }),
           IconWidget(
             icon: AppIcons.ic_comment,
-            mgs: 'Comment 12',
+            mgs: 'Comment $commentCount',
             onTap: () {
               Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => AddComment(),
                       settings: RouteSettings(
-                          arguments: [item['pname'], item['pid']])));
+                          arguments: [item['pname'], item['id']])));
             },
           ),
           AddReviewWidget(data: item),
