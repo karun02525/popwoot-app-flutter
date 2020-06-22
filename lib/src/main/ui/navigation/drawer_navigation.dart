@@ -9,7 +9,7 @@ class NavigationDrawer extends StatefulWidget {
 }
 
 class _NavigationDrawerState extends State<NavigationDrawer> {
-  String name, email, url;
+  String name, email, urls;
 
   Future<void> getValues() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -24,9 +24,11 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
         email="";
       }
 
-      url = preferences.getString('url');
+    var  url = preferences.getString('url');
       if(url==null){
-        url="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
+        urls="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
+      }else{
+        urls=url;
       }
 
     });
@@ -87,7 +89,7 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
           ),
         ),
         placeholder: (context, url) => CircularProgressIndicator(),
-        imageUrl: url,
+        imageUrl: urls,
       ),
     );
   }

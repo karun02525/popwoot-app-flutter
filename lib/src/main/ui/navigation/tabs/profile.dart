@@ -78,12 +78,13 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     var connectionStatus = Provider.of<ConnectivityStatus>(context);
     return Scaffold(
+      backgroundColor: Colors.white,
         body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Text('Connection Status: $connectionStatus'),
-            connectionStatus ==
-                    ConnectivityStatus
-                        .Wifi // Check status and show different buttons
+           /* Text('Connection Status: $connectionStatus'),
+            connectionStatus == ConnectivityStatus.Wifi // Check status and show different buttons
                 ? FlatButton(
                     child: Text('Testing files'),
                     color: Colors.blue[600],
@@ -92,7 +93,7 @@ class _ProfileState extends State<Profile> {
                     child: Text('Turn on Cellular Sync'),
                     color: Colors.red[600],
                     onPressed: () {},
-                  ),
+                  ),*/
             _buildInfo(),
           ],
         ));

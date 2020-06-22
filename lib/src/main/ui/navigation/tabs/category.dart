@@ -18,6 +18,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
   List categoryList;
   Dio dio;
   bool _isLoading = true;
+  bool isFollow =false;
+  String follow='';
 
   @override
   void initState() {
@@ -34,6 +36,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
         if (responseBody['status']) {
           hideLoader();
           setState(() {
+            debugPrint("Follow Category: data  "+responseBody.toString());
             categoryList = responseBody['data'];
           });
         }
@@ -41,10 +44,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
     } on DioError catch (e) {
       var errorMessage = jsonDecode(jsonEncode(e.response.data));
       var statusCode = e.response.statusCode;
-
-
-      debugPrint("print: statusCode :" + statusCode.toString());
-
       if (statusCode == 400) {
         hideLoader();
         Global.toast(errorMessage['message']);
@@ -58,33 +57,35 @@ class _CategoryScreenState extends State<CategoryScreen> {
     }
   }
 
-  void getFollowAsync(String cid) async {
+
+  void getFollowAsync(String cid,isFlow) async {
     try {
-      final response = await dio.get('${Config.getFollowUrl}/$cid');
+      Map<String, String> requestHeaders = {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+        'authorization': 'Bearer ${Config.token}'
+      };
+
+      final response = await dio.get('${Config.getFollowUrl}/$cid', options: Options(headers: requestHeaders));
       if (response.statusCode == 200) {
         final responseBody = jsonDecode(jsonEncode(response.data));
+        debugPrint("Follow Category: "+responseBody.toString());
         if (responseBody['status']) {
-          hideLoader();
           setState(() {
-            categoryList = responseBody['data'];
+            getCategoryAllAsync();
           });
         }
       }
     } on DioError catch (e) {
       var errorMessage = jsonDecode(jsonEncode(e.response.data));
       var statusCode = e.response.statusCode;
-
-
-      debugPrint("print: statusCode :" + statusCode.toString());
+      debugPrint("Follow Category Error: "+errorMessage.toString());
 
       if (statusCode == 400) {
-        hideLoader();
         Global.toast(errorMessage['message']);
       } else if (statusCode == 401) {
-        hideLoader();
         Global.toast(errorMessage['message']);
       } else {
-        hideLoader();
         Global.toast('Something went wrong');
       }
     }
@@ -141,10 +142,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 TextWidget(title: i['cname'], isBold: true, fontSize: 12.0),
                 FlatButton(
                     onPressed: () {
-                      getFollowAsync(i['id']);
+                      getFollowAsync(i['id'],i['follow'],);
                     },
                     child: TextWidget(
-                        title: 'Follow',
+                        title: i['follow']==false ?'Follow':'Following',
                         color: Colors.grey[400],
                         fontSize: 12.0))
               ],

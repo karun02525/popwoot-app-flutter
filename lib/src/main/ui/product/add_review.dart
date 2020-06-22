@@ -109,8 +109,6 @@ class _AddReviewState extends State<AddReview> {
       'imgarray': imagesData,
     };
 
-    debugPrint("print param: "+params.toString());
-
     Map<String, String> requestHeaders = {
       'Content-type': 'application/json',
       'Accept': 'application/json',

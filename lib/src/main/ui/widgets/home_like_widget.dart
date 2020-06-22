@@ -48,8 +48,13 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
     likeCount = item['nlike'] == null ? 0 : item['nlike'];
     commentCount = item['ncomment'] == null ? 0 : item['ncomment'];
     youtubeLink = item['youtubeurl'] == null ? '' : item['youtubeurl'];
-    if (item['nrating'] == 'Y') {
 
+    if (item['nrating'] == 'Y') {
+      isLike=true;
+      likeMsg = 'Likes';
+    }else{
+      isLike=false;
+      likeMsg = 'Unlikes';
     }
 
 
