@@ -30,7 +30,14 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   void getCategoryAllAsync() async {
     try {
-      final response = await dio.get(Config.getAllCategoryUrl);
+
+      Map<String, String> requestHeaders = {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+        'authorization': 'Bearer ${Config.token}'
+      };
+
+      final response = await dio.get(Config.getAllCategoryUrl, options: Options(headers: requestHeaders));
       if (response.statusCode == 200) {
         final responseBody = jsonDecode(jsonEncode(response.data));
         if (responseBody['status']) {
@@ -144,10 +151,14 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     onPressed: () {
                       getFollowAsync(i['id'],i['follow'],);
                     },
-                    child: TextWidget(
-                        title: i['follow']==false ?'Follow':'Following',
+                    child:i['follow']==false ? TextWidget(
+                        title: 'Follow',
                         color: Colors.grey[400],
-                        fontSize: 12.0))
+                        fontSize: 12.0):TextWidget(
+                        title: 'Following',
+                        color: Colors.lightBlue[400],
+                        fontSize: 12.0)
+                )
               ],
             ),
             subtitle: Padding(

@@ -1,27 +1,18 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:ui';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
-import 'package:popwoot/src/main/ui/navigation/drawer_navigation.dart';
-import 'package:popwoot/src/main/ui/product/review_details.dart';
 import 'package:popwoot/src/main/ui/product/scanner_barcode.dart';
 import 'package:popwoot/src/main/ui/widgets/add_review_widget.dart';
-import 'package:popwoot/src/main/ui/widgets/button_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/image_load_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/rating_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/textfield_widget.dart';
 import 'package:popwoot/src/main/utils/global.dart';
 import 'package:popwoot/src/res/app_icons.dart';
-import 'package:popwoot/src/res/fonts.dart';
-import 'package:progress_dialog/progress_dialog.dart';
 
 class GlobalSearch extends StatefulWidget {
   @override
@@ -35,6 +26,8 @@ class _GlobalSearchState extends State<GlobalSearch> {
   bool _isLoading = false;
   var _searchController = TextEditingController();
   final globalKey = GlobalKey<ScaffoldState>();
+
+
 
   @override
   void initState() {

@@ -4,8 +4,8 @@ class Config{
 
     static const api_youtube='AIzaSyAiSJV9ZHpFN8AwzpUDyorMVegUMS1corw';
     static const String base64Prefix='data:image/png;base64,';
-    static const baseUrl='http://192.168.1.10:8087';
-    static const baseImageUrl='http://192.168.1.10';
+    static const baseUrl='http://192.168.1.12:8087';
+    static const baseImageUrl='http://192.168.1.12';
 
     static const String authenticateUrl=baseUrl+'/api/oauth/authenticate';
     static const String addCategoryUrl=baseUrl+'/api/cauth/addcategory';
@@ -26,7 +26,7 @@ class Config{
     static const String getReviewCommentUrl=baseUrl+'/api/oauth/ireviewc';
     static const String getAllCommentUrl=baseUrl+'/api/oauth/allcomment';
 
-    static const String getAllCategoryUrl=baseUrl+'/api/oauth/allcategory';
+    static const String getAllCategoryUrl=baseUrl+'/api/oauth/category';
     static const String getFollowUrl=baseUrl+'/api/cauth/cfollow';
 
 
@@ -34,8 +34,7 @@ class Config{
     static const String getDefaultReviewUrl=baseUrl+'/api/oauth/defaultreview';
 
     static const String token=
-  'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1ZWVmMjk4YzAyOGY4ZjE5MjA1MDFmMTgiLCJzY29wZXMiOltdLCJleHAiOjE1OTI4NzEzODQsImlhdCI6MTU5Mjg1MzM4NH0.pOQ4UCq0ijMksdNCBI3DPcjZZu3-job46I627tCT6cuPrf1d8U_YIGupIrIFsyd8GMNk563Q2BcWiIRDjPoJvA';
-
+'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1ZWVmMjk4YzAyOGY4ZjE5MjA1MDFmMTgiLCJzY29wZXMiOltdLCJleHAiOjE1OTI5NTI5MzQsImlhdCI6MTU5MjkzNDkzNH0.D23XrQNeK2HEkt9ff3Ve20fN4KMZdFisWchqempe8nyQWdbJPn-WvnIxrFUWaqKXK-887QH3QQEhX8sinhhkiQ';
     static const String avatar1='https://yt3.ggpht.com/a/AGF-l79qOCl2IUTeTXzxfd5R_x83FZildu-caGbqAw=s900-c-k-c0xffffffff-no-rj-mo';
     static const String avatar='https://www.mobiletoones.com/downloads/wallpapers/people_wallpapers/preview/44/65525-karunkumar.jpg';
 }
