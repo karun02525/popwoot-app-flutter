@@ -26,7 +26,15 @@ class _HomeState extends State<Home> {
 
   void getHomeApiAsync() async {
     try {
-      final response = await dio.get(Config.getHomeUrl);
+
+      Map<String, String> requestHeaders = {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+        'authorization': 'Bearer ${Config.token}'
+      };
+
+
+      final response = await dio.get(Config.getHomeUrl,options: Options(headers: requestHeaders));
       if (response.statusCode == 200) {
         final responseBody = jsonDecode(jsonEncode(response.data));
         if (responseBody['status']) {
