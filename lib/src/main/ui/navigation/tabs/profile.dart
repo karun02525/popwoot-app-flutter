@@ -83,21 +83,23 @@ class _ProfileState extends State<Profile> {
               title: "Profile", fontSize: AppFonts.toolbarSize, isBold: true),
         ),
         backgroundColor: Colors.white,
-        body: isLogin ? AlreadyLogin() : doLogin());
+        body: isLogin ? alreadyLogin() : doLogin());
   }
 
-  Widget AlreadyLogin() {
+  Widget alreadyLogin() {
     return Container(
       margin: EdgeInsets.only(top: 10.0),
       child: DefaultTabController(
         length: 3,
         child: Scaffold(
           appBar: PreferredSize(
-              preferredSize: Size.fromHeight(kToolbarHeight),
+              preferredSize: Size.fromHeight(40.0),
                 child: TabBar(
                     unselectedLabelColor: Colors.redAccent,
                     indicatorSize: TabBarIndicatorSize.label,
-                    indicator: BoxDecoration(
+                  labelPadding: EdgeInsets.symmetric(horizontal: 10.0),
+
+                  indicator: BoxDecoration(
                         borderRadius: BorderRadius.circular(50),
                         color: Colors.redAccent),
                     tabs: [
