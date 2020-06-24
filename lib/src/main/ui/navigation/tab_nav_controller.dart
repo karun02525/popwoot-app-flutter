@@ -28,18 +28,6 @@ class _TabNavControllerState extends State<TabNavController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
-      appBar: AppBar(
-        titleSpacing: 2.0,
-        title: TextSearchWidget(),
-        actions: <Widget>[
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.notifications),
-          )
-        ],
-      ),
-      drawer: NavigationDrawer(),
       backgroundColor: Colors.white,
       body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(

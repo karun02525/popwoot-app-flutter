@@ -6,8 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
 import 'package:popwoot/src/main/ui/product/product_list.dart';
 import 'package:popwoot/src/main/ui/widgets/image_load_widget.dart';
+import 'package:popwoot/src/main/ui/widgets/search_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
 import 'package:popwoot/src/main/utils/global.dart';
+
+import '../drawer_navigation.dart';
 
 class CategoryScreen extends StatefulWidget {
   @override
@@ -107,6 +110,17 @@ class _CategoryScreenState extends State<CategoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        titleSpacing: 2.0,
+        title: TextSearchWidget(),
+        actions: <Widget>[
+          IconButton(
+            onPressed: () {},
+            icon: Icon(Icons.notifications),
+          )
+        ],
+      ),
+      drawer: NavigationDrawer(),
       body: _isLoading
           ? Container(
               child: Center(

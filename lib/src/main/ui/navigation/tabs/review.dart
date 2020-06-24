@@ -8,9 +8,12 @@ import 'package:popwoot/src/main/config/constraints.dart';
 import 'package:popwoot/src/main/ui/widgets/add_review_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/image_load_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/rating_widget.dart';
+import 'package:popwoot/src/main/ui/widgets/search_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
 import 'package:popwoot/src/main/utils/global.dart';
 import 'package:popwoot/src/res/app_icons.dart';
+
+import '../drawer_navigation.dart';
 
 class Review extends StatefulWidget {
   @override
@@ -85,6 +88,17 @@ class _ReviewState extends State<Review> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        titleSpacing: 2.0,
+        title: TextSearchWidget(),
+        actions: <Widget>[
+          IconButton(
+            onPressed: () {},
+            icon: Icon(Icons.notifications),
+          )
+        ],
+      ),
+      drawer: NavigationDrawer(),
       body: _isLoading
           ? Container(
         child: Center(

@@ -6,9 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
 import 'package:popwoot/src/main/ui/product/review_details.dart';
+import 'package:popwoot/src/main/ui/widgets/search_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
 import 'package:popwoot/src/main/utils/global.dart';
 import 'package:popwoot/src/res/fonts.dart';
+
+import '../drawer_navigation.dart';
 
 
 class Scanner extends StatefulWidget {
@@ -95,6 +98,17 @@ class _ScannerState extends State<Scanner> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+          titleSpacing: 2.0,
+          title: TextSearchWidget(),
+          actions: <Widget>[
+            IconButton(
+              onPressed: () {},
+              icon: Icon(Icons.notifications),
+            )
+          ],
+        ),
+        drawer: NavigationDrawer(),
         body: Container(
           margin: EdgeInsets.only(top: 5, bottom: 5),
           child:_isLoading ? Container(child: Center(child: CircularProgressIndicator()))

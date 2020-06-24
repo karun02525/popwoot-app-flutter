@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:popwoot/src/main/services/login_service.dart';
 import 'package:popwoot/src/main/ui/widgets/button_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
+import 'package:popwoot/src/res/fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Profile extends StatefulWidget {
@@ -73,8 +74,107 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).primaryColor,
+          elevation: 0,
+          titleSpacing: 2.0,
+          centerTitle: true,
+          title: TextWidget(
+              title: "Profile", fontSize: AppFonts.toolbarSize, isBold: true),
+        ),
         backgroundColor: Colors.white,
-        body: isLogin ? logedProfile() : doLogin());
+        body: isLogin ? aa() : doLogin());
+  }
+
+  Widget aa() {
+    return Container(
+      margin: EdgeInsets.only(top: 10.0),
+      child: DefaultTabController(
+        length: 3,
+        child: Scaffold(
+          appBar: PreferredSize(
+              preferredSize: Size.fromHeight(kToolbarHeight),
+                child: TabBar(
+                    unselectedLabelColor: Colors.redAccent,
+                    indicatorSize: TabBarIndicatorSize.label,
+                    indicator: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        color: Colors.redAccent),
+                    tabs: [
+                      Tab(
+                        child: Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              border:
+                                  Border.all(color: Colors.redAccent, width: 1)),
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Text("Profile"),
+                          ),
+                        ),
+                      ),
+                      Tab(
+                        child: Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              border:
+                                  Border.all(color: Colors.redAccent, width: 1)),
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Text("My Review"),
+                          ),
+                        ),
+                      ),
+                      Tab(
+                        child: Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              border:
+                                  Border.all(color: Colors.redAccent, width: 1)),
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Text("Draft"),
+                          ),
+                        ),
+                      ),
+                    ],
+              )),
+          body: TabBarView(
+              children: [
+              logedProfile(),
+            Icon(Icons.movie),
+            Icon(Icons.games),
+          ]),
+        ),
+      ),
+    );
+  }
+
+  Widget setToobar() {
+    return SafeArea(
+      top: true,
+      child: DefaultTabController(
+        length: 3,
+        child: Scaffold(
+          appBar: AppBar(
+            flexibleSpace: TabBar(
+              tabs: [
+                Tab(icon: Icon(Icons.access_alarm)),
+                Tab(icon: Icon(Icons.access_alarm)),
+                Tab(icon: Icon(Icons.access_alarm)),
+              ],
+            ),
+          ),
+          body: TabBarView(
+            children: [
+              logedProfile(),
+              Icon(Icons.access_alarm),
+              Icon(Icons.access_alarm),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Widget doLogin() {
@@ -91,14 +191,17 @@ class _ProfileState extends State<Profile> {
   }
 
   Widget logedProfile() {
-    return Column(
-      children: [
-        headerContainer(),
-        SizedBox(
-          height: 10.0,
-        ),
-        Divider()
-      ],
+    return Container(
+      margin: EdgeInsets.only(top: 50.0),
+      child: Column(
+        children: [
+          headerContainer(),
+          SizedBox(
+            height: 10.0,
+          ),
+          Divider(),
+        ],
+      ),
     );
   }
 
@@ -126,12 +229,12 @@ class _ProfileState extends State<Profile> {
             height: 15.0,
           ),
           TextWidget(
-            title: name==null ?"":name,
+            title: name == null ? "" : name,
             isBold: true,
             fontSize: 18.0,
           ),
           TextWidget(
-            title: email==null ?"":email,
+            title: email == null ? "" : email,
             isBold: true,
             fontSize: 12.0,
           ),
@@ -184,6 +287,15 @@ class _ProfileState extends State<Profile> {
     return ClipOval(
         child: Image(image: AssetImage('assets/images/user_icon.png')));
   }
+
+  List<Widget> containers = [
+    Container(
+      color: Colors.redAccent,
+    ),
+    Container(
+      color: Colors.blue,
+    ),
+  ];
 }
 
 /*
