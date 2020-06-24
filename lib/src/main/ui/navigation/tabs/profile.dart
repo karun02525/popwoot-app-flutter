@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:popwoot/src/main/services/login_service.dart';
+import 'package:popwoot/src/main/ui/product/my_reviews.dart';
 import 'package:popwoot/src/main/ui/widgets/button_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
 import 'package:popwoot/src/res/fonts.dart';
@@ -144,7 +145,7 @@ class _ProfileState extends State<Profile> {
           body: TabBarView(
               children: [
               logedProfile(),
-            Icon(Icons.movie),
+                MyReview(),
             Icon(Icons.games),
           ]),
         ),

@@ -5,10 +5,10 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 class RatingWidget extends StatelessWidget {
   final String rating;
   double value;
-  final Function onPressed;
+  final Function onRatingUpdate;
   final bool isDisable;
 
-  RatingWidget({this.rating, this.value, this.onPressed, this.isDisable = false});
+  RatingWidget({this.rating, this.value, this.onRatingUpdate, this.isDisable = false});
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +21,7 @@ class RatingWidget extends StatelessWidget {
         itemPadding: EdgeInsets.symmetric(horizontal: 1.0),
         itemSize: 20.0,
         ignoreGestures: !isDisable,
-        onRatingUpdate: (double rating) {
-          value= rating;
-        },
+        onRatingUpdate:onRatingUpdate
       ),
     );
   }

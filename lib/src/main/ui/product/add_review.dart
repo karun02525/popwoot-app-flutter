@@ -2,11 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
 import 'package:popwoot/src/main/ui/learn/audio_test.dart';
@@ -34,7 +32,7 @@ class _AddReviewState extends State<AddReview> {
 
   final editComment = TextEditingController();
   final editYoutube = TextEditingController();
-  int ratingValue=0;
+  String ratingValue="0";
   ProgressDialog pd;
   String pid;
   String pname;
@@ -75,12 +73,11 @@ class _AddReviewState extends State<AddReview> {
   }
 
   void callApi() async {
-    //debugger();
     if (editComment.text.isEmpty) {
       Global.toast("Please enter review");
     } else if (editYoutube.text.isEmpty) {
       Global.toast("Please enter youtube url");
-    } else if (ratingValue == 0) {
+    } else if (ratingValue == "0") {
       Global.toast("Please do at least one star");
     } else if (_items.length == 0) {
       Global.toast("Please upload at least one photo");
@@ -92,21 +89,33 @@ class _AddReviewState extends State<AddReview> {
               Config.base64Prefix + base64Encode(item.readAsBytesSync()))
           .toList();
 
-      postApi(editComment.text, editYoutube.text,AppAudioTest.audio,imagesData);
+      postApi(editComment.text, editYoutube.text,AppAudioTest.audio,imagesData,1);
     }
   }
 
-  void postApi(String comment,String youtubeurl,String audio,List<String> imagesData) async {
+
+
+
+  void postApi(String comment,String youtubeurl,String audio,List<String> imagesData,published) async {
+    dynamic para;
     Map<String, dynamic> params = {
       'pid': pid,
       'pname': pname,
       'pdesc': pdesc,
       'comment': comment,
       'astar': ratingValue,
-      'published': 1,
+      'published': published,
       'youtubeurl': youtubeurl,
       'audio': audio,
       'imgarray': imagesData,
+    };
+
+    Map<String, dynamic> draftParams = {
+      'pid': pid,
+      'pname': pname,
+      'pdesc': pdesc,
+      'comment': comment,
+      'published': published,
     };
 
     Map<String, String> requestHeaders = {
@@ -115,12 +124,26 @@ class _AddReviewState extends State<AddReview> {
       'authorization': 'Bearer ${Config.token}'
     };
 
+        if(published==0){
+          para=draftParams;
+        }else {
+          para=params;
+        }
+
+
+    debugPrint("Call Debug: "+para.toString());
+
+
     try {
       final response = await dio.post(Config.addReviewUrl,
-          data: params, options: Options(headers: requestHeaders));
+          data: para, options: Options(headers: requestHeaders));
 
       if (response.statusCode == 200) {
         final responseBody = jsonDecode(jsonEncode(response.data));
+
+        debugPrint("Call Debug: "+responseBody.toString());
+
+
         if (responseBody['status']) {
           pd.hide();
           messageAlert(responseBody['message'], 'Add Review');
@@ -182,7 +205,7 @@ class _AddReviewState extends State<AddReview> {
     _items.clear();
     isHide1 = true;
     isHide2 = false;
-    ratingValue=0;
+    ratingValue="0";
     editComment.clear();
     editYoutube.clear();
   }
@@ -245,7 +268,13 @@ class _AddReviewState extends State<AddReview> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             TextWidget(title: pname, isBold: true),
-            RatingWidget(rating:"0",isDisable: true,),
+            RatingWidget(rating:ratingValue,isDisable: true,
+              onRatingUpdate: (value){
+                setState(() {
+                  ratingValue=value.toString();
+                });
+              },
+            ),
             TextWidget(title: pdesc),
           ],
         ),

@@ -4,8 +4,8 @@ class Config{
 
     static const api_youtube='AIzaSyAiSJV9ZHpFN8AwzpUDyorMVegUMS1corw';
     static const String base64Prefix='data:image/png;base64,';
-    static const baseUrl='http://192.168.1.12:8087';
-    static const baseImageUrl='http://192.168.1.12';
+    static const baseUrl='http://192.168.1.7:8087';
+    static const baseImageUrl='http://192.168.1.7';
 
     static const String authenticateUrl=baseUrl+'/api/oauth/authenticate';
     static const String addCategoryUrl=baseUrl+'/api/cauth/addcategory';
@@ -34,7 +34,13 @@ class Config{
     static const String getDefaultReviewUrl=baseUrl+'/api/oauth/defaultreview';
 
     static const String token=
-'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1ZWVmMjk4YzAyOGY4ZjE5MjA1MDFmMTgiLCJzY29wZXMiOltdLCJleHAiOjE1OTI5NTI5MzQsImlhdCI6MTU5MjkzNDkzNH0.D23XrQNeK2HEkt9ff3Ve20fN4KMZdFisWchqempe8nyQWdbJPn-WvnIxrFUWaqKXK-887QH3QQEhX8sinhhkiQ';
+    'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1ZWVmMjk4YzAyOGY4ZjE5MjA1MDFmMTgiLCJzY29wZXMiOltdLCJleHAiOjE1OTMwMzkwMjcsImlhdCI6MTU5MzAyMTAyN30.nn0chuV2nN_pZ9RfuNYRr7ifa-s8oztTuCP51JMj6PGzXmZX800_JW1kux4YAXOgItZg5eAlJjvBlfxu_MqeeA';
+
+
+
+
+
+
     static const String avatar1='https://yt3.ggpht.com/a/AGF-l79qOCl2IUTeTXzxfd5R_x83FZildu-caGbqAw=s900-c-k-c0xffffffff-no-rj-mo';
     static const String avatar='https://www.mobiletoones.com/downloads/wallpapers/people_wallpapers/preview/44/65525-karunkumar.jpg';
 }

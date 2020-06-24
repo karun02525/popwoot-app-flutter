@@ -1,22 +1,18 @@
 import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
 import 'package:popwoot/src/main/ui/widgets/home_widget.dart';
-import 'package:popwoot/src/main/ui/widgets/search_widget.dart';
 import 'package:popwoot/src/main/utils/global.dart';
 
-import '../drawer_navigation.dart';
-
-class Home extends StatefulWidget {
+class MyReview extends StatefulWidget {
   @override
-  _HomeState createState() => _HomeState();
+  _MyReviewState createState() => _MyReviewState();
 }
 
-class _HomeState extends State<Home> {
+class _MyReviewState extends State<MyReview> {
   List items;
   Dio dio;
   bool _isLoading = true;
@@ -27,7 +23,7 @@ class _HomeState extends State<Home> {
     dio = Dio();
   }
 
-  void getHomeApiAsync() async {
+  void getMyReviewApiAsync() async {
     try {
 
       Map<String, String> requestHeaders = {
@@ -78,27 +74,17 @@ class _HomeState extends State<Home> {
         statusBarColor: Colors.transparent,
         statusBarBrightness: Brightness.light));
 
-      setState(() {
-        getHomeApiAsync();
-      });
+    setState(() {
+      getMyReviewApiAsync();
+    });
 
-    return Scaffold(
-        appBar: AppBar(
-          titleSpacing: 2.0,
-          title: TextSearchWidget(),
-          actions: <Widget>[
-            IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.notifications),
-            )
-          ],
-        ),
-        drawer: NavigationDrawer(),
-        body: _isLoading
+    return _isLoading
             ? Container(child: Center(child: CircularProgressIndicator()))
-            :  ListView.builder(
-            itemCount: items.length,
-            itemBuilder: (context, index) => HomeWidget(items:items,index:index))
-    );
+            :  Container(
+              margin: EdgeInsets.only(top: 15.0),
+              child: ListView.builder(
+              itemCount: items.length,
+              itemBuilder: (context, index) => HomeWidget(items:items,index:index)),
+            );
   }
 }
