@@ -83,10 +83,10 @@ class _ProfileState extends State<Profile> {
               title: "Profile", fontSize: AppFonts.toolbarSize, isBold: true),
         ),
         backgroundColor: Colors.white,
-        body: isLogin ? aa() : doLogin());
+        body: isLogin ? AlreadyLogin() : doLogin());
   }
 
-  Widget aa() {
+  Widget AlreadyLogin() {
     return Container(
       margin: EdgeInsets.only(top: 10.0),
       child: DefaultTabController(
@@ -109,7 +109,7 @@ class _ProfileState extends State<Profile> {
                                   Border.all(color: Colors.redAccent, width: 1)),
                           child: Align(
                             alignment: Alignment.center,
-                            child: Text("Profile"),
+                            child: TextWidget(title:"Profile",isBold: true,),
                           ),
                         ),
                       ),
@@ -121,7 +121,7 @@ class _ProfileState extends State<Profile> {
                                   Border.all(color: Colors.redAccent, width: 1)),
                           child: Align(
                             alignment: Alignment.center,
-                            child: Text("My Review"),
+                            child: TextWidget(title:"My Reviews",isBold: true,),
                           ),
                         ),
                       ),
@@ -133,7 +133,7 @@ class _ProfileState extends State<Profile> {
                                   Border.all(color: Colors.redAccent, width: 1)),
                           child: Align(
                             alignment: Alignment.center,
-                            child: Text("Draft"),
+                            child: TextWidget(title:"Draft",isBold: true,),
                           ),
                         ),
                       ),
@@ -287,15 +287,6 @@ class _ProfileState extends State<Profile> {
     return ClipOval(
         child: Image(image: AssetImage('assets/images/user_icon.png')));
   }
-
-  List<Widget> containers = [
-    Container(
-      color: Colors.redAccent,
-    ),
-    Container(
-      color: Colors.blue,
-    ),
-  ];
 }
 
 /*
