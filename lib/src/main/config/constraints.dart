@@ -4,8 +4,8 @@ class Config{
 
     static const api_youtube='AIzaSyAiSJV9ZHpFN8AwzpUDyorMVegUMS1corw';
     static const String base64Prefix='data:image/png;base64,';
-    static const baseUrl='http://192.168.1.16:8087';
-    static const baseImageUrl='http://192.168.1.16';
+    static const baseUrl='http://192.168.1.13:8087';
+    static const baseImageUrl='http://192.168.1.13';
 
     static const String authenticateUrl=baseUrl+'/api/oauth/authenticate';
     static const String addCategoryUrl=baseUrl+'/api/cauth/addcategory';
@@ -18,7 +18,7 @@ class Config{
 
 
     static const String getHomeUrl=baseUrl+'/api/oauth/review/1';
-    static const String getDarftUrl=baseUrl+'/api/cauth/ureview';
+    static const String getDraftUrl=baseUrl+'/api/cauth/ureview';
 
     static const String getReviewDetailsUrl=baseUrl+'/api/oauth/openproduct';
     static const String getReviewListDetailsUrl=baseUrl+'/api/oauth/ireview';
@@ -35,8 +35,7 @@ class Config{
     static const String getDefaultReviewUrl=baseUrl+'/api/oauth/defaultreview';
 
     static const String token=
-    'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1ZWVmMjk4YzAyOGY4ZjE5MjA1MDFmMTgiLCJzY29wZXMiOltdLCJleHAiOjE1OTMwMzkwMjcsImlhdCI6MTU5MzAyMTAyN30.nn0chuV2nN_pZ9RfuNYRr7ifa-s8oztTuCP51JMj6PGzXmZX800_JW1kux4YAXOgItZg5eAlJjvBlfxu_MqeeA';
-
+'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1ZWY4ZWU0MzE5Yjk4NzE2ZDA1ZGUyM2IiLCJzY29wZXMiOltdLCJleHAiOjE1OTMzOTAyMjgsImlhdCI6MTU5MzM3MjIyOH0.PqzJhnIa6GGs1MLGoYNnYLLLfRRGtOoPqSsJV5muSV_LioQynCEV7X9eeJ14p81jsU85GEKr1VzIikW6HhtfBw';
 
 
 

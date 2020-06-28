@@ -93,6 +93,13 @@ class _AddReviewState extends State<AddReview> {
     }
   }
 
+  @override
+  void dispose() {
+    if(editComment.text.isNotEmpty){
+      postApi(editComment.text, editYoutube.text,null,null,0);
+    }
+    super.dispose();
+  }
 
 
 
@@ -210,6 +217,7 @@ class _AddReviewState extends State<AddReview> {
     editYoutube.clear();
   }
 
+
   @override
   Widget build(BuildContext context) {
     List data = ModalRoute.of(context).settings.arguments;
@@ -217,6 +225,11 @@ class _AddReviewState extends State<AddReview> {
     pname=data[1];
     pdesc=data[2];
     ipath=data[3];
+
+    setState(() {
+      editComment.text= data[4];
+    });
+
 
     return Scaffold(
         appBar: AppBar(

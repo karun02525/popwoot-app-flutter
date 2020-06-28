@@ -11,7 +11,6 @@ import 'package:popwoot/src/main/ui/widgets/rating_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/search_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
 import 'package:popwoot/src/main/utils/global.dart';
-import 'package:popwoot/src/res/app_icons.dart';
 
 import '../drawer_navigation.dart';
 

@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
 import 'package:popwoot/src/main/ui/widgets/home_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/search_widget.dart';
+import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
 import 'package:popwoot/src/main/utils/global.dart';
 
 import '../drawer_navigation.dart';
@@ -17,26 +18,27 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  List items;
+  List items = [];
   Dio dio;
   bool _isLoading = true;
 
   @override
   void initState() {
-    super.initState();
     dio = Dio();
+    super.initState();
+
   }
 
   void getHomeApiAsync() async {
     try {
-
       Map<String, String> requestHeaders = {
         'Content-type': 'application/json',
         'Accept': 'application/json',
         'authorization': 'Bearer ${Config.token}'
       };
 
-      final response = await dio.get(Config.getHomeUrl,options: Options(headers: requestHeaders));
+      final response = await dio.get(Config.getHomeUrl,
+          options: Options(headers: requestHeaders));
       if (response.statusCode == 200) {
         final responseBody = jsonDecode(jsonEncode(response.data));
         if (responseBody['status']) {
@@ -61,7 +63,7 @@ class _HomeState extends State<Home> {
         Global.toast(errorMessage['message']);
       } else {
         hideLoader();
-        Global.toast('Something went wrong');
+       // Global.toast('Something went wrong');
       }
     }
   }
@@ -78,9 +80,9 @@ class _HomeState extends State<Home> {
         statusBarColor: Colors.transparent,
         statusBarBrightness: Brightness.light));
 
-      setState(() {
-        getHomeApiAsync();
-      });
+    setState(() {
+      getHomeApiAsync();
+    });
 
     return Scaffold(
         appBar: AppBar(
@@ -96,9 +98,11 @@ class _HomeState extends State<Home> {
         drawer: NavigationDrawer(),
         body: _isLoading
             ? Container(child: Center(child: CircularProgressIndicator()))
-            :  ListView.builder(
-            itemCount: items.length,
-            itemBuilder: (context, index) => HomeWidget(items:items,index:index))
-    );
+            : items.length == 0
+                ? Container(child: Center(child: TextWidget(title: 'No items available',)))
+                : ListView.builder(
+                    itemCount: null == items ? 0 : items.length,
+                    itemBuilder: (context, index) =>
+                        HomeWidget(items: items, index: index)));
   }
 }

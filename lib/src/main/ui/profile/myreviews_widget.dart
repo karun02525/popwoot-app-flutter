@@ -1,18 +1,19 @@
 import 'dart:convert';
+
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
 import 'package:popwoot/src/main/ui/widgets/home_widget.dart';
 import 'package:popwoot/src/main/utils/global.dart';
 
-class MyReview extends StatefulWidget {
+
+class MyReviews extends StatefulWidget {
   @override
-  _MyReviewState createState() => _MyReviewState();
+  _MyReviewsState createState() => _MyReviewsState();
 }
 
-class _MyReviewState extends State<MyReview> {
+class _MyReviewsState extends State<MyReviews> {
   List items;
   Dio dio;
   bool _isLoading = true;
@@ -79,12 +80,12 @@ class _MyReviewState extends State<MyReview> {
     });
 
     return _isLoading
-            ? Container(child: Center(child: CircularProgressIndicator()))
-            :  Container(
-              margin: EdgeInsets.only(top: 15.0),
-              child: ListView.builder(
-              itemCount: items.length,
-              itemBuilder: (context, index) => HomeWidget(items:items,index:index)),
-            );
+        ? Container(child: Center(child: CircularProgressIndicator()))
+        :  Container(
+      margin: EdgeInsets.only(top: 15.0),
+      child: ListView.builder(
+          itemCount: items.length,
+          itemBuilder: (context, index) => HomeWidget(items:items,index:index)),
+    );
   }
 }

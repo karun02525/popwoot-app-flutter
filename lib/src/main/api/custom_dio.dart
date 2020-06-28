@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:popwoot/src/main/config/constraints.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CustomDio{
@@ -18,8 +19,9 @@ class CustomDio{
   Dio get instance=>_dio;
 
   _onRequest(RequestOptions options) async {
-    SharedPreferences prefs= await SharedPreferences.getInstance();
-    var token=prefs.get('token');
+   // SharedPreferences prefs= await SharedPreferences.getInstance();
+    //var token=prefs.get('token');
+    var token=Config.token;
     options.headers['authorization']='Bearer '+token;
   }
 

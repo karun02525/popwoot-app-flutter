@@ -13,12 +13,12 @@ class DraftModel {
 
   bool status;
   String message;
-  List<Datum> data;
+  List<DraftList> data;
 
   factory DraftModel.fromJson(Map<String, dynamic> json) => DraftModel(
     status: json["status"],
     message: json["message"],
-    data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
+    data: List<DraftList>.from(json["data"].map((x) => DraftList.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -28,8 +28,8 @@ class DraftModel {
   };
 }
 
-class Datum {
-  Datum({
+class DraftList {
+  DraftList({
     this.id,
     this.pdesc,
     this.comment,
@@ -83,7 +83,7 @@ class Datum {
   String nlike;
   String rdname;
 
-  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+  factory DraftList.fromJson(Map<String, dynamic> json) => DraftList(
     id: json["id"],
     pdesc: json["pdesc"],
     comment: json["comment"],

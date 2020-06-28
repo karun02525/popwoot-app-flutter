@@ -27,6 +27,7 @@ class AddReviewWidget extends StatelessWidget {
                     data['pname']==null ? '---':data['pname'],
                     data['pdesc']==null ? '---':data['pdesc'],
                     data['ipath']==null ? '---':data['ipath'],
+                    data['comment']==null ? "":data['comment'],
                   ])));
         },
       ),
