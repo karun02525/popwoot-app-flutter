@@ -4,6 +4,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:popwoot/src/main/api/model/home_reviews_model.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
 import 'package:popwoot/src/main/ui/product/add_comment.dart';
 import 'package:popwoot/src/main/utils/global.dart';
@@ -14,7 +15,7 @@ import 'add_review_widget.dart';
 import 'icon_widget.dart';
 
 class HomeLikeCmt extends StatefulWidget {
-  final item;
+  final RevieswModel item;
 
   HomeLikeCmt({Key key, this.item}) : super(key: key);
 
@@ -23,7 +24,7 @@ class HomeLikeCmt extends StatefulWidget {
 }
 
 class _HomeLikeCmtState extends State<HomeLikeCmt> {
-  dynamic item;
+  RevieswModel item;
   _HomeLikeCmtState(this.item);
 
   dynamic likeData;
@@ -44,19 +45,18 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
   }
 
   void parseData() {
-    rid = item['id'];
-    likeCount = item['nlike'] == null ? 0 : item['nlike'];
-    commentCount = item['ncomment'] == null ? 0 : item['ncomment'];
-    youtubeLink = item['youtubeurl'] == null ? '' : item['youtubeurl'];
+    rid = item.id;
+    likeCount = item.nlike == null ? 0 : item.nlike;
+    commentCount = item.ncomment == null ? 0 : item.ncomment;
+    youtubeLink = item.youtubeurl == null ? '' : item.youtubeurl;
 
-    if (item['nrating'] == 'Y') {
-      isLike=true;
+    if (item.nrating == 'Y') {
+      isLike = true;
       likeMsg = 'Likes';
-    }else{
-      isLike=false;
+    } else {
+      isLike = false;
       likeMsg = 'Unlikes';
     }
-
 
     if (youtubeLink.toString().contains('https://youtu')) {
       _isYoutube = true;
@@ -139,7 +139,7 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
                   splashColor: Colors.cyanAccent,
                   onTap: () {
                     Utils.plaYoutube(youtubeLink);
-                   // Utils.openYoutube(youtubeLink);
+                    // Utils.openYoutube(youtubeLink);
                   },
                   child: AppIcons.ic_youtube),
               visible: _isYoutube),
@@ -157,11 +157,16 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => AddComment(),
-                      settings: RouteSettings(
-                          arguments: [item['pname'], item['id']])));
+                      settings:
+                          RouteSettings(arguments: [item.pname, item.id])));
             },
           ),
-          AddReviewWidget(data: item),
+          AddReviewWidget(data: {
+            "pid": item.pid,
+            "pname": item.pname,
+            "pdesc": item.pdesc,
+            "ipath": item.ipath,
+          }),
         ],
       ),
     );

@@ -5,8 +5,7 @@ import 'package:popwoot/src/main/ui/widgets/image_load_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
 
 class DraftWidget extends StatefulWidget {
-  List<DraftList> draftList;
-
+  final List<DraftList> draftList;
   DraftWidget({this.draftList});
 
   @override

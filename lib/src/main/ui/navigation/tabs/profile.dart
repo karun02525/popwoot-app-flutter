@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:popwoot/src/main/api/model/draft_model.dart';
+import 'package:popwoot/src/main/api/model/home_reviews_model.dart';
 import 'package:popwoot/src/main/api/repositories/profile_repository.dart';
 import 'package:popwoot/src/main/services/login_service.dart';
 import 'package:popwoot/src/main/ui/profile/draft_widget.dart';
@@ -21,6 +22,7 @@ class _ProfileState extends State<Profile> {
   bool isLoading = false;
   ProfileRepository _repository;
   List<DraftList> draftList;
+  List<RevieswModel> revieswList;
 
   @override
   void initState() {
@@ -47,6 +49,14 @@ class _ProfileState extends State<Profile> {
             draftList=value;
           });
       });
+
+      _repository.findAllReview().then((value){
+          setState(() {
+            revieswList=value;
+          });
+      });
+
+
   }
 
 
@@ -129,7 +139,7 @@ class _ProfileState extends State<Profile> {
           body: TabBarView(
               children: [
                 ProfileWidget(data: [name,email,url],handleSignOut: _handleSignOut,),
-                MyReviews(),
+                MyReviews(revieswList: revieswList),
                 DraftWidget(draftList: draftList),
           ]),
         ),

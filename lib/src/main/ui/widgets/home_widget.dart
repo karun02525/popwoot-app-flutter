@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:popwoot/src/main/api/model/home_reviews_model.dart';
 import 'package:popwoot/src/main/ui/product/add_review.dart';
 import 'package:popwoot/src/main/ui/product/review_details.dart';
 import 'package:popwoot/src/main/ui/widgets/rating_widget.dart';
@@ -11,20 +12,20 @@ import 'home_like_widget.dart';
 import 'image_load_widget.dart';
 
 class HomeWidget extends StatelessWidget {
-  final List items;
+  List<RevieswModel> items;
   final int index;
   HomeWidget({this.items,this.index,});
 
   @override
   Widget build(BuildContext context) {
-    var item = items[index];
+    RevieswModel item = items[index];
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           getHeadTitle(context,item),
-          ImageLoadWidget(imageUrl:item['ipath']),
+          ImageLoadWidget(imageUrl:item.ipath),
           paddingView(item),
           Container(height: 10, color: Colors.grey[200]),
         ],
@@ -32,17 +33,17 @@ class HomeWidget extends StatelessWidget {
     );
   }
 
-  Widget paddingView(item){
+  Widget paddingView(RevieswModel item){
     return Container(
       margin: EdgeInsets.only(left:7.0,top: 5.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          RatingWidget(rating: item['astar']),
+          RatingWidget(rating: item.astar),
           Padding(
             padding: const EdgeInsets.only(left: 5.0),
-            child: TextWidget(title: item['pdesc'], fontSize: 14.0),
+            child: TextWidget(title: item.pdesc, fontSize: 14.0),
           ),
           Divider(),
           HomeLikeCmt(item: item),
@@ -52,13 +53,13 @@ class HomeWidget extends StatelessWidget {
   }
 
 
-  Widget getHeadTitle(context,item) {
+  Widget getHeadTitle(context,RevieswModel item) {
     return Container(
       margin: EdgeInsets.all(5.0),
       child: Row(
         children: <Widget>[
-          ImageLoadWidget(imageUrl:item['userimg'],name:item['user'],isProfile: true),
-          setContent(context,item['pid'], item['user'], item['pname'], item['rdate'])
+          ImageLoadWidget(imageUrl:item.userimg,name:item.user,isProfile: true),
+          setContent(context,item.pid, item.user, item.pname, item.rdate)
         ],
       ),
     );
