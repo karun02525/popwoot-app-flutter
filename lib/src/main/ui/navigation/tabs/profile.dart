@@ -17,9 +17,8 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  String name="Karun Kumar",email="kk@gmail.com",url="https://upload.wikimedia.org/wikipedia/commons/2/2e/Akshay_Kumar.jpg";
-  bool isLogin=true;
-  bool isLoading = false;
+  String name,email,url;
+  bool isLogin=false;
   ProfileRepository _repository;
   List<DraftList> draftList;
   List<RevieswModel> revieswList;
@@ -34,11 +33,15 @@ class _ProfileState extends State<Profile> {
 
   void _handleSignIn() {
     signInWithGoogle().whenComplete(() {
-      setState(() {
-       var name = username;
-       var email = emailId;
-       var url = imageUrl;
-       var isLogin = true;
+      _repository.loginUser([username,emailId,imageUrl,token]).then((value){
+        if(value) {
+          setState(() {
+            name = username;
+            email = emailId;
+            url = imageUrl;
+            isLogin = true;
+          });
+        }
       });
     });
   }
@@ -55,14 +58,14 @@ class _ProfileState extends State<Profile> {
             revieswList=value;
           });
       });
-
-
   }
 
 
   void _handleSignOut() {
-    Global.toast('_handleSignOut');
-   // signOutGoogle();
+    signOutGoogle();
+    setState(() {
+      isLogin = false;
+    });
   }
 
   @override

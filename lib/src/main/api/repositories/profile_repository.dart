@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:popwoot/src/main/api/model/draft_model.dart';
 import 'package:popwoot/src/main/api/model/home_reviews_model.dart';
+import 'package:popwoot/src/main/api/service/api_error_handle.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
 
 import '../custom_dio.dart';
@@ -9,17 +10,51 @@ import '../custom_dio.dart';
 
 class ProfileRepository{
 
+  Future<bool> loginUser(List data) {
+    var params = {
+      "uname": data[0],
+      "uemail": data[1],
+      "avatar": data[2],
+      "ltoken": data[3]
+    };
+
+    var dio = CustomDio().instance;
+    return dio.post(Config.authenticateUrl, data: params).then((res) async {
+      if (res.statusCode == 200) {
+        var result = jsonDecode(jsonEncode(res.data));
+        saveData(data,result['idata']['token']);
+        return true;
+      }
+    }).catchError((e) {
+      ApiErrorHandel.errorHandel(e);
+      return false;
+    });
+  }
+
+  void saveData(List data,String token) {
+    print("************@@@@@@@@@@@@@@@*******");
+    print(data[0] +" "+data[1] +" "+data[2] +" "+data[3] +" ");
+    print(token);
+    print("***********##########################********");
+  }
+
+  //Profile Draft
   Future<List<DraftList>> findAllDraft() {
       var dio =CustomDio.withAuthentication().instance;
      return dio.get(Config.getDraftUrl).then((res){
         return DraftModel.fromJson(res.data).data;
-      });
+      }).catchError((e) {
+       ApiErrorHandel.errorHandel(e);
+     });
   }
 
+  //Profile My Reviews
   Future<List<RevieswModel>> findAllReview() {
     var dio =CustomDio.withAuthentication().instance;
     return dio.get(Config.getHomeUrl).then((res){
       return HomeReviewModel.fromJson(res.data).data;
+    }).catchError((e) {
+      ApiErrorHandel.errorHandel(e);
     });
   }
 }
