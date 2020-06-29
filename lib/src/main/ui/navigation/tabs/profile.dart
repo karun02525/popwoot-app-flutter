@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:popwoot/src/main/api/model/draft_model.dart';
 import 'package:popwoot/src/main/api/model/home_reviews_model.dart';
 import 'package:popwoot/src/main/api/repositories/profile_repository.dart';
-import 'package:popwoot/src/main/services/login_service.dart';
+import 'package:popwoot/src/main/services/google+login_service.dart';
+import 'package:popwoot/src/main/services/shared_preferences.dart';
 import 'package:popwoot/src/main/ui/profile/draft_widget.dart';
 import 'package:popwoot/src/main/ui/profile/myreviews_widget.dart';
 import 'package:popwoot/src/main/ui/profile/profile_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
-import 'package:popwoot/src/main/utils/global.dart';
 import 'package:popwoot/src/res/fonts.dart';
 
 class Profile extends StatefulWidget {
@@ -17,54 +17,59 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  String name,email,url;
-  bool isLogin=false;
+  bool isLogin = false;
   ProfileRepository _repository;
   List<DraftList> draftList;
   List<RevieswModel> revieswList;
 
   @override
   void initState() {
+    isLogin = UserPreference().isLogin??false;
     super.initState();
     _repository = ProfileRepository();
-    getDraftList();
+    if(isLogin) {
+      getDraftList();
+    }
   }
 
 
   void _handleSignIn() {
     signInWithGoogle().whenComplete(() {
-      _repository.loginUser([username,emailId,imageUrl,token]).then((value){
-        if(value) {
+      _repository.loginUser([username, emailId, imageUrl, token]).then((value) {
+        if (value) {
+          getDraftList();
           setState(() {
-            name = username;
-            email = emailId;
-            url = imageUrl;
             isLogin = true;
+
           });
         }
       });
     });
   }
 
-  void getDraftList(){
-      _repository.findAllDraft().then((value){
-          setState(() {
-            draftList=value;
-          });
+  void getDraftList() {
+    _repository.findAllDraft().then((value) {
+      setState(() {
+        draftList = value;
       });
+    });
 
-      _repository.findAllReview().then((value){
-          setState(() {
-            revieswList=value;
-          });
+    _repository.findAllReview().then((value) {
+      setState(() {
+        revieswList = value;
       });
+    });
   }
 
 
   void _handleSignOut() {
     signOutGoogle();
-    setState(() {
-      isLogin = false;
+    UserPreference().clearSharedPreferences().then((value){
+       if(value){
+         setState(() {
+           isLogin = false;
+         });
+       }
     });
   }
 
@@ -72,7 +77,9 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).primaryColor,
+          backgroundColor: Theme
+              .of(context)
+              .primaryColor,
           elevation: 0,
           automaticallyImplyLeading: false,
           titleSpacing: 2.0,
@@ -92,59 +99,59 @@ class _ProfileState extends State<Profile> {
         child: Scaffold(
           appBar: PreferredSize(
               preferredSize: Size.fromHeight(40.0),
-                child: TabBar(
-                    unselectedLabelColor: Colors.redAccent,
-                    indicatorSize: TabBarIndicatorSize.label,
-                  labelPadding: EdgeInsets.symmetric(horizontal: 10.0),
+              child: TabBar(
+                unselectedLabelColor: Colors.redAccent,
+                indicatorSize: TabBarIndicatorSize.label,
+                labelPadding: EdgeInsets.symmetric(horizontal: 10.0),
 
-                  indicator: BoxDecoration(
-                        borderRadius: BorderRadius.circular(50),
-                        color: Colors.redAccent),
-                    tabs: [
-                      Tab(
-                        child: Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50),
-                              border:
-                                  Border.all(color: Colors.redAccent, width: 1)),
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: TextWidget(title:"Profile",isBold: true,),
-                          ),
-                        ),
+                indicator: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50),
+                    color: Colors.redAccent),
+                tabs: [
+                  Tab(
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50),
+                          border:
+                          Border.all(color: Colors.redAccent, width: 1)),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: TextWidget(title: "Profile", isBold: true,),
                       ),
-                      Tab(
-                        child: Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50),
-                              border:
-                                  Border.all(color: Colors.redAccent, width: 1)),
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: TextWidget(title:"My Reviews",isBold: true,),
-                          ),
-                        ),
+                    ),
+                  ),
+                  Tab(
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50),
+                          border:
+                          Border.all(color: Colors.redAccent, width: 1)),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: TextWidget(title: "My Reviews", isBold: true,),
                       ),
-                      Tab(
-                        child: Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50),
-                              border:
-                                  Border.all(color: Colors.redAccent, width: 1)),
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: TextWidget(title:"Draft",isBold: true,),
-                          ),
-                        ),
+                    ),
+                  ),
+                  Tab(
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50),
+                          border:
+                          Border.all(color: Colors.redAccent, width: 1)),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: TextWidget(title: "Draft", isBold: true,),
                       ),
-                    ],
+                    ),
+                  ),
+                ],
               )),
           body: TabBarView(
               children: [
-                ProfileWidget(data: [name,email,url],handleSignOut: _handleSignOut,),
+                ProfileWidget(handleSignOut: _handleSignOut,),
                 MyReviews(revieswList: revieswList),
                 DraftWidget(draftList: draftList),
-          ]),
+              ]),
         ),
       ),
     );
@@ -162,53 +169,4 @@ class _ProfileState extends State<Profile> {
       ),
     );
   }
-
 }
-
-/*
-
-Widget _buildInfo() {
-  if (isLogin) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Container(
-              width: 150.0,
-              height: 150.0,
-              child: CachedNetworkImage(
-                imageBuilder: (context, imageProvider) => Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                        image: imageProvider, fit: BoxFit.cover),
-                  ),
-                ),
-                placeholder: (context, url) => CircularProgressIndicator(),
-                imageUrl: url==null?"":url,
-              )),
-          SizedBox(height: 30.0),
-          TextWidget(title:name==null ?"":name,isBold: true,),
-          TextWidget(title:email==null ?"":email),
-          SizedBox(height: 30.0),
-          RaisedButton(
-            onPressed:_handleSignOut,
-            child: Text('SignOut'),
-          )
-        ],
-      ),
-    );
-  } else {
-    return Center(
-      child: InkWell(
-        onTap: _handleSignIn,
-        child: Image.asset(
-          'assets/images/googlesignin.png',
-          width: 300.0,
-          height: 170.0,
-        ),
-      ),
-    );
-  }
-}*/

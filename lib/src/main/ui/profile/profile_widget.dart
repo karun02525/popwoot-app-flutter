@@ -1,19 +1,28 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:popwoot/src/main/services/shared_preferences.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
 
 
 class ProfileWidget extends StatefulWidget {
 
   final Function handleSignOut;
-  final List<String> data;
-  ProfileWidget({this.handleSignOut,this.data});
+  ProfileWidget({this.handleSignOut});
 
   @override
   _ProfileWidgetState createState() => _ProfileWidgetState();
 }
 
 class _ProfileWidgetState extends State<ProfileWidget> {
+  String name, email, avatar;
+  @override
+  void initState() {
+    name=UserPreference().name;
+    email=UserPreference().email;
+    avatar=UserPreference().avatar;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -37,7 +46,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            getProfileImage(widget.data[2]),
+            getProfileImage(avatar),
             setName(),
           ],
         ));
@@ -56,12 +65,12 @@ class _ProfileWidgetState extends State<ProfileWidget> {
             height: 15.0,
           ),
           TextWidget(
-            title: widget.data[0]?? "",
+            title: name?? "",
             isBold: true,
             fontSize: 18.0,
           ),
           TextWidget(
-            title: widget.data[1]?? "",
+            title: email?? "",
             isBold: true,
             fontSize: 12.0,
           ),

@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:popwoot/src/main/services/shared_preferences.dart';
 
 class NavigationDrawer extends StatefulWidget {
   @override
@@ -9,35 +9,14 @@ class NavigationDrawer extends StatefulWidget {
 }
 
 class _NavigationDrawerState extends State<NavigationDrawer> {
-  String name, email, urls;
-
-  Future<void> getValues() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    setState(() {
-      name = preferences.getString('username');
-      if(name==null){
-        name="Guest User";
-      }
-
-      email = preferences.getString('email');
-      if(email==null){
-        email="";
-      }
-
-    var  url = preferences.getString('url');
-      if(url==null){
-        urls="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
-      }else{
-        urls=url;
-      }
-
-    });
-  }
+  String name, email, avatar;
 
   @override
   void initState() {
+    name=UserPreference().name;
+    email=UserPreference().email;
+    avatar=UserPreference().avatar;
     super.initState();
-    getValues();
   }
 
   @override
@@ -89,7 +68,7 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
           ),
         ),
         placeholder: (context, url) => CircularProgressIndicator(),
-        imageUrl: urls,
+        imageUrl: avatar,
       ),
     );
   }

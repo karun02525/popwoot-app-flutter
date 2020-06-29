@@ -6,6 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:popwoot/src/main/api/repositories/product_repository.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
 import 'package:popwoot/src/main/ui/learn/audio_test.dart';
 import 'package:popwoot/src/main/ui/widgets/button_widget.dart';
@@ -17,11 +18,7 @@ import 'package:popwoot/src/main/utils/global.dart';
 import 'package:popwoot/src/res/fonts.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 
-
 class AddReview extends StatefulWidget {
- /* final String title;
-  AddReview({Key key,this.title}) : super(key: key);
-*/
   @override
   _AddReviewState createState() => _AddReviewState();
 }
@@ -32,7 +29,7 @@ class _AddReviewState extends State<AddReview> {
 
   final editComment = TextEditingController();
   final editYoutube = TextEditingController();
-  String ratingValue="0";
+  String ratingValue = "0";
   ProgressDialog pd;
   String pid;
   String pname;
@@ -47,10 +44,12 @@ class _AddReviewState extends State<AddReview> {
   bool isHide2 = false;
   var pickedFile;
 
+  ProductRepository _repository;
+
   @override
   void initState() {
     super.initState();
-    dio = Dio();
+    _repository = ProductRepository();
     pd = ProgressDialog(context, type: ProgressDialogType.Normal);
     pd.style(message: 'Uploading file...');
   }
@@ -75,9 +74,9 @@ class _AddReviewState extends State<AddReview> {
   void callApi() async {
     if (editComment.text.isEmpty) {
       Global.toast("Please enter review");
-    } else if (editYoutube.text.isEmpty) {
+    } /*else if (editYoutube.text.isEmpty) {
       Global.toast("Please enter youtube url");
-    } else if (ratingValue == "0") {
+    }*/ else if (ratingValue == "0") {
       Global.toast("Please do at least one star");
     } else if (_items.length == 0) {
       Global.toast("Please upload at least one photo");
@@ -89,23 +88,22 @@ class _AddReviewState extends State<AddReview> {
               Config.base64Prefix + base64Encode(item.readAsBytesSync()))
           .toList();
 
-      postApi(editComment.text, editYoutube.text,AppAudioTest.audio,imagesData,1);
+      postApi(editComment.text, editYoutube.text, imagesData, 1);
     }
   }
 
   @override
   void dispose() {
-    if(editComment.text.isNotEmpty){
-      postApi(editComment.text, editYoutube.text,null,null,0);
-    }
+    //  if(editComment.text.isNotEmpty){
+    postApi(editComment.text, editYoutube.text, null, 0);
+    //}
     super.dispose();
   }
 
-
-
-  void postApi(String comment,String youtubeurl,String audio,List<String> imagesData,published) async {
-    dynamic para;
-    Map<String, dynamic> params = {
+  void postApi(String comment, String youtubeurl, List<String> imagesData,
+      published) async {
+    dynamic params;
+    Map<String, dynamic> param = {
       'pid': pid,
       'pname': pname,
       'pdesc': pdesc,
@@ -113,7 +111,7 @@ class _AddReviewState extends State<AddReview> {
       'astar': ratingValue,
       'published': published,
       'youtubeurl': youtubeurl,
-      'audio': audio,
+      'audio': AppAudioTest.audio,
       'imgarray': imagesData,
     };
 
@@ -125,81 +123,17 @@ class _AddReviewState extends State<AddReview> {
       'published': published,
     };
 
-    Map<String, String> requestHeaders = {
-      'Content-type': 'application/json',
-      'Accept': 'application/json',
-      'authorization': 'Bearer ${Config.token}'
-    };
-
-        if(published==0){
-          para=draftParams;
-        }else {
-          para=params;
-        }
-
-
-    debugPrint("Call Debug: "+para.toString());
-
-
-    try {
-      final response = await dio.post(Config.addReviewUrl,
-          data: para, options: Options(headers: requestHeaders));
-
-      if (response.statusCode == 200) {
-        final responseBody = jsonDecode(jsonEncode(response.data));
-
-        debugPrint("Call Debug: "+responseBody.toString());
-
-
-        if (responseBody['status']) {
-          pd.hide();
-          messageAlert(responseBody['message'], 'Add Review');
-        }
-      }
-    } on DioError catch (e) {
-      var errorMessage = jsonDecode(jsonEncode(e.response.data));
-      var statusCode = e.response.statusCode;
-      if (statusCode == 400) {
-        pd.hide();
-        Global.toast(errorMessage['message']);
-      } else if (statusCode == 401) {
-        pd.hide();
-        Global.toast(errorMessage['message']);
-      } else {
-        pd.hide();
-        Global.toast('Something went wrong');
-      }
+    if (published == 0) {
+      param = draftParams;
+    } else {
+      param = param;
     }
-  }
-
-  messageAlert(String msg, String ttl) {
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return WillPopScope(
-              onWillPop: () async {
-                return false;
-              },
-              child: CupertinoAlertDialog(
-                title: Text(ttl),
-                content: Text(msg),
-                actions: <Widget>[
-                  CupertinoDialogAction(
-                    isDefaultAction: true,
-                    child: Column(
-                      children: <Widget>[Text('Okay')],
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _clearAllItems();
-                      });
-                      Navigator.pop(context);
-                    },
-                  )
-                ],
-              ));
-        });
+    _repository.addReview(context, param).then((value) {
+      pd.hide();
+      if (value) {
+        _clearAllItems();
+      }
+    });
   }
 
   void _clearAllItems() {
@@ -212,29 +146,30 @@ class _AddReviewState extends State<AddReview> {
     _items.clear();
     isHide1 = true;
     isHide2 = false;
-    ratingValue="0";
+    ratingValue = "0";
     editComment.clear();
     editYoutube.clear();
   }
 
-
   @override
   Widget build(BuildContext context) {
     List data = ModalRoute.of(context).settings.arguments;
-    pid=data[0];
-    pname=data[1];
-    pdesc=data[2];
-    ipath=data[3];
+    pid = data[0];
+    pname = data[1];
+    pdesc = data[2];
+    ipath = data[3];
 
     setState(() {
-      editComment.text= data[4];
+      editComment.text = data[4];
     });
-
 
     return Scaffold(
         appBar: AppBar(
           titleSpacing: 2.0,
-          title: TextWidget(title: "Add Review", fontSize:AppFonts.toolbarSize,isBold: true),
+          title: TextWidget(
+              title: "Add Review",
+              fontSize: AppFonts.toolbarSize,
+              isBold: true),
         ),
         body: SingleChildScrollView(
             child: Column(
@@ -251,17 +186,15 @@ class _AddReviewState extends State<AddReview> {
                 maintainState: true,
                 visible: isHide2,
                 child: uploadImage()),
-
             getRow(),
-
-             getEditBox(),
+            getEditBox(),
           ],
         )));
   }
 
   Widget getRow() {
     return Container(
-      margin: EdgeInsets.only(top: 10,left: 10.0,right: 5.0),
+      margin: EdgeInsets.only(top: 10, left: 10.0, right: 5.0),
       child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -281,10 +214,12 @@ class _AddReviewState extends State<AddReview> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             TextWidget(title: pname, isBold: true),
-            RatingWidget(rating:ratingValue,isDisable: true,
-              onRatingUpdate: (value){
+            RatingWidget(
+              rating: ratingValue,
+              isDisable: true,
+              onRatingUpdate: (value) {
                 setState(() {
-                  ratingValue=value.toString();
+                  ratingValue = value.toString();
                 });
               },
             ),
@@ -303,7 +238,6 @@ class _AddReviewState extends State<AddReview> {
         child: ImageLoadWidget(imageUrl: ipath));
   }
 
-
   Widget getEditBox() {
     return Padding(
       padding: const EdgeInsets.only(top: 8.0, left: 10.0, right: 10.0),
@@ -318,10 +252,11 @@ class _AddReviewState extends State<AddReview> {
           SizedBox(height: 5.0),
           audioWidget(),
           SizedBox(height: 5.0),
-          TextFieldWidget(hintText: 'Enter You Tube Url', controller: editYoutube),
+          TextFieldWidget(
+              hintText: 'Enter You Tube Url', controller: editYoutube),
           ButtonWidget(
             title: "Submit Review",
-            isBold:true,
+            isBold: true,
             onPressed: callApi,
           ),
           SizedBox(height: 100.0)
@@ -330,18 +265,21 @@ class _AddReviewState extends State<AddReview> {
     );
   }
 
-
-  Widget audioWidget(){
-     return Row(
-        children: <Widget>[
-          TextWidget(title: "Like Audio Review-Start Recording", top: 0.0),
-          IconButton(icon: Icon(Icons.mic,color: Colors.redAccent,size: 26.0,),onPressed: (){},)
-        ],
-     );
+  Widget audioWidget() {
+    return Row(
+      children: <Widget>[
+        TextWidget(title: "Like Audio Review-Start Recording", top: 0.0),
+        IconButton(
+          icon: Icon(
+            Icons.mic,
+            color: Colors.redAccent,
+            size: 26.0,
+          ),
+          onPressed: () {},
+        )
+      ],
+    );
   }
-
-
-
 
   //---------Add Remove--------
   Widget uploadImage() {
@@ -369,7 +307,11 @@ class _AddReviewState extends State<AddReview> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              TextWidget(title: 'Add Photos', color: Colors.white,isBold: true,),
+              TextWidget(
+                title: 'Add Photos',
+                color: Colors.white,
+                isBold: true,
+              ),
               RaisedButton.icon(
                 onPressed: () => {_showOptions(context)},
                 shape: RoundedRectangleBorder(
@@ -415,7 +357,11 @@ class _AddReviewState extends State<AddReview> {
                 size: 32.0,
                 color: Colors.white,
               ),
-              TextWidget(title: 'Add Photos', color: Colors.white,isBold: true,)
+              TextWidget(
+                title: 'Add Photos',
+                color: Colors.white,
+                isBold: true,
+              )
             ],
           )),
           decoration: BoxDecoration(

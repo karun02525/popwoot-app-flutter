@@ -17,7 +17,7 @@ class _DraftWidgetState extends State<DraftWidget> {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(top: 10.0),
-      child: widget.draftList.length == 0
+      child: widget.draftList == null
           ? Container(child: Center(child: TextWidget(title: 'Empty Draft')))
           : ListView.builder(
               itemCount: widget.draftList.length,

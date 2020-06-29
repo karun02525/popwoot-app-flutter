@@ -1,14 +1,36 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:popwoot/src/main/api/model/draft_model.dart';
 import 'package:popwoot/src/main/api/model/home_reviews_model.dart';
 import 'package:popwoot/src/main/api/service/api_error_handle.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
+import 'package:popwoot/src/main/services/shared_preferences.dart';
 
 import '../custom_dio.dart';
 
 
 class ProfileRepository{
+  //Profile Draft
+  Future<List<DraftList>> findAllDraft() {
+      var dio =CustomDio.withAuthentication().instance;
+     return dio.get(Config.getDraftUrl).then((res){
+        return DraftModel.fromJson(res.data).data;
+      }).catchError((e) {
+       ApiErrorHandel.errorHandel(e);
+     });
+  }
+
+  //Profile My Reviews
+  Future<List<RevieswModel>> findAllReview() {
+    var dio =CustomDio.withAuthentication().instance;
+    return dio.get(Config.getHomeUrl).then((res){
+      return HomeReviewModel.fromJson(res.data).data;
+    }).catchError((e) {
+      ApiErrorHandel.errorHandel(e);
+    });
+  }
+
 
   Future<bool> loginUser(List data) {
     var params = {
@@ -31,30 +53,12 @@ class ProfileRepository{
     });
   }
 
-  void saveData(List data,String token) {
-    print("************@@@@@@@@@@@@@@@*******");
-    print(data[0] +" "+data[1] +" "+data[2] +" "+data[3] +" ");
-    print(token);
-    print("***********##########################********");
-  }
-
-  //Profile Draft
-  Future<List<DraftList>> findAllDraft() {
-      var dio =CustomDio.withAuthentication().instance;
-     return dio.get(Config.getDraftUrl).then((res){
-        return DraftModel.fromJson(res.data).data;
-      }).catchError((e) {
-       ApiErrorHandel.errorHandel(e);
-     });
-  }
-
-  //Profile My Reviews
-  Future<List<RevieswModel>> findAllReview() {
-    var dio =CustomDio.withAuthentication().instance;
-    return dio.get(Config.getHomeUrl).then((res){
-      return HomeReviewModel.fromJson(res.data).data;
-    }).catchError((e) {
-      ApiErrorHandel.errorHandel(e);
-    });
+  void saveData(List data,String token){
+    var pref=UserPreference();
+    pref.name=data[0];
+    pref.email=data[1];
+    pref.avatar=data[2];
+    pref.token=token;
+    pref.isLogin=true;
   }
 }
