@@ -1,11 +1,9 @@
 import 'dart:convert';
 import 'dart:ui';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
 import 'package:popwoot/src/main/ui/widgets/add_review_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/home_like_widget.dart';
@@ -40,7 +38,7 @@ class _ReviewDetailsState extends State<ReviewDetails> {
         final responseBody = jsonDecode(jsonEncode(response.data));
         debugPrint('print api object :' + responseBody.toString());
         if (responseBody['status']) {
-          getProductReviewApiAsync(pcode);
+           getProductReviewApiAsync(pcode);
           productData = responseBody['idata'];
         }
       }
@@ -110,7 +108,7 @@ class _ReviewDetailsState extends State<ReviewDetails> {
   Widget build(BuildContext context) {
     List data = ModalRoute.of(context).settings.arguments;
     setState(() {
-      getProductApiAsync( data[1]);
+      getProductApiAsync(data[1]);
     });
 
     return Scaffold(
@@ -167,7 +165,7 @@ class _ReviewDetailsState extends State<ReviewDetails> {
             child: TextWidget(title: item['pdesc'], fontSize: 14.0),
           ),
           Divider(),
-          HomeLikeCmt(item: item),
+          //HomeLikeCmt(item: item),
         ],
       ),
     );

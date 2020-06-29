@@ -16,7 +16,6 @@ import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/textfield_widget.dart';
 import 'package:popwoot/src/main/utils/global.dart';
 import 'package:popwoot/src/res/fonts.dart';
-import 'package:progress_dialog/progress_dialog.dart';
 
 class AddReview extends StatefulWidget {
   @override
@@ -30,7 +29,6 @@ class _AddReviewState extends State<AddReview> {
   final editComment = TextEditingController();
   final editYoutube = TextEditingController();
   String ratingValue = "0";
-  ProgressDialog pd;
   String pid;
   String pname;
   String pdesc;
@@ -50,8 +48,6 @@ class _AddReviewState extends State<AddReview> {
   void initState() {
     super.initState();
     _repository = ProductRepository();
-    pd = ProgressDialog(context, type: ProgressDialogType.Normal);
-    pd.style(message: 'Uploading file...');
   }
 
   Future _showPhotoLibrary(bool isCamera) async {
@@ -81,8 +77,6 @@ class _AddReviewState extends State<AddReview> {
     } else if (_items.length == 0) {
       Global.toast("Please upload at least one photo");
     } else {
-      await pd.show();
-
       final imagesData = _items
           .map((item) =>
               Config.base64Prefix + base64Encode(item.readAsBytesSync()))
@@ -124,12 +118,11 @@ class _AddReviewState extends State<AddReview> {
     };
 
     if (published == 0) {
-      param = draftParams;
+      params = draftParams;
     } else {
-      param = param;
+      params = param;
     }
-    _repository.addReview(context, param).then((value) {
-      pd.hide();
+    _repository.addReview(context, params).then((value) {
       if (value) {
         _clearAllItems();
       }

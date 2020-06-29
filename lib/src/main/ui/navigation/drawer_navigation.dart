@@ -15,7 +15,6 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
   void initState() {
     name=UserPreference().name;
     email=UserPreference().email;
-    avatar=UserPreference().avatar;
     super.initState();
   }
 
@@ -31,7 +30,7 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
               color: Theme.of(context).primaryColor,
               child: Center(
                   child: Column(
-                children: <Widget>[getProfileImage(), getInfo()],
+                children: <Widget>[getInfo()],
               ))),
           CustomListTile(Icons.home, "Home",
               () => {Navigator.pushNamed(context, '/home')}),
@@ -42,46 +41,26 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
           CustomListTile(Icons.playlist_add, "Add Product ",
               () => {Navigator.pushNamed(context, '/add_product')}),
           Divider(color: Colors.grey),
-          CustomListTile(Icons.verified_user, "Security", () => {}),
-          Divider(color: Colors.grey),
           CustomListTile(Icons.star, "Ratings", () => {}),
           Divider(color: Colors.grey),
-          CustomListTile(Icons.wb_sunny, "Version", () => {}),
+          CustomListTile(Icons.wb_sunny, "V0.0.1", () => {}),
           Divider(color: Colors.grey),
         ],
       ),
     ));
   }
 
-  Widget getProfileImage() {
-    return Container(
-      width: 120,
-      height: 120,
-      margin: EdgeInsets.only(top: 10.0, bottom: 10),
-      child: CachedNetworkImage(
-        imageBuilder: (context, imageProvider) => Container(
-          decoration: BoxDecoration(
-           shape: BoxShape.circle,
-            //  borderRadius: BorderRadius.all(Radius.circular(70)),
-              border: Border.all(width: 2,color: Colors.yellow,style: BorderStyle.solid),
-            image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
-          ),
-        ),
-        placeholder: (context, url) => CircularProgressIndicator(),
-        imageUrl: avatar,
-      ),
-    );
-  }
 
   Widget getInfo() {
     return Column(
       children: <Widget>[
+        SizedBox(height: 50.0,),
         Text(
-          name.toUpperCase(),
+          name??'Guest User',
           style: TextStyle(color: Colors.white, fontSize: 22.0),
         ),
         Text(
-          email,
+          email??'',
           style: TextStyle(color: Colors.white, fontSize: 12.0),
         ),
       ],

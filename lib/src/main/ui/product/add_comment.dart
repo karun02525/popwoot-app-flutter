@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
+import 'package:popwoot/src/main/services/shared_preferences.dart';
 import 'package:popwoot/src/main/ui/widgets/add_review_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/image_load_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/rating_widget.dart';
@@ -22,6 +23,7 @@ class _AddCommentState extends State<AddComment> {
   dynamic productData;
   Dio dio;
   bool _isLoading = true;
+  String name,avatar;
 
   final _textController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
@@ -29,6 +31,8 @@ class _AddCommentState extends State<AddComment> {
 
   @override
   void initState() {
+    name=UserPreference().name;
+    avatar=UserPreference().avatar;
     super.initState();
     dio = Dio();
   }
@@ -290,7 +294,7 @@ class _AddCommentState extends State<AddComment> {
             Padding(
                 padding: EdgeInsets.only(left: 5.0),
                 child: ImageLoadWidget(
-                    imageUrl: Config.avatar1, name: 'Kaju', isProfile: true)),
+                    imageUrl:avatar, name: name??'P', isProfile: true)),
             Flexible(
               child: TextField(
                 controller: _textController,
