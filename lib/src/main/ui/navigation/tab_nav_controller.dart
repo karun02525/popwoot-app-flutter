@@ -5,18 +5,21 @@ import 'package:popwoot/src/main/ui/navigation/tabs/home.dart';
 import 'package:popwoot/src/main/ui/navigation/tabs/profile.dart';
 import 'package:popwoot/src/main/ui/navigation/tabs/review.dart';
 import 'package:popwoot/src/main/ui/navigation/tabs/scanner.dart';
-import 'package:popwoot/src/main/ui/widgets/search_widget.dart';
 import 'package:popwoot/src/res/app_icons.dart';
 
-import 'drawer_navigation.dart';
 
 class TabNavController extends StatefulWidget {
+  int pos;
+  TabNavController({Key key,this.pos=0}) : super(key: key);
+
   @override
-  _TabNavControllerState createState() => _TabNavControllerState();
+  _TabNavControllerState createState() => _TabNavControllerState(pos);
 }
 
 class _TabNavControllerState extends State<TabNavController> {
-  int _currentIndex = 0;
+   int _currentIndex;
+  _TabNavControllerState(this._currentIndex);
+
   final List<Widget> _children = [
     Home(),
     CategoryScreen(),

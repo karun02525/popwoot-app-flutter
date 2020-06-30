@@ -1,17 +1,15 @@
-import 'dart:convert';
 import 'dart:ui';
-import 'package:dio/dio.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:popwoot/src/main/config/constraints.dart';
+import 'package:popwoot/src/main/api/model/search_model.dart';
+import 'package:popwoot/src/main/api/repositories/search_repository.dart';
 import 'package:popwoot/src/main/ui/product/scanner_barcode.dart';
-import 'package:popwoot/src/main/ui/widgets/add_review_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/image_load_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/rating_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/textfield_widget.dart';
-import 'package:popwoot/src/main/utils/global.dart';
 import 'package:popwoot/src/res/app_icons.dart';
 
 class GlobalSearch extends StatefulWidget {
@@ -20,54 +18,26 @@ class GlobalSearch extends StatefulWidget {
 }
 
 class _GlobalSearchState extends State<GlobalSearch> {
-  List items = [];
   bool _isVisible = false;
-  Dio dio;
   bool _isLoading = false;
   var _searchController = TextEditingController();
   final globalKey = GlobalKey<ScaffoldState>();
 
-
+  SearchRepository  _repository;
+  List<SearchList> items=[];
 
   @override
   void initState() {
     super.initState();
-    dio = Dio();
+    _repository=SearchRepository(context);
   }
 
-    void getCategoryAllAsync(String query) async {
-    _isLoading = true;
-    try {
-      final response = await dio.get('${Config.getDefaultReviewUrl}/2/$query');
-      debugPrint('print api object : ${Config.getDefaultReviewUrl}/2/$query ');
-
-      if (response.statusCode == 200) {
-        final responseBody = jsonDecode(jsonEncode(response.data));
-        hideLoader();
-        setState(() {
-          items = responseBody['data'];
-        });
-      }
-    } on DioError catch (e) {
-      var errorMessage = jsonDecode(jsonEncode(e.response.data));
-      var statusCode = e.response.statusCode;
-
-      if (statusCode == 400) {
-        hideLoader();
-        Global.toast(errorMessage['message']);
-      } else if (statusCode == 401) {
-        hideLoader();
-        Global.toast(errorMessage['message']);
-      } else {
-        hideLoader();
-        Global.toast('Something went wrong');
-      }
-    }
-  }
-
-  void hideLoader() {
-    setState(() {
-      _isLoading = false;
+  void _search(String query) {
+    _repository.searchReviews(query).then((value) {
+      setState(() {
+        _isLoading=false;
+        items=value;
+      });
     });
   }
 
@@ -79,7 +49,8 @@ class _GlobalSearchState extends State<GlobalSearch> {
         items.clear();
       } else {
         if(text.length>3) {
-          getCategoryAllAsync(text);
+          _isLoading=true;
+          _search(text);
           _isVisible = true;
         }
       }
@@ -145,7 +116,7 @@ class _GlobalSearchState extends State<GlobalSearch> {
               : Container(
                   margin: EdgeInsets.only(top: 5, bottom: 5),
                   child: ListView.builder(
-                      itemCount: items?.length,
+                      itemCount: items.length,
                       itemBuilder: (context, index) =>
                           buildCardView(context, index)),
                 ),
@@ -178,24 +149,24 @@ class _GlobalSearchState extends State<GlobalSearch> {
         ));
   }
 
-  Widget getImage(item) {
+  Widget getImage(SearchList item) {
     return Container(
         color: Colors.grey[100],
         width: 110.0,
         height: 90.0,
-        child: ImageLoadWidget(imageUrl: item['ipath']));
+        child: ImageLoadWidget(imageUrl: item.ipath));
   }
 
-  Widget getContent(item) {
+  Widget getContent(SearchList item) {
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          TextWidget(title: item['pname'], color: Colors.black, isBold: true),
+          TextWidget(title: item.pname, color: Colors.black, isBold: true),
           SizedBox(height: 5.0),
           TextWidget(
-              title: item['pdesc'],
+              title: item.pdesc,
               fontSize: 13.0,
               maxLines: 2,
               overflow: TextOverflow.ellipsis),
@@ -208,14 +179,14 @@ class _GlobalSearchState extends State<GlobalSearch> {
     );
   }
 
-  Widget ratingAndReview(item) {
+  Widget ratingAndReview(SearchList item) {
     return Container(
       margin: EdgeInsets.only(right: 10.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          RatingWidget(rating: item['astar']),
-          AddReviewWidget(data: [item['pid'], item['pname'], item['pdesc'], item['ipath']])
+          RatingWidget(rating: item.astar),
+         // AddReviewWidget(data: [item['pid'], item['pname'], item['pdesc'], item['ipath']])
         ],
       ),
     );

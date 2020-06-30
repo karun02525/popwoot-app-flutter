@@ -1,12 +1,12 @@
-import 'dart:convert';
 import 'dart:ui';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:popwoot/src/main/config/constraints.dart';
+import 'package:popwoot/src/main/api/model/comment_model.dart';
+import 'package:popwoot/src/main/api/model/review_model.dart';
+import 'package:popwoot/src/main/api/repositories/reviews_repository.dart';
 import 'package:popwoot/src/main/services/shared_preferences.dart';
-import 'package:popwoot/src/main/ui/widgets/add_review_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/image_load_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/rating_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
@@ -19,121 +19,52 @@ class AddComment extends StatefulWidget {
 }
 
 class _AddCommentState extends State<AddComment> {
-  List items = [];
-  dynamic productData;
-  Dio dio;
+
   bool _isLoading = true;
   String name,avatar;
-
   final _textController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   String rid = '';
+  List<CommentList> items = [];
+  Idata productData;
+  ReviewsRepository _repository;
 
   @override
   void initState() {
-    name=UserPreference().name;
-    avatar=UserPreference().avatar;
+    var pref=UserPreference();
+    name=pref.name;
+    avatar=pref.avatar;
     super.initState();
-    dio = Dio();
+    _repository=ReviewsRepository(context);
   }
 
-  void getProductApiAsync() async {
-    try {
-      final response = await dio.get('${Config.getReviewCommentUrl}/$rid');
-      if (response.statusCode == 200) {
-        final responseBody = jsonDecode(jsonEncode(response.data));
-        if (responseBody['status']) {
-          getProductReviewApiAsync();
-          productData = responseBody['idata'];
-        }
-      }
-    } on DioError catch (e) {
-      var errorMessage = jsonDecode(jsonEncode(e.response.data));
-      var statusCode = e.response.statusCode;
-      if (statusCode == 400) {
-        hideLoader();
-        Global.toast(errorMessage['message']);
-      } else if (statusCode == 401) {
-        hideLoader();
-        Global.toast(errorMessage['message']);
-      } else {
-        hideLoader();
-        Global.toast('Something went wrong');
-      }
-    }
+  void getOnlyReview(String rid){
+    _repository.getOnlyReview(rid).then((value) {
+        loadCommentList();
+        productData = value;
+    });
   }
 
-  void getProductReviewApiAsync() async {
-    try {
-      final response = await dio.get('${Config.getAllCommentUrl}/$rid/1');
-      if (response.statusCode == 200) {
-        hideLoader();
-        final responseBody = jsonDecode(jsonEncode(response.data));
-        if (responseBody['status']) {
-          setState(() {
-            items = responseBody['data'];
-          });
-        }
-      }
-    } on DioError catch (e) {
-      var errorMessage = jsonDecode(jsonEncode(e.response.data));
-      var statusCode = e.response.statusCode;
-
-      if (statusCode == 400) {
-        hideLoader();
-        Global.toast(errorMessage['message']);
-      } else if (statusCode == 401) {
-        hideLoader();
-        Global.toast(errorMessage['message']);
-      } else {
-        hideLoader();
-        Global.toast('Something went wrong');
-      }
-    }
+  void loadCommentList(){
+    _repository.findAllComments(rid).then((value) {
+      setState(() {
+        _isLoading=false;
+         items = value;
+      });
+    });
   }
 
-  //..................Post Api.........
 
   void postApiCall(String mgs) async {
     Map<String, dynamic> params = {
       'rid': rid,
       'comment': mgs,
     };
-
-    Map<String, String> requestHeaders = {
-      'Content-type': 'application/json',
-      'Accept': 'application/json',
-      'authorization': 'Bearer ${Config.token}'
-    };
-    debugPrint("Comment Screen Param: " + params.toString());
-
-    try {
-      final response = await dio.post(Config.doReviewCommentUrl,
-          data: params, options: Options(headers: requestHeaders));
-
-      if (response.statusCode == 200) {
-        final responseBody = jsonDecode(jsonEncode(response.data));
-        debugPrint("Comment Screen responseBody : " + responseBody.toString());
-        if (responseBody['status']) {
-          getProductReviewApiAsync();
-        }
+    _repository.addComment(params).then((value) {
+      if (value) {
+        loadCommentList();
+        Global.hideKeyboard();
       }
-    } on DioError catch (e) {
-      var errorMessage = jsonDecode(jsonEncode(e.response.data));
-      var statusCode = e.response.statusCode;
-      if (statusCode == 400) {
-        Global.toast(errorMessage['message']);
-      } else if (statusCode == 401) {
-        Global.toast(errorMessage['message']);
-      } else {
-        Global.toast('Something went wrong');
-      }
-    }
-  }
-
-  void hideLoader() {
-    setState(() {
-      _isLoading = false;
     });
   }
 
@@ -142,8 +73,8 @@ class _AddCommentState extends State<AddComment> {
     List data = ModalRoute.of(context).settings.arguments;
     debugPrint("Comment Screen: " + data.toString());
     setState(() {
-      rid = data[1];
-      getProductApiAsync();
+      rid = data[1]??'0';
+      getOnlyReview(rid);
     });
 
     return Scaffold(
@@ -171,7 +102,7 @@ class _AddCommentState extends State<AddComment> {
                               return buildHeader(productData);
                             }
                             index -= 1;
-                            return buildProductCard(context, index);
+                            return buildProductCard(context,items[index]);
                           })),
                   Divider(height: 1.0),
                   Container(
@@ -183,15 +114,52 @@ class _AddCommentState extends State<AddComment> {
               ));
   }
 
-  Widget buildProductCard(BuildContext context, int index) {
-    var item = items[index];
+
+
+  Widget buildHeader(Idata item) {
+    return Container(
+      color: Colors.white,
+      child: Column(
+        children: <Widget>[
+          ImageLoadWidget(imageUrl: productData.ipath),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(left: 5.0, top: 5.0),
+                child: RatingWidget(rating: item.astar??'0'),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: 10.0, top: 5.0),
+              //  child: AddReviewWidget(data: item),
+              )
+            ],
+          ),
+          Align(
+            alignment: Alignment.topLeft,
+            child: Padding(
+              padding: EdgeInsets.only(left: 10.0, bottom: 10.0),
+              child: TextWidget(
+                  title:
+                  productData.pdesc??''),
+            ),
+          ),
+          Container(height: 10.0, color: Colors.grey[200]),
+        ],
+      ),
+    );
+  }
+
+
+  Widget buildProductCard(BuildContext context, CommentList item) {
     return Container(
       color: Colors.white,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          getHeadTitle(item, index),
+          getHeadTitle(item),
           paddingView(item),
           Container(height: 3.0, color: Colors.grey[200]),
         ],
@@ -199,7 +167,7 @@ class _AddCommentState extends State<AddComment> {
     );
   }
 
-  Widget paddingView(item) {
+  Widget paddingView(CommentList item) {
     return Container(
       margin: EdgeInsets.only(left: 7.0),
       child: Column(
@@ -208,21 +176,21 @@ class _AddCommentState extends State<AddComment> {
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.only(left: 5.0, bottom: 8.0),
-            child: TextWidget(title: item['comment'], fontSize: 14.0),
+            child: TextWidget(title: item.comment??'', fontSize: 14.0),
           ),
         ],
       ),
     );
   }
 
-  Widget getHeadTitle(item, index) {
+  Widget getHeadTitle(CommentList item) {
     return Container(
       margin: EdgeInsets.all(5.0),
       child: Row(
         children: <Widget>[
           ImageLoadWidget(
-              imageUrl: item['userimg'], name: item['user'], isProfile: true),
-          setContent(item['user'], item['rdate'])
+              imageUrl: item.userimg, name: item.user??'', isProfile: true),
+          setContent(item.user??'', item.rdate??'----')
         ],
       ),
     );
@@ -249,40 +217,6 @@ class _AddCommentState extends State<AddComment> {
     ]);
   }
 
-  Widget buildHeader(item) {
-    return Container(
-      color: Colors.white,
-      child: Column(
-        children: <Widget>[
-          ImageLoadWidget(imageUrl: productData['ipath']),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(left: 5.0, top: 5.0),
-                child: RatingWidget(rating: item['astar']),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 10.0, top: 5.0),
-                child: AddReviewWidget(data: item),
-              )
-            ],
-          ),
-          Align(
-            alignment: Alignment.topLeft,
-            child: Padding(
-              padding: EdgeInsets.only(left: 10.0, bottom: 10.0),
-              child: TextWidget(
-                  title:
-                      productData['pdesc'] == null ? "" : productData['pdesc']),
-            ),
-          ),
-          Container(height: 10.0, color: Colors.grey[200]),
-        ],
-      ),
-    );
-  }
 
   Widget _buildTextComposer() {
     return IconTheme(

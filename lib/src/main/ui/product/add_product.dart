@@ -47,7 +47,7 @@ class _AddProductState extends State<AddProduct> {
   bool _isLoading=true;
   ProductRepository _repository;
 
-  List<DataList> categoryList;
+  List<DataList> categoryList=[];
   CategoryRepository _catRepository;
   @override
   void initState() {
@@ -65,9 +65,9 @@ class _AddProductState extends State<AddProduct> {
           categoryList=value;
         });
     });
-
-
   }
+
+
   Future scanBarcodeNormal() async {
     barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
         "#ff6666", "Cancel", true, ScanMode.DEFAULT);
