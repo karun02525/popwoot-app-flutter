@@ -5,8 +5,8 @@ import 'package:popwoot/src/main/ui/widgets/home_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
 
 class MyReviews extends StatefulWidget {
-  final List<RevieswModel> revieswList;
-  MyReviews({this.revieswList});
+  final List<RevieswModel> reviewswList;
+  MyReviews({this.reviewswList});
 
   @override
   _MyReviewsState createState() => _MyReviewsState();
@@ -21,12 +21,12 @@ class _MyReviewsState extends State<MyReviews> {
 
     return Container(
       margin: EdgeInsets.only(top: 15.0),
-      child: widget.revieswList == null
+      child: widget.reviewswList == null
     ? Container(child: Center(child: TextWidget(title: 'Empty My Reviews')))
           : ListView.builder(
-          itemCount: widget.revieswList.length,
+          itemCount: widget.reviewswList.length,
           itemBuilder: (context, index) =>
-              HomeWidget(items: widget.revieswList, index: index)),
+              HomeWidget(items: widget.reviewswList, index: index)),
     );
   }
 }

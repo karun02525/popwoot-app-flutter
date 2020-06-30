@@ -20,7 +20,7 @@ class _ProfileState extends State<Profile> {
   bool isLogin = false;
   ProfileRepository _repository;
   List<DraftList> draftList;
-  List<RevieswModel> revieswList;
+  List<RevieswModel> reviewswList;
 
   @override
   void initState() {
@@ -56,7 +56,7 @@ class _ProfileState extends State<Profile> {
 
     _repository.findAllReview().then((value) {
       setState(() {
-        revieswList = value;
+        reviewswList = value;
       });
     });
   }
@@ -149,7 +149,7 @@ class _ProfileState extends State<Profile> {
           body: TabBarView(
               children: [
                 ProfileWidget(handleSignOut: _handleSignOut,),
-                MyReviews(revieswList: revieswList),
+                MyReviews(reviewswList: reviewswList),
                 DraftWidget(draftList: draftList),
               ]),
         ),
