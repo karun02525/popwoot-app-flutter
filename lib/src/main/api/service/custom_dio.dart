@@ -17,11 +17,14 @@ class CustomDio{
 
   Dio get instance=>_dio;
   _onRequest(RequestOptions options) async {
+    print('*************************@@**********************************');
+    print('send request：path:${options.path}，baseURL:${options.baseUrl}');
+    print('*************************@@@@*******************************');
     options.headers['authorization']='Bearer '+UserPreference().token;
   }
 
-  _onResponse(Response e) {
-    return e;
+  _onResponse(Response response)  {
+     return response;
   }
 
   _onError(DioError error) {
