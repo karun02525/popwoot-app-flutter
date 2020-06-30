@@ -1,23 +1,29 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:flutter/cupertino.dart';
 import 'package:popwoot/src/main/api/model/draft_model.dart';
 import 'package:popwoot/src/main/api/model/home_reviews_model.dart';
 import 'package:popwoot/src/main/api/service/api_error_handle.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
 import 'package:popwoot/src/main/services/shared_preferences.dart';
 
-import '../custom_dio.dart';
-
+import '../service/custom_dio.dart';
 
 class ProfileRepository{
+
+  BuildContext context;
+  ProfileRepository(BuildContext cnt){
+    this.context=cnt;
+  }
+
   //Profile Draft
   Future<List<DraftList>> findAllDraft() {
       var dio =CustomDio.withAuthentication().instance;
      return dio.get(Config.getDraftUrl).then((res){
         return DraftModel.fromJson(res.data).data;
       }).catchError((e) {
-       ApiErrorHandel.errorHandel(e);
+       return ApiErrorHandel.errorHandel(context,e);
      });
   }
 
@@ -27,7 +33,7 @@ class ProfileRepository{
     return dio.get(Config.getHomeUrl).then((res){
       return HomeReviewModel.fromJson(res.data).data;
     }).catchError((e) {
-      ApiErrorHandel.errorHandel(e);
+     return ApiErrorHandel.errorHandel(context,e);
     });
   }
 
@@ -48,8 +54,7 @@ class ProfileRepository{
         return true;
       }
     }).catchError((e) {
-      ApiErrorHandel.errorHandel(e);
-      return false;
+      return ApiErrorHandel.errorHandel(context,e);
     });
   }
 

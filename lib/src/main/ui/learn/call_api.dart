@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:popwoot/src/main/api/api_repository.dart';
 import 'package:popwoot/src/main/api/model/post/post_model.dart';
 
 class CallApi extends StatefulWidget {
@@ -9,7 +8,7 @@ class CallApi extends StatefulWidget {
 }
 
 class _CallApiState extends State<CallApi> {
-  var _apiRepository = ApiRepository();
+ // var _apiRepository = ApiRepository();
 
   @override
   void initState() {
@@ -23,7 +22,7 @@ class _CallApiState extends State<CallApi> {
 
      body: Container(
       child: FutureBuilder(
-        future: _apiRepository.getPostApi,
+        //future: _apiRepository.getPostApi,
         builder: (context,AsyncSnapshot<List<PostModel>> snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:

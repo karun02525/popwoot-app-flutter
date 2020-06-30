@@ -26,7 +26,7 @@ class _ProfileState extends State<Profile> {
   void initState() {
     isLogin = UserPreference().isLogin??false;
     super.initState();
-    _repository = ProfileRepository();
+    _repository = ProfileRepository(context);
     if(isLogin) {
       getDraftList();
     }

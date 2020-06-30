@@ -43,11 +43,10 @@ class _AddReviewState extends State<AddReview> {
   var pickedFile;
 
   ProductRepository _repository;
-
   @override
   void initState() {
     super.initState();
-    _repository = ProductRepository();
+    _repository = ProductRepository(context);
   }
 
   Future _showPhotoLibrary(bool isCamera) async {
@@ -122,9 +121,12 @@ class _AddReviewState extends State<AddReview> {
     } else {
       params = param;
     }
-    _repository.addReview(context, params).then((value) {
+    _repository.addReview(params).then((value) {
       if (value) {
-        _clearAllItems();
+        Global.hideKeyboard();
+        setState(() {
+          _clearAllItems();
+        });
       }
     });
   }

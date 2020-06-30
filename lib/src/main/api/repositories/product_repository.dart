@@ -7,34 +7,75 @@ import 'package:popwoot/src/main/api/service/api_error_handle.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 
-import '../custom_dio.dart';
+import '../service/custom_dio.dart';
 
 class ProductRepository {
-  Future<bool> addReview(context,Map<String, dynamic> params) {
-
-    var pd = ProgressDialog(context, type: ProgressDialogType.Normal);
+  ProgressDialog pd;
+  BuildContext context;
+  ProductRepository(BuildContext cnt){
+    this.context=cnt;
+    pd = ProgressDialog(this.context, type: ProgressDialogType.Normal);
     pd.style(message: 'Uploading file...');
-    pd.show();
+  }
 
+  //Add Reviews
+  Future<bool> addReview(Map<String, dynamic> params) async{
+    pd.show();
     var dio =CustomDio.withAuthentication().instance;
-    return dio.post(Config.addReviewUrl, data: params).then((res) async {
+    return await dio.post(Config.addReviewUrl, data: params).then((res) async {
       if (res.statusCode == 200) {
+        pd.hide();
         var result = jsonDecode(jsonEncode(res.data));
         if (result['status']) {
-          pd.hide();
            messageAlert(context,result['message'], 'Add Review');
           return true;
-        } else {
-          pd.hide();
-          return false;
         }
       }
     }).catchError((e) {
-      ApiErrorHandel.errorHandel(e);
       pd.hide();
-      return false;
+      return ApiErrorHandel.errorHandel(context,e);
     });
   }
+
+  //Add Category
+  Future<bool> addCategory(Map<String, dynamic> params) async{
+    pd.show();
+    var dio =CustomDio.withAuthentication().instance;
+    return await dio.post(Config.addCategoryUrl, data: params).then((res) async {
+      if (res.statusCode == 200) {
+        pd.hide();
+        var result = jsonDecode(jsonEncode(res.data));
+        if (result['status']) {
+          messageAlert(context,result['message'], 'Category');
+          return true;
+        }
+      }
+    }).catchError((e) {
+      pd.hide();
+      return ApiErrorHandel.errorHandel(context,e);
+    });
+  }
+
+  //Add Product
+  Future<bool> addProduct(Map<String, dynamic> params) async{
+    pd.show();
+    var dio =CustomDio.withAuthentication().instance;
+    return await dio.post(Config.addProductUrl, data: params).then((res) async {
+      if (res.statusCode == 200) {
+        pd.hide();
+        var result = jsonDecode(jsonEncode(res.data));
+        if (result['status']) {
+          messageAlert(context,result['message'], 'Product');
+          return true;
+        }
+      }
+    }).catchError((e) {
+      pd.hide();
+      return ApiErrorHandel.errorHandel(context,e);
+    });
+  }
+
+
 
 
 

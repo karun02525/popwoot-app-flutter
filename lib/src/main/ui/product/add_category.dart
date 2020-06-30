@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'dart:ui';
 import 'package:dio/dio.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:popwoot/src/main/api/repositories/product_repository.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
 import 'package:popwoot/src/main/ui/navigation/drawer_navigation.dart';
 import 'package:popwoot/src/main/ui/widgets/button_widget.dart';
@@ -15,23 +17,19 @@ import 'package:popwoot/src/main/utils/global.dart';
 import 'package:popwoot/src/res/fonts.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 
-
 class AddCategory extends StatefulWidget {
   @override
   _AddCategoryState createState() => _AddCategoryState();
 }
 
 class _AddCategoryState extends State<AddCategory> {
-
   final GlobalKey<AnimatedListState> _key = GlobalKey();
   ScrollController _scrollController = new ScrollController();
 
   final editName = TextEditingController();
   final editDesc = TextEditingController();
   final editUrl = TextEditingController();
-  ProgressDialog pd;
 
-  Dio dio;
   List<File> _items = [];
   File _image;
   final picker = ImagePicker();
@@ -39,19 +37,20 @@ class _AddCategoryState extends State<AddCategory> {
   bool isHide2 = false;
   var pickedFile;
 
+  ProductRepository _repository;
   @override
   void initState() {
     super.initState();
-    dio = Dio();
-    pd = ProgressDialog(context,type: ProgressDialogType.Normal);
-    pd.style(message: 'Uploading file...');
+    _repository = ProductRepository(context);
   }
-
 
   Future _showPhotoLibrary(bool isCamera) async {
     if (isCamera) {
       pickedFile = await picker.getImage(
-        source: ImageSource.camera, maxHeight: 1062.0, maxWidth: 1500.0,);
+        source: ImageSource.camera,
+        maxHeight: 1062.0,
+        maxWidth: 1500.0,
+      );
     } else {
       pickedFile = await picker.getImage(
           source: ImageSource.gallery, maxHeight: 1062.0, maxWidth: 1500.0);
@@ -62,8 +61,7 @@ class _AddCategoryState extends State<AddCategory> {
     });
   }
 
-
-  void callApi() async{
+  void callApi() async {
     //debugger();
     if (editName.text.isEmpty) {
       Global.toast("Please enter category Name");
@@ -72,92 +70,38 @@ class _AddCategoryState extends State<AddCategory> {
     } else if (_items.length == 0) {
       Global.toast("Please upload at least one photo");
     } else {
-      await pd.show();
-      final imagesData = _items.map((item) =>
-      Config.base64Prefix + base64Encode(item.readAsBytesSync())).toList();
+      final imagesData = _items
+          .map((item) =>
+              Config.base64Prefix + base64Encode(item.readAsBytesSync()))
+          .toList();
       postApi(editName.text, editDesc.text, editUrl.text, imagesData);
     }
   }
 
-  void postApi(String txtName,String txtDesc,String txtUrl, List<String> imagesData) async {
+  void postApi(String txtName, String txtDesc, String txtUrl,
+      List<String> imagesData) async {
     Map<String, dynamic> params = {
-      'cname':txtName,
-      'cdetails':txtDesc,
-      'burl':txtUrl,
-      'imgarray':imagesData,
+      'cname': txtName,
+      'cdetails': txtDesc,
+      'burl': txtUrl,
+      'imgarray': imagesData,
     };
-
-
-    Map<String, String> requestHeaders = {
-      'Content-type': 'application/json',
-      'Accept': 'application/json',
-      'authorization': 'Bearer ${Config.token}'
-    };
-
-    try {
-      final response = await dio.post(Config.addCategoryUrl,data:params,
-          options: Options(headers: requestHeaders));
-
-      if(response.statusCode==200){
-        final responseBody = jsonDecode(jsonEncode(response.data));
-        if(responseBody['status']) {
-          pd.hide();
-          messageAlert(responseBody['message'],'Category');
-        }
+    _repository.addCategory(params).then((value) {
+      if (value) {
+         Global.hideKeyboard();
+         setState(() {
+           _clearAllItems();
+         });
       }
-    } on DioError catch (e) {
-      var errorMessage= jsonDecode(jsonEncode(e.response.data));
-      var statusCode= e.response.statusCode;
-      if(statusCode == 400){
-        pd.hide();
-        Global.toast(errorMessage['message']);
-      }else if(statusCode == 401){
-        pd.hide();
-        Global.toast(errorMessage['message']);
-      }else{
-        pd.hide();
-        Global.toast('Something went wrong');
-      }
-    }
+    });
   }
-  messageAlert(String msg,String ttl){
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context){
-          return  WillPopScope(
-              onWillPop: () async {
-                return false;
-              },
-              child: CupertinoAlertDialog(
-                title:Text(ttl),
-                content:Text(msg),
-                actions: <Widget>[
-                  CupertinoDialogAction(
-                    isDefaultAction: true,
-                    child: Column(
-                      children: <Widget>[
-                        Text('Okay')
-                      ],
-                    ),
-                    onPressed: (){
-                      setState(() {
-                        _clearAllItems();
-                      });
-                      Navigator.pop(context);
-                    },
-                  )
-                ],
-              ));
-        }
-    );
-  }
+
   void _clearAllItems() {
     for (var i = 0; i <= _items.length - 1; i++) {
       _key.currentState.removeItem(0,
-              (BuildContext context, Animation<double> animation) {
-            return Container();
-          });
+          (BuildContext context, Animation<double> animation) {
+        return Container();
+      });
     }
     _items.clear();
     isHide1 = true;
@@ -167,33 +111,34 @@ class _AddCategoryState extends State<AddCategory> {
     editUrl.clear();
   }
 
-
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-      appBar: AppBar(
-        titleSpacing: 2.0,
-          title: TextWidget(title: "Add Category",fontSize: AppFonts.toolbarSize, isBold: true)),
-      drawer: NavigationDrawer(),
+    return Scaffold(
+        appBar: AppBar(
+            titleSpacing: 2.0,
+            title: TextWidget(
+                title: "Add Category",
+                fontSize: AppFonts.toolbarSize,
+                isBold: true)),
+        drawer: NavigationDrawer(),
         body: SingleChildScrollView(
             child: Column(
-              children: <Widget>[
-                Visibility(
-                    maintainSize: false,
-                    maintainAnimation: true,
-                    maintainState: true,
-                    visible: isHide1,
-                    child : uploadPlaceHolderImage()),
-                Visibility(
-                    maintainSize: false,
-                    maintainAnimation: true,
-                    maintainState: true,
-                    visible: isHide2,
-                    child : uploadImage()),
-
-                getEditBox(),
-              ],
-            )));
+          children: <Widget>[
+            Visibility(
+                maintainSize: false,
+                maintainAnimation: true,
+                maintainState: true,
+                visible: isHide1,
+                child: uploadPlaceHolderImage()),
+            Visibility(
+                maintainSize: false,
+                maintainAnimation: true,
+                maintainState: true,
+                visible: isHide2,
+                child: uploadImage()),
+            getEditBox(),
+          ],
+        )));
   }
 
   Widget uploadImage() {
@@ -206,10 +151,10 @@ class _AddCategoryState extends State<AddCategory> {
         ]),
         decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Colors.deepOrange[300], Colors.white],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            )));
+          colors: [Colors.deepOrange[300], Colors.white],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        )));
   }
 
   Widget uploadPlaceHolderImage() {
@@ -221,8 +166,7 @@ class _AddCategoryState extends State<AddCategory> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              TextWidget(
-               title:"Add Photos",isBold: true),
+              TextWidget(title: "Add Photos", isBold: true),
               RaisedButton.icon(
                 onPressed: () => {_showOptions(context)},
                 shape: RoundedRectangleBorder(
@@ -244,10 +188,10 @@ class _AddCategoryState extends State<AddCategory> {
         ),
         decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Colors.deepOrange[300], Colors.white],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            )));
+          colors: [Colors.deepOrange[300], Colors.white],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        )));
   }
 
   Widget addGestureDetector() {
@@ -260,17 +204,21 @@ class _AddCategoryState extends State<AddCategory> {
           height: 120.0,
           child: Center(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Icon(
-                    Icons.add_a_photo,
-                    size: 32.0,
-                    color: Colors.white,
-                  ),
-                  TextWidget(title: 'Add Photos', color: Colors.white,isBold: true,)
-                ],
-              )),
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Icon(
+                Icons.add_a_photo,
+                size: 32.0,
+                color: Colors.white,
+              ),
+              TextWidget(
+                title: 'Add Photos',
+                color: Colors.white,
+                isBold: true,
+              )
+            ],
+          )),
           decoration: BoxDecoration(
             border: Border.all(
               color: Colors.blueAccent,
@@ -309,23 +257,30 @@ class _AddCategoryState extends State<AddCategory> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          TextWidget(title:'Category Name',isBold: true,top: 15.0,bottom: 3.0),
+          TextWidget(
+              title: 'Category Name', isBold: true, top: 15.0, bottom: 3.0),
           TextFieldWidget(
-              hintText: 'Enter category name',
-              controller: editName),
-          TextWidget(title:'Category Description',isBold: true,top: 15.0,bottom: 3.0),
+              hintText: 'Enter category name', controller: editName),
+          TextWidget(
+              title: 'Category Description',
+              isBold: true,
+              top: 15.0,
+              bottom: 3.0),
           TextFieldWidget(
               minLine: 3,
               hintText: 'Enter category description',
               controller: editDesc),
-          TextWidget(title:'Category urls',isBold: true,top: 15.0,bottom: 3.0),
-          TextFieldWidget(
-              hintText: 'Enter category urls',
-              controller: editUrl),
-          ButtonWidget(title: "Add Category",isBold: true,
-            onPressed:callApi,
-          ),SizedBox(height: 100.0,)
-
+          TextWidget(
+              title: 'Category urls', isBold: true, top: 15.0, bottom: 3.0),
+          TextFieldWidget(hintText: 'Enter category urls', controller: editUrl),
+          ButtonWidget(
+            title: "Add Category",
+            isBold: true,
+            onPressed: callApi,
+          ),
+          SizedBox(
+            height: 100.0,
+          )
         ],
       ),
     );
@@ -380,12 +335,12 @@ class _AddCategoryState extends State<AddCategory> {
       };
       _key.currentState.removeItem(index, builder);
 
-      if(_items.length>0) {
+      if (_items.length > 0) {
         isHide1 = false;
-        isHide2=true;
-      }else {
+        isHide2 = true;
+      } else {
         isHide1 = true;
-        isHide2=false;
+        isHide2 = false;
       }
     });
   }
@@ -395,15 +350,13 @@ class _AddCategoryState extends State<AddCategory> {
       int i = _items.length > 0 ? _items.length : 0;
       _items.add(_image);
       _key.currentState.insertItem(i);
-      if(_items.length>0) {
+      if (_items.length > 0) {
         isHide1 = false;
-        isHide2=true;
+        isHide2 = true;
       }
     });
     _scrollController.animateTo(0.0,
         duration: const Duration(milliseconds: 1500), curve: Curves.easeOut);
-
-
   }
 
   void _showOptions(BuildContext context) {
@@ -440,7 +393,7 @@ class _AddCategoryState extends State<AddCategory> {
         context: context,
         barrierDismissible: true,
         barrierLabel:
-        MaterialLocalizations.of(context).modalBarrierDismissLabel,
+            MaterialLocalizations.of(context).modalBarrierDismissLabel,
         barrierColor: Colors.black45,
         transitionDuration: const Duration(milliseconds: 900),
         pageBuilder: (BuildContext buildContext, Animation animation,

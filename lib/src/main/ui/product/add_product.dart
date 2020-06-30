@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:popwoot/src/main/api/repositories/product_repository.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
 import 'package:popwoot/src/main/ui/navigation/drawer_navigation.dart';
 import 'package:popwoot/src/main/ui/widgets/button_widget.dart';
@@ -46,12 +47,14 @@ class _AddProductState extends State<AddProduct> {
   Dio dio;
   bool _isLoading=true;
 
+  ProductRepository _repository;
   @override
   void initState() {
     super.initState();
-    dio = Dio();
+    _repository = ProductRepository(context);
     getCategoryAllAsync();
   }
+
 
   void getCategoryAllAsync() async {
     try {
@@ -148,70 +151,14 @@ class _AddProductState extends State<AddProduct> {
       'imgarray':imagesData,
     };
 
-
-    Map<String, String> requestHeaders = {
-      'Content-type': 'application/json',
-      'Accept': 'application/json',
-      'authorization': 'Bearer ${Config.token}'
-    };
-
-    try {
-      final response = await dio.post(Config.addProductUrl,data:params,
-          options: Options(headers: requestHeaders));
-
-      if(response.statusCode==200){
-        final responseBody = jsonDecode(jsonEncode(response.data));
-        if(responseBody['status']) {
-          hideLoader();
-          messageAlert(responseBody['message'],'Product');
-        }
+    _repository.addProduct(params).then((value) {
+      if (value) {
+        Global.hideKeyboard();
+        setState(() {
+          _clearAllItems();
+        });
       }
-    } on DioError catch (e) {
-      var errorMessage= jsonDecode(jsonEncode(e.response.data));
-      var statusCode= e.response.statusCode;
-      if(statusCode == 400){
-
-        Global.toast(errorMessage['message']);
-      }else if(statusCode == 401){
-        hideLoader();
-        Global.toast(errorMessage['message']);
-      }else{
-        hideLoader();
-        Global.toast('Something went wrong');
-      }
-    }
-  }
-  messageAlert(String msg,String ttl){
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context){
-          return  WillPopScope(
-              onWillPop: () async {
-                return false;
-              },
-              child: CupertinoAlertDialog(
-                title:Text(ttl),
-                content:Text(msg),
-                actions: <Widget>[
-                  CupertinoDialogAction(
-                    isDefaultAction: true,
-                    child: Column(
-                      children: <Widget>[
-                        Text('Okay')
-                      ],
-                    ),
-                    onPressed: (){
-                      setState(() {
-                        _clearAllItems();
-                      });
-                      Navigator.pop(context);
-                    },
-                  )
-                ],
-              ));
-        }
-    );
+    });
   }
   void _clearAllItems() {
     for (var i = 0; i <= _items.length - 1; i++) {

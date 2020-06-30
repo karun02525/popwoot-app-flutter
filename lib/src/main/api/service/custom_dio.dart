@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:popwoot/src/main/services/shared_preferences.dart';
 
 class CustomDio{
   var _dio;
@@ -16,20 +16,17 @@ class CustomDio{
   }
 
   Dio get instance=>_dio;
-
   _onRequest(RequestOptions options) async {
-    SharedPreferences prefs= await SharedPreferences.getInstance();
-    var token=prefs.get('token');
-    options.headers['authorization']='Bearer '+token;
+    options.headers['authorization']='Bearer '+UserPreference().token;
   }
 
   _onResponse(Response e) {
-     print("############**********************");
-     print(e.data);
-     print("############");
+    return e;
   }
 
-  _onError(DioError e) {
-    return e;
+  _onError(DioError error) {
+    if(error.response?.statusCode==401) {
+      //
+    }
   }
 }

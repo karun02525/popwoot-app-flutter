@@ -17,6 +17,7 @@ void main() async{
 }
 
 class LaunchApp extends StatelessWidget {
+  final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
   @override
   Widget build(BuildContext context) {
     return StreamProvider( create: (_) => ConnectivityService().connectionStatusController.stream,
@@ -25,6 +26,7 @@ class LaunchApp extends StatelessWidget {
             primaryColor: AppColor.appColor, accentColor: Colors.blue),
         debugShowCheckedModeBanner: false,
         home: TabNavController(),
+        navigatorKey: navigatorKey,
         routes: {
           '/home':(context) => TabNavController(),
           '/add_category':(context) => AddCategory(),
