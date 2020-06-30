@@ -7,6 +7,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:popwoot/src/main/api/model/category_model.dart';
+import 'package:popwoot/src/main/api/repositories/category_repository.dart';
 import 'package:popwoot/src/main/api/repositories/product_repository.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
 import 'package:popwoot/src/main/ui/navigation/drawer_navigation.dart';
@@ -42,55 +44,29 @@ class _AddProductState extends State<AddProduct> {
   var pickedFile;
   bool isHide1 = true;
   bool isHide2 = false;
-
-  List categoryList;
-  Dio dio;
   bool _isLoading=true;
-
   ProductRepository _repository;
+
+  List<DataList> categoryList;
+  CategoryRepository _catRepository;
   @override
   void initState() {
     super.initState();
     _repository = ProductRepository(context);
-    getCategoryAllAsync();
+    _catRepository = CategoryRepository(context);
+    getCategory();
   }
 
 
-  void getCategoryAllAsync() async {
-    try {
-      final response = await dio.get(Config.getAllCategoryUrl);
-      if (response.statusCode == 200) {
-        final responseBody = jsonDecode(jsonEncode(response.data));
-        if (responseBody['status']) {
-          hideLoader();
-          setState(() {
-            categoryList = responseBody['data'];
-          });
-        }
-      }
-    } on DioError catch (e) {
-      var errorMessage = jsonDecode(jsonEncode(e.response.data));
-      var statusCode = e.response.statusCode;
-
-      debugPrint("print: error :" + errorMessage.toString());
-      debugPrint("print: statusCode :" + statusCode.toString());
-
-      if (statusCode == 400) {
-        hideLoader();
-        Global.toast(errorMessage['message']);
-      } else if (statusCode == 401) {
-        hideLoader();
-        Global.toast(errorMessage['message']);
-      } else {
-        hideLoader();
-        Global.toast('Something went wrong');
-      }
-    }
-  }
-  void hideLoader(){
-    setState(() {
-      _isLoading=false;
+  void getCategory() {
+    _catRepository.findAllCategory().then((value) {
+        setState(() {
+          _isLoading=false;
+          categoryList=value;
+        });
     });
+
+
   }
   Future scanBarcodeNormal() async {
     barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
@@ -130,10 +106,6 @@ class _AddProductState extends State<AddProduct> {
     } else if (_items.length == 0) {
       Global.toast("Please upload at least one photo");
     } else {
-      _isLoading=true;
-      setState(() {
-        _isLoading=true;
-      });
       final imagesData = _items.map((item) =>
       Config.base64Prefix + base64Encode(item.readAsBytesSync())).toList();
       postApi(editProdId.text, editProdName.text,catId,editProdDesc.text,editProdSearchQ.text,editProdUrl.text, imagesData);
@@ -369,8 +341,8 @@ class _AddProductState extends State<AddProduct> {
             value: catId,
             items: categoryList?.map((item) {
               return DropdownMenuItem(
-                value: item['id'],
-                child: Text(item['cname']),
+                value: item.id??'',
+                child: TextWidget(title:item.cname??''),
               );
             })?.toList(),
             onChanged: (newValue) {
