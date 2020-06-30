@@ -1,13 +1,10 @@
-import 'dart:convert';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:popwoot/src/main/config/constraints.dart';
+import 'package:popwoot/src/main/api/model/products_model.dart';
+import 'package:popwoot/src/main/api/repositories/product_repository.dart';
 import 'package:popwoot/src/main/ui/widgets/add_review_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/image_load_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
-import 'package:popwoot/src/main/utils/global.dart';
 import 'package:popwoot/src/res/fonts.dart';
 
 class ProductList extends StatefulWidget {
@@ -16,62 +13,31 @@ class ProductList extends StatefulWidget {
 }
 
 class _ProductListState extends State<ProductList> {
-  List productList = [];
-  Dio dio;
+  List<ProductListData> productList = [];
   bool _isLoading = true;
-  String cid = '';
+  ProductRepository _repository;
+
 
   @override
   void initState() {
     super.initState();
-    dio = Dio();
+    _repository=ProductRepository(context);
   }
 
-  void getProductAllAsync() async {
-    try {
-      final response = await dio.get('${Config.geProductsUrl}/$cid');
-      debugPrint("product list url: : '${Config.geProductsUrl}/$cid'");
 
-      if (response.statusCode == 200) {
-        final responseBody = jsonDecode(jsonEncode(response.data));
-        debugPrint("product list response :" + responseBody.toString());
-
-        if (responseBody['status']) {
-          hideLoader();
-          setState(() {
-            productList = responseBody['data'];
-          });
-        }
-      }
-    } on DioError catch (e) {
-      var errorMessage = jsonDecode(jsonEncode(e.response.data));
-      var statusCode = e.response.statusCode;
-
-      if (statusCode == 400) {
-        hideLoader();
-        Global.toast(errorMessage['message']);
-      } else if (statusCode == 401) {
-        hideLoader();
-        Global.toast(errorMessage['message']);
-      } else {
-        hideLoader();
-        Global.toast('Something went wrong');
-      }
-    }
-  }
-
-  void hideLoader() {
-    setState(() {
-      _isLoading = false;
+  void getOnlyProducts(String cid){
+    _repository.findAllProducts(cid).then((value) {
+      setState(() {
+        _isLoading = false;
+        productList = value;
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
     List data = ModalRoute.of(context).settings.arguments;
-    cid = data[1];
-    debugPrint("product list:" + data.toString());
-    getProductAllAsync();
+    getOnlyProducts(data[1]??'0');
 
     return Scaffold(
       appBar: AppBar(
@@ -94,36 +60,35 @@ class _ProductListState extends State<ProductList> {
                   child: ListView.builder(
                       itemCount: productList.length,
                       itemBuilder: (context, index) =>
-                          buildCardView(context, index)),
+                          buildCardView(context,productList[index])),
                 ),
     );
   }
 
-  Widget buildCardView(BuildContext context, int index) {
-    final i = productList[index];
+  Widget buildCardView(BuildContext context, ProductListData item) {
     return Container(
         margin: EdgeInsets.only(left: 2, right: 5),
         child: Card(
           elevation: 3,
           child: ListTile(
             leading: SizedBox(
-                width: 80.0, child: ImageLoadWidget(imageUrl: i['imgpath'])),
+                width: 80.0, child: ImageLoadWidget(imageUrl: item.imgpath)),
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                TextWidget(title: i['pname'], isBold: true, fontSize: 14.0),
+                TextWidget(title: item.pname??'', isBold: true, fontSize: 14.0),
                 AddReviewWidget(data: {
-                  "pid": i['id'],
-                  "pname": i['pname'],
-                  "pdesc": i['pdescription'],
-                  "ipath": i['imgpath'],
+                  "pid": item.id??'0',
+                  "pname": item.pname??'',
+                  "pdesc": item.pdescription??'',
+                  "ipath": item.imgpath,
                 }),
               ],
             ),
             subtitle: Padding(
                 padding: const EdgeInsets.only(top:5.0,bottom: 5.0),
-                child: TextWidget(title: i['pdescription'], fontSize: 12.0)),
+                child: TextWidget(title: item.pdescription, fontSize: 12.0)),
           ),
         ));
   }

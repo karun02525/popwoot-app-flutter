@@ -1,16 +1,13 @@
-import 'dart:convert';
 import 'dart:ui';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:popwoot/src/main/config/constraints.dart';
-import 'package:popwoot/src/main/ui/widgets/add_review_widget.dart';
-import 'package:popwoot/src/main/ui/widgets/home_like_widget.dart';
+import 'package:popwoot/src/main/api/model/product_model.dart';
+import 'package:popwoot/src/main/api/model/reviews_model.dart';
+import 'package:popwoot/src/main/api/repositories/reviews_details_repository.dart';
 import 'package:popwoot/src/main/ui/widgets/image_load_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/rating_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
-import 'package:popwoot/src/main/utils/global.dart';
 import 'package:popwoot/src/res/fonts.dart';
 
 class ReviewDetails extends StatefulWidget {
@@ -19,96 +16,42 @@ class ReviewDetails extends StatefulWidget {
 }
 
 class _ReviewDetailsState extends State<ReviewDetails> {
-  List items = [];
-  dynamic productData;
-  Dio dio;
+  List<ReviewsList> items = [];
+  ProductData productData;
+
   bool _isLoading = true;
+  ReviewsDetailsRepository _repository;
 
   @override
   void initState() {
     super.initState();
-    dio = Dio();
+    _repository=ReviewsDetailsRepository(context);
   }
 
-  void getProductApiAsync(String pcode) async {
-    try {
-      final response = await dio.get('${Config.getReviewDetailsUrl}/$pcode');
-      debugPrint('print api object : ${Config.getReviewDetailsUrl}/$pcode ');
-      if (response.statusCode == 200) {
-        final responseBody = jsonDecode(jsonEncode(response.data));
-        debugPrint('print api object :' + responseBody.toString());
-        if (responseBody['status']) {
-           getProductReviewApiAsync(pcode);
-          productData = responseBody['idata'];
-        }
-      }
-    } on DioError catch (e) {
-      var errorMessage = jsonDecode(jsonEncode(e.response.data));
-      var statusCode = e.response.statusCode;
 
-      debugPrint("print: error :" + errorMessage.toString());
-      debugPrint("print: statusCode :" + statusCode.toString());
-
-      if (statusCode == 400) {
-        hideLoader();
-        Global.toast(errorMessage['message']);
-      } else if (statusCode == 401) {
-        hideLoader();
-        Global.toast(errorMessage['message']);
-      } else {
-        hideLoader();
-        Global.toast('Something went wrong');
-      }
-    }
-  }
-
-  void getProductReviewApiAsync(String pcode) async {
-    try {
-      final response =
-          await dio.get('${Config.getReviewListDetailsUrl}/$pcode/1');
-      debugPrint('print api List : ${Config.getReviewListDetailsUrl}/$pcode/1');
-
-      if (response.statusCode == 200) {
-        final responseBody = jsonDecode(jsonEncode(response.data));
-        if (responseBody['status']) {
-          debugPrint('print api List :' + responseBody.toString());
-          hideLoader();
-          setState(() {
-            items = responseBody['data'];
-          });
-        }
-      }
-    } on DioError catch (e) {
-      var errorMessage = jsonDecode(jsonEncode(e.response.data));
-      var statusCode = e.response.statusCode;
-
-      debugPrint("print: error :" + errorMessage.toString());
-      debugPrint("print: statusCode :" + statusCode.toString());
-
-      if (statusCode == 400) {
-        hideLoader();
-        Global.toast(errorMessage['message']);
-      } else if (statusCode == 401) {
-        hideLoader();
-        Global.toast(errorMessage['message']);
-      } else {
-        hideLoader();
-        Global.toast('Something went wrong');
-      }
-    }
-  }
-
-  void hideLoader() {
-    setState(() {
-      _isLoading = false;
+  void getOnlyProduct(String pid){
+    _repository.getOnlyProduct(pid).then((value) {
+      findAllReviews(pid);
+      productData = value;
     });
   }
+
+  void findAllReviews(String pid){
+    _repository.findAllReviews(pid).then((value) {
+      setState(() {
+        _isLoading=false;
+        items = value;
+      });
+    });
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
     List data = ModalRoute.of(context).settings.arguments;
     setState(() {
-      getProductApiAsync(data[1]);
+      getOnlyProduct(data[1]??'0');
     });
 
     return Scaffold(
@@ -132,19 +75,18 @@ class _ReviewDetailsState extends State<ReviewDetails> {
                     return buildHeader(productData);
                   }
                   index -= 1;
-                  return buildProductCard(context, index);
+                  return buildProductCard(context,items[index]);
                 }));
   }
 
-  Widget buildProductCard(BuildContext context, int index) {
-    var item=items[index];
+  Widget buildProductCard(BuildContext context, ReviewsList item,) {
     return Container(
       color: Colors.white,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          getHeadTitle(item, index),
+          getHeadTitle(item),
           paddingView(item),
           Container(height: 3.0, color: Colors.grey[200]),
         ],
@@ -152,17 +94,17 @@ class _ReviewDetailsState extends State<ReviewDetails> {
     );
   }
 
-  Widget paddingView(item){
+  Widget paddingView(ReviewsList item){
     return Container(
       margin: EdgeInsets.only(left:7.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          RatingWidget(rating: item['astar']),
+          RatingWidget(rating: item.astar??'0'),
           Padding(
             padding: const EdgeInsets.only(left: 5.0),
-            child: TextWidget(title: item['pdesc'], fontSize: 14.0),
+            child: TextWidget(title: item.pdesc??'', fontSize: 14.0),
           ),
           Divider(),
           //HomeLikeCmt(item: item),
@@ -174,13 +116,13 @@ class _ReviewDetailsState extends State<ReviewDetails> {
 
 
 
-  Widget getHeadTitle(item, index) {
+  Widget getHeadTitle(ReviewsList item) {
     return Container(
       margin: EdgeInsets.all(5.0),
       child: Row(
         children: <Widget>[
-          ImageLoadWidget(imageUrl:item['userimg'],name:item['user'],isProfile: true),
-          setContent(item['user'], item['pname'], item['rdate'])
+          ImageLoadWidget(imageUrl:item.userimg,name:item.user??'',isProfile: true),
+          setContent(item.user??'', item.pname??'', item.rdate??'---')
         ],
       ),
     );
@@ -202,7 +144,7 @@ class _ReviewDetailsState extends State<ReviewDetails> {
                 isBold: true,
               ),
               TextWidget(
-                title: '  reviewed            ',
+                title: '  reviewed      ',
                 fontSize: 12.0,
               ),
               TextWidget(
@@ -215,23 +157,23 @@ class _ReviewDetailsState extends State<ReviewDetails> {
       ),
     );
   }
-  Widget buildHeader(item) {
+  Widget buildHeader(ProductData item) {
     return Container(
       color: Colors.white,
       child: Column(
          children: <Widget>[
-          ImageLoadWidget(imageUrl:productData['ipath']),
+          ImageLoadWidget(imageUrl:productData.ipath),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.only(left:5.0,top: 5.0),
-                child: RatingWidget(rating:item['astar']),
+                child: RatingWidget(rating:item.astar??'0'),
               ),
               Padding(
                 padding: const EdgeInsets.only(right:10.0,top: 5.0),
-                child: AddReviewWidget(data:item),
+               // child: AddReviewWidget(data:item),
               )
             ],
           ),
@@ -239,7 +181,7 @@ class _ReviewDetailsState extends State<ReviewDetails> {
             alignment: Alignment.topLeft,
             child: Padding(padding: EdgeInsets.only(left: 10.0,bottom: 10.0),
               child: TextWidget(
-                  title: productData['pdesc'] == null ? "" : productData['pdesc']),
+                  title: productData.pdesc??'N.A'),
             ),
           ),
           Container(height: 10.0, color: Colors.grey[200]),

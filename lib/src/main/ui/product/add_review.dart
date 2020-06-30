@@ -6,7 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:popwoot/src/main/api/repositories/product_repository.dart';
+import 'package:popwoot/src/main/api/repositories/add_product_repository.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
 import 'package:popwoot/src/main/ui/learn/audio_test.dart';
 import 'package:popwoot/src/main/ui/widgets/button_widget.dart';
@@ -42,11 +42,11 @@ class _AddReviewState extends State<AddReview> {
   bool isHide2 = false;
   var pickedFile;
 
-  ProductRepository _repository;
+  AddProductRepository _repository;
   @override
   void initState() {
     super.initState();
-    _repository = ProductRepository(context);
+    _repository = AddProductRepository(context);
   }
 
   Future _showPhotoLibrary(bool isCamera) async {

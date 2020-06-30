@@ -9,7 +9,7 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:popwoot/src/main/api/model/category_model.dart';
 import 'package:popwoot/src/main/api/repositories/category_repository.dart';
-import 'package:popwoot/src/main/api/repositories/product_repository.dart';
+import 'package:popwoot/src/main/api/repositories/add_product_repository.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
 import 'package:popwoot/src/main/ui/navigation/drawer_navigation.dart';
 import 'package:popwoot/src/main/ui/widgets/button_widget.dart';
@@ -45,14 +45,14 @@ class _AddProductState extends State<AddProduct> {
   bool isHide1 = true;
   bool isHide2 = false;
   bool _isLoading=true;
-  ProductRepository _repository;
+  AddProductRepository _repository;
 
   List<DataList> categoryList=[];
   CategoryRepository _catRepository;
   @override
   void initState() {
     super.initState();
-    _repository = ProductRepository(context);
+    _repository = AddProductRepository(context);
     _catRepository = CategoryRepository(context);
     getCategory();
   }
