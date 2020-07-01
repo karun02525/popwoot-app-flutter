@@ -20,7 +20,7 @@ class _ProfileState extends State<Profile> {
   bool isLogin = false;
   ProfileRepository _repository;
   List<DraftList> draftList;
-  List<RevieswModel> reviewswList;
+  List<ReviewsModel> reviewswList;
 
   @override
   void initState() {

@@ -28,7 +28,7 @@ class ProfileRepository{
   }
 
   //Profile My Reviews
-  Future<List<RevieswModel>> findAllReview() {
+  Future<List<ReviewsModel>> findAllReview() {
     var dio =CustomDio.withAuthentication().instance;
     return dio.get(Config.getHomeUrl).then((res){
       return HomeReviewModel.fromJson(res.data).data;

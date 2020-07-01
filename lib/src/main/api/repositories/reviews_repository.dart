@@ -51,5 +51,15 @@ class ReviewsRepository{
     });
   }
 
-
+  //do likes
+  Future<bool> doLikes(String rid) async {
+    var dio =CustomDio.withAuthentication().instance;
+    return await dio.get('${Config.doReviewLikeUrl}/$rid').then((res){
+      if (res.statusCode == 200) {
+        return true;
+      }
+    }).catchError((e) {
+      return ApiErrorHandel.errorHandel(context,e);
+    });
+  }
 }

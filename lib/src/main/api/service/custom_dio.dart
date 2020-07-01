@@ -20,6 +20,8 @@ class CustomDio{
     print('*************************@@**********************************');
     print('send request：path:${options.path}，baseURL:${options.baseUrl}');
     print('*************************@@@@*******************************');
+    print('JWT: Token:  '+UserPreference().token);
+    print('*************************@@@@*******************************');
     options.headers['authorization']='Bearer '+UserPreference().token;
   }
 

@@ -16,7 +16,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
 
-  List<RevieswModel> revieswList=[];
+  List<ReviewsModel> revieswList=[];
   ProfileRepository _repository;
   bool _isLoading = true;
 
@@ -63,7 +63,7 @@ class _HomeState extends State<Home> {
                 : ListView.builder(
                     itemCount: null == revieswList ? 0 : revieswList.length,
                     itemBuilder: (context, index) =>
-                        HomeWidget(items: revieswList, index: index)));
+                        HomeWidget(item:revieswList[index])));
   }
 
 

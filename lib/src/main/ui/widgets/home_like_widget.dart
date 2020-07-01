@@ -1,13 +1,8 @@
-import 'dart:convert';
-
-import 'package:audioplayers/audioplayers.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:popwoot/src/main/api/model/home_reviews_model.dart';
-import 'package:popwoot/src/main/config/constraints.dart';
+import 'package:popwoot/src/main/api/repositories/reviews_repository.dart';
 import 'package:popwoot/src/main/ui/product/add_comment.dart';
-import 'package:popwoot/src/main/utils/global.dart';
 import 'package:popwoot/src/main/utils/utils.dart';
 import 'package:popwoot/src/res/app_icons.dart';
 
@@ -15,7 +10,7 @@ import 'add_review_widget.dart';
 import 'icon_widget.dart';
 
 class HomeLikeCmt extends StatefulWidget {
-  final RevieswModel item;
+  final ReviewsModel item;
 
   HomeLikeCmt({Key key, this.item}) : super(key: key);
 
@@ -24,11 +19,10 @@ class HomeLikeCmt extends StatefulWidget {
 }
 
 class _HomeLikeCmtState extends State<HomeLikeCmt> {
-  RevieswModel item;
+  ReviewsModel item;
   _HomeLikeCmtState(this.item);
 
   dynamic likeData;
-  Dio dio;
   bool isLike = false;
   int likeCount = 0;
   String likeMsg = "Like";
@@ -37,25 +31,26 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
   String youtubeLink = '';
   int commentCount = 0;
 
+  ReviewsRepository _repository;
+
   @override
   void initState() {
     super.initState();
-    dio = Dio();
+    _repository = ReviewsRepository(context);
     parseData();
   }
 
   void parseData() {
-    rid = item.id;
-    likeCount = item.nlike == null ? 0 : item.nlike;
-    commentCount = item.ncomment == null ? 0 : item.ncomment;
-    youtubeLink = item.youtubeurl == null ? '' : item.youtubeurl;
+    rid = item.id ?? '0';
+    likeCount = item.nlike ?? 0;
+    commentCount = item.ncomment ?? 0;
+    youtubeLink = item.youtubeurl ?? '';
 
     if (item.nrating == 'Y') {
       isLike = true;
       likeMsg = 'Likes';
     } else {
       isLike = false;
-      likeMsg = 'Unlikes';
     }
 
     if (youtubeLink.toString().contains('https://youtu')) {
@@ -64,45 +59,14 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
       _isYoutube = false;
   }
 
-  void doLikeApiAsync() async {
-    try {
-      Map<String, String> requestHeaders = {
-        'Content-type': 'application/json',
-        'Accept': 'application/json',
-        'authorization': 'Bearer ${Config.token}'
-      };
-
-      final response = await dio.get('${Config.doReviewLikeUrl}/$rid',
-          options: Options(headers: requestHeaders));
-
-      if (response.statusCode == 200) {
-        final responseBody = jsonDecode(jsonEncode(response.data));
-        if (responseBody['status']) {
-          // doLikeOrDlike(true);
-          setState(() {
-            likeData = responseBody['data'];
-          });
-        }
-      }
-    } on DioError catch (e) {
-      var errorMessage = jsonDecode(jsonEncode(e.response.data));
-      var statusCode = e.response.statusCode;
-
-      if (statusCode == 400) {
-        doLikeOrDlike(false);
-        Global.toast(errorMessage['message']);
-      } else if (statusCode == 401) {
-        doLikeOrDlike(false);
-        Global.toast(errorMessage['message']);
-      } else {
-        doLikeOrDlike(false);
-        Global.toast('Something went wrong');
-      }
-    }
+  void doLikes() {
+    _repository.doLikes(rid).then((value) {
+      if (value) {}
+    });
   }
 
   void doLikeToggle() {
-    doLikeApiAsync();
+    doLikes();
     setState(() {
       if (isLike == false) {
         doLikeOrDlike(true);
@@ -121,7 +85,9 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
         likeMsg = 'Likes';
       } else {
         likeCount--;
-        likeMsg = 'Unlikes';
+        if(likeCount==0){
+          likeMsg = 'Like';
+        }
       }
     });
   }
@@ -145,7 +111,7 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
               visible: _isYoutube),
           IconWidget(
               icon: isLike ? Icons.favorite : Icons.favorite_border,
-              mgs: '${likeCount} $likeMsg',
+              mgs: '$likeCount $likeMsg',
               onTap: () {
                 doLikeToggle();
               }),

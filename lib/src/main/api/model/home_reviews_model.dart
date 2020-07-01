@@ -14,13 +14,13 @@ class HomeReviewModel {
 
   bool status;
   String message;
-  List<RevieswModel> data;
+  List<ReviewsModel> data;
   dynamic idata;
 
   factory HomeReviewModel.fromJson(Map<String, dynamic> json) => HomeReviewModel(
     status: json["status"],
     message: json["message"],
-    data: List<RevieswModel>.from(json["data"].map((x) => RevieswModel.fromJson(x))),
+    data: List<ReviewsModel>.from(json["data"].map((x) => ReviewsModel.fromJson(x))),
     idata: json["idata"],
   );
 
@@ -32,8 +32,8 @@ class HomeReviewModel {
   };
 }
 
-class RevieswModel {
-  RevieswModel({
+class ReviewsModel {
+  ReviewsModel({
     this.id,
     this.pdesc,
     this.comment,
@@ -87,7 +87,7 @@ class RevieswModel {
   int nlike;
   String rdname;
 
-  factory RevieswModel.fromJson(Map<String, dynamic> json) => RevieswModel(
+  factory ReviewsModel.fromJson(Map<String, dynamic> json) => ReviewsModel(
     id: json["id"],
     pdesc: json["pdesc"],
     comment: json["comment"],

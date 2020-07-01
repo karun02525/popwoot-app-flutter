@@ -12,38 +12,38 @@ import 'home_like_widget.dart';
 import 'image_load_widget.dart';
 
 class HomeWidget extends StatelessWidget {
-  List<RevieswModel> items;
-  final int index;
-  HomeWidget({this.items,this.index,});
+  ReviewsModel item;
+  BuildContext context;
+  HomeWidget({this.item});
 
   @override
   Widget build(BuildContext context) {
-    RevieswModel item = items[index];
+    this.context=context;
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          getHeadTitle(context,item),
-          ImageLoadWidget(imageUrl:item.ipath),
-          paddingView(item),
+          getHeadTitle(),
+          ImageLoadWidget(imageUrl:item.imgarray[0]),
+          paddingView(),
           Container(height: 10, color: Colors.grey[200]),
         ],
       ),
     );
   }
 
-  Widget paddingView(RevieswModel item){
+  Widget paddingView(){
     return Container(
       margin: EdgeInsets.only(left:7.0,top: 5.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          RatingWidget(rating: item.astar),
+          RatingWidget(rating: item.astar??'0'),
           Padding(
             padding: const EdgeInsets.only(left: 5.0),
-            child: TextWidget(title: item.pdesc, fontSize: 14.0),
+            child: TextWidget(title: item.rdname??'---', fontSize: 14.0),
           ),
           Divider(),
           HomeLikeCmt(item: item),
@@ -53,19 +53,19 @@ class HomeWidget extends StatelessWidget {
   }
 
 
-  Widget getHeadTitle(context,RevieswModel item) {
+  Widget getHeadTitle() {
     return Container(
       margin: EdgeInsets.all(5.0),
       child: Row(
         children: <Widget>[
-          ImageLoadWidget(imageUrl:item.userimg,name:item.user,isProfile: true),
-          setContent(context,item.pid, item.user, item.pname, item.rdate)
+          ImageLoadWidget(imageUrl:item.userimg,name:item.user??'P',isProfile: true),
+          setContent(item.pid??'0', item.user??'', item.pname??'', item.rdate??'---')
         ],
       ),
     );
   }
 
-  Widget setContent(context,String pid, String name, String pname, String rdate) {
+  Widget setContent(String pid, String name, String pname, String rdate) {
     return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -90,9 +90,7 @@ class HomeWidget extends StatelessWidget {
           ),
           InkWell(
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
+                Navigator.push(context, MaterialPageRoute(
                         builder: (context) => ReviewDetails(),
                         settings: RouteSettings(arguments: [pname, pid])));
               },
