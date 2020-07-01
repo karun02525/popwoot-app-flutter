@@ -70,8 +70,10 @@ class _AddCommentState extends State<AddComment> {
     };
     _repository.addComment(params).then((value) {
       if (value) {
-        loadCommentList();
-        Global.hideKeyboard();
+        setState(() {
+          loadCommentList();
+          Global.hideKeyboard();
+        });
       }
     });
   }
