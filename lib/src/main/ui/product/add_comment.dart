@@ -8,6 +8,7 @@ import 'package:popwoot/src/main/api/model/review_model.dart';
 import 'package:popwoot/src/main/api/repositories/reviews_repository.dart';
 import 'package:popwoot/src/main/services/shared_preferences.dart';
 import 'package:popwoot/src/main/ui/widgets/add_review_widget.dart';
+import 'package:popwoot/src/main/ui/widgets/home_like_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/image_load_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/rating_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
@@ -85,10 +86,20 @@ class _AddCommentState extends State<AddComment> {
             brightness: Brightness.light,
             titleSpacing: 2.0,
             centerTitle: true,
-            title: TextWidget(
-                title: rname??'Details',
-                fontSize: AppFonts.toolbarSize,
-                isBold: true)),
+            title: Row(children: [
+              TextWidget(
+                  title: rname??'',
+                  fontSize: AppFonts.toolbarSize,
+                  isBold: true),
+
+              TextWidget(
+                  title:'   @Reviewed',
+                  fontSize: 11.0,
+                  isBold: true)
+            ],)
+
+
+        ),
         body: _isLoading
             ? Container(
                 child: Center(
@@ -124,7 +135,7 @@ class _AddCommentState extends State<AddComment> {
       color: Colors.white,
       child: Column(
         children: <Widget>[
-          ImageLoadWidget(imageUrl: productData.ipath),
+          ImageLoadWidget(imageUrl: productData.imgarray[0]),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -133,7 +144,7 @@ class _AddCommentState extends State<AddComment> {
                 padding: const EdgeInsets.only(left: 5.0, top: 5.0),
                 child: RatingWidget(rating: item.astar??'0'),
               ),
-              Padding(
+             /* Padding(
                 padding: const EdgeInsets.only(right: 10.0, top: 5.0),
                 child: AddReviewWidget(data: {
                   'pid':productData.pid,
@@ -141,7 +152,15 @@ class _AddCommentState extends State<AddComment> {
                   'pdesc':productData.pdesc,
                   'ipath':productData.ipath,
                 }),
-              )
+              )*//* Padding(
+                padding: const EdgeInsets.only(right: 10.0, top: 5.0),
+                child: AddReviewWidget(data: {
+                  'pid':productData.pid,
+                  'pname':productData.pname,
+                  'pdesc':productData.pdesc,
+                  'ipath':productData.ipath,
+                }),
+              )*/
             ],
           ),
           Align(
@@ -150,10 +169,13 @@ class _AddCommentState extends State<AddComment> {
               padding: EdgeInsets.only(left: 10.0, bottom: 10.0),
               child: TextWidget(
                   title:
-                  productData.pdesc??''),
+                  productData.comment??''),
             ),
           ),
+          Divider(),
+          HomeLikeCmt(item:item),
           Container(height: 10.0, color: Colors.grey[200]),
+
         ],
       ),
     );
