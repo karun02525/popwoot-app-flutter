@@ -48,6 +48,7 @@ class _ProfileState extends State<Profile> {
   }
 
   void getDraftList() {
+
     _repository.findAllDraft().then((value) {
       setState(() {
         draftList = value;

@@ -18,22 +18,22 @@ class ProfileRepository{
   }
 
   //Profile Draft
-  Future<List<DraftList>> findAllDraft() {
+  Future<List<DraftList>> findAllDraft() async {
       var dio =CustomDio.withAuthentication().instance;
-     return dio.get(Config.getDraftUrl).then((res){
+     return await dio.get(Config.getDraftUrl).then((res){
         return DraftModel.fromJson(res.data).data;
       }).catchError((e) {
-       return ApiErrorHandel.errorHandel(context,e);
+        ApiErrorHandel.errorHandel(context,e);
      });
   }
 
   //Profile My Reviews
-  Future<List<ReviewsModel>> findAllReview() {
+  Future<List<ReviewsModel>> findAllReview() async {
     var dio =CustomDio.withAuthentication().instance;
-    return dio.get(Config.getHomeUrl).then((res){
+    return await dio.get(Config.getHomeUrl).then((res){
       return HomeReviewModel.fromJson(res.data).data;
     }).catchError((e) {
-     return ApiErrorHandel.errorHandel(context,e);
+       ApiErrorHandel.errorHandel(context,e);
     });
   }
 
