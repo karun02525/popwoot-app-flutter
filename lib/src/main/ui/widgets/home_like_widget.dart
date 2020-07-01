@@ -10,8 +10,7 @@ import 'add_review_widget.dart';
 import 'icon_widget.dart';
 
 class HomeLikeCmt extends StatefulWidget {
-  final ReviewsModel item;
-
+  final dynamic item;
   HomeLikeCmt({Key key, this.item}) : super(key: key);
 
   @override
@@ -19,7 +18,7 @@ class HomeLikeCmt extends StatefulWidget {
 }
 
 class _HomeLikeCmtState extends State<HomeLikeCmt> {
-  ReviewsModel item;
+  dynamic item;
   _HomeLikeCmtState(this.item);
 
   dynamic likeData;
@@ -122,9 +121,8 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => AddComment(),
-                      settings:
-                          RouteSettings(arguments: [item.pname, item.id])));
+                      builder: (context) => AddComment(rid:item.id,rname:item.pname),
+                  ));
             },
           ),
           AddReviewWidget(data: {

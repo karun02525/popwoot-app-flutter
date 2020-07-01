@@ -52,11 +52,7 @@ class _ScannerState extends State<Scanner> {
            var data=responseBody['idata'];
            Navigator.push(context,
                MaterialPageRoute(
-                   builder: (context) => ReviewDetails(),
-                   settings: RouteSettings(
-                       arguments: [data['pname'],data['pid']]
-                   )
-               )
+                   builder: (context) => ReviewDetails(pid:data['pid'],pname:data['pname']))
            );
          }
        }

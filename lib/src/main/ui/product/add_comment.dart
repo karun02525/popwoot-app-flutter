@@ -1,12 +1,13 @@
+import 'dart:async';
 import 'dart:ui';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:popwoot/src/main/api/model/comment_model.dart';
 import 'package:popwoot/src/main/api/model/review_model.dart';
 import 'package:popwoot/src/main/api/repositories/reviews_repository.dart';
 import 'package:popwoot/src/main/services/shared_preferences.dart';
+import 'package:popwoot/src/main/ui/widgets/add_review_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/image_load_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/rating_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
@@ -14,17 +15,21 @@ import 'package:popwoot/src/main/utils/global.dart';
 import 'package:popwoot/src/res/fonts.dart';
 
 class AddComment extends StatefulWidget {
+  final String rid,rname;
+  AddComment({Key key,this.rid,this.rname}): super(key: key);
+
   @override
-  _AddCommentState createState() => _AddCommentState();
+  _AddCommentState createState() => _AddCommentState(rid,rname);
 }
 
 class _AddCommentState extends State<AddComment> {
+  String rid,rname;
+  _AddCommentState(this.rid,this.rname);
 
   bool _isLoading = true;
   String name,avatar;
   final _textController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
-  String rid = '';
   List<CommentList> items = [];
   Idata productData;
   ReviewsRepository _repository;
@@ -36,6 +41,9 @@ class _AddCommentState extends State<AddComment> {
     avatar=pref.avatar;
     super.initState();
     _repository=ReviewsRepository(context);
+
+    Timer(Duration(seconds: 1), () => getOnlyReview(rid??'0'));
+
   }
 
   void getOnlyReview(String rid){
@@ -70,20 +78,13 @@ class _AddCommentState extends State<AddComment> {
 
   @override
   Widget build(BuildContext context) {
-    List data = ModalRoute.of(context).settings.arguments;
-    debugPrint("Comment Screen: " + data.toString());
-    setState(() {
-      rid = data[1]??'0';
-      getOnlyReview(rid);
-    });
-
     return Scaffold(
         appBar: AppBar(
             brightness: Brightness.light,
             titleSpacing: 2.0,
             centerTitle: true,
             title: TextWidget(
-                title: "${data[0]}",
+                title: rname??'Details',
                 fontSize: AppFonts.toolbarSize,
                 isBold: true)),
         body: _isLoading
@@ -132,7 +133,12 @@ class _AddCommentState extends State<AddComment> {
               ),
               Padding(
                 padding: const EdgeInsets.only(right: 10.0, top: 5.0),
-              //  child: AddReviewWidget(data: item),
+                child: AddReviewWidget(data: {
+                  'pid':productData.pid,
+                  'pname':productData.pname,
+                  'pdesc':productData.pdesc,
+                  'ipath':productData.ipath,
+                }),
               )
             ],
           ),

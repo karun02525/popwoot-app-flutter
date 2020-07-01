@@ -88,7 +88,7 @@ class _AddReviewState extends State<AddReview> {
   @override
   void dispose() {
     //  if(editComment.text.isNotEmpty){
-    postApi(editComment.text, editYoutube.text, null, 0);
+   // postApi(editComment.text, editYoutube.text, null, 0);
     //}
     super.dispose();
   }

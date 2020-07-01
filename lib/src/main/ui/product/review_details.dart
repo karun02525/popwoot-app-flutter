@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
@@ -5,17 +6,25 @@ import 'package:flutter/material.dart';
 import 'package:popwoot/src/main/api/model/product_model.dart';
 import 'package:popwoot/src/main/api/model/reviews_model.dart';
 import 'package:popwoot/src/main/api/repositories/reviews_details_repository.dart';
+import 'package:popwoot/src/main/ui/widgets/add_review_widget.dart';
+import 'package:popwoot/src/main/ui/widgets/home_like_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/image_load_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/rating_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
 import 'package:popwoot/src/res/fonts.dart';
 
 class ReviewDetails extends StatefulWidget {
+  final String pid,pname;
+  ReviewDetails({Key key,this.pid,this.pname}): super(key: key);
+
   @override
-  _ReviewDetailsState createState() => _ReviewDetailsState();
+  _ReviewDetailsState createState() => _ReviewDetailsState(pid,pname);
 }
 
 class _ReviewDetailsState extends State<ReviewDetails> {
+  final String pid,pname;
+  _ReviewDetailsState(this.pid,this.pname);
+
   List<ReviewsList> items = [];
   ProductData productData;
 
@@ -26,6 +35,8 @@ class _ReviewDetailsState extends State<ReviewDetails> {
   void initState() {
     super.initState();
     _repository=ReviewsDetailsRepository(context);
+
+    Timer(Duration(seconds: 1), () => getOnlyProduct(pid??'0'));
   }
 
 
@@ -49,18 +60,13 @@ class _ReviewDetailsState extends State<ReviewDetails> {
 
   @override
   Widget build(BuildContext context) {
-    List data = ModalRoute.of(context).settings.arguments;
-    setState(() {
-      getOnlyProduct(data[1]??'0');
-    });
-
     return Scaffold(
         appBar: AppBar(
             brightness: Brightness.light,
             titleSpacing: 2.0,
             centerTitle: true,
             title: TextWidget(
-                title: "${data[0]}",
+                title: pname??'Details',
                 fontSize: AppFonts.toolbarSize,
                 isBold: true)),
         body: _isLoading ? Container(
@@ -104,10 +110,10 @@ class _ReviewDetailsState extends State<ReviewDetails> {
           RatingWidget(rating: item.astar??'0'),
           Padding(
             padding: const EdgeInsets.only(left: 5.0),
-            child: TextWidget(title: item.pdesc??'', fontSize: 14.0),
+            child: TextWidget(title: item.comment??'', fontSize: 14.0),
           ),
           Divider(),
-          //HomeLikeCmt(item: item),
+          HomeLikeCmt(item:item),
         ],
       ),
     );
@@ -173,7 +179,12 @@ class _ReviewDetailsState extends State<ReviewDetails> {
               ),
               Padding(
                 padding: const EdgeInsets.only(right:10.0,top: 5.0),
-               // child: AddReviewWidget(data:item),
+                child: AddReviewWidget(data:{
+                  'pid':productData.pid,
+                  'pname':productData.pname,
+                  'pdesc':productData.pdesc,
+                  'ipath':productData.ipath,
+                }),
               )
             ],
           ),

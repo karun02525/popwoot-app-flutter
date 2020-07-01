@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:popwoot/src/main/ui/product/add_review.dart';
-import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
 import 'package:popwoot/src/res/app_icons.dart';
 
 import 'icon_widget.dart';
@@ -23,11 +22,11 @@ class AddReviewWidget extends StatelessWidget {
               MaterialPageRoute(
                   builder: (context) => AddReview(),
                   settings: RouteSettings(arguments: [
-                    data['pid']==null ? '---':data['pid'],
-                    data['pname']==null ? '---':data['pname'],
-                    data['pdesc']==null ? '---':data['pdesc'],
-                    data['ipath']==null ? '---':data['ipath'],
-                    data['comment']==null ? "":data['comment'],
+                    data['pid']??'0',
+                    data['pname']??'N.A',
+                    data['pdesc']??'N.A',
+                    data['ipath']??'',
+                    data['comment']??'',
                   ])));
         },
       ),

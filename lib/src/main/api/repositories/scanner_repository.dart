@@ -28,12 +28,8 @@ class ScannerRepository {
       final responseBody = jsonDecode(jsonEncode(response.data));
       if (responseBody['status']) {
         var data = responseBody['idata'];
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => ReviewDetails(),
-                settings:
-                    RouteSettings(arguments: [data['pname'], data['pid']])));
+        Navigator.push(context,MaterialPageRoute(
+                builder: (context) => ReviewDetails(pid:data['pid'],pname:data['pname'])));
       }
     }
   }

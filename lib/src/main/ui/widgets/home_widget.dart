@@ -91,8 +91,7 @@ class HomeWidget extends StatelessWidget {
           InkWell(
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(
-                        builder: (context) => ReviewDetails(),
-                        settings: RouteSettings(arguments: [pname, pid])));
+                        builder: (context) => ReviewDetails(pid:item.pid,pname:item.pname)));
               },
               child: TextWidget(
                 title: pname,
