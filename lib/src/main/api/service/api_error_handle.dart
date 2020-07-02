@@ -33,7 +33,10 @@ class ApiErrorHandel{
     } else if (statusCode == 404) {
       Global.toast(errorMessage['message']);
       return false;
-    } else {
+    } else if (statusCode == 500) {
+      Global.toast('Something went wrong please try again!!');
+      return false;
+    }else {
       Global.toast('Something went wrong');
       return false;
     }

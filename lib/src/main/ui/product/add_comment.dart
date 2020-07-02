@@ -11,6 +11,7 @@ import 'package:popwoot/src/main/ui/widgets/add_review_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/home_like_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/image_load_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/rating_widget.dart';
+import 'package:popwoot/src/main/ui/widgets/review_header_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
 import 'package:popwoot/src/main/utils/global.dart';
 import 'package:popwoot/src/res/fonts.dart';
@@ -135,6 +136,7 @@ class _AddCommentState extends State<AddComment> {
       color: Colors.white,
       child: Column(
         children: <Widget>[
+          ReviewHeaderWidget(item:item),
           ImageLoadWidget(imageUrl: productData.imgarray[0]),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -143,24 +145,7 @@ class _AddCommentState extends State<AddComment> {
               Padding(
                 padding: const EdgeInsets.only(left: 5.0, top: 5.0),
                 child: RatingWidget(rating: item.astar??'0'),
-              ),
-             /* Padding(
-                padding: const EdgeInsets.only(right: 10.0, top: 5.0),
-                child: AddReviewWidget(data: {
-                  'pid':productData.pid,
-                  'pname':productData.pname,
-                  'pdesc':productData.pdesc,
-                  'ipath':productData.ipath,
-                }),
-              )*//* Padding(
-                padding: const EdgeInsets.only(right: 10.0, top: 5.0),
-                child: AddReviewWidget(data: {
-                  'pid':productData.pid,
-                  'pname':productData.pname,
-                  'pdesc':productData.pdesc,
-                  'ipath':productData.ipath,
-                }),
-              )*/
+              )
             ],
           ),
           Align(

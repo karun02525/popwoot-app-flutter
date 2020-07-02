@@ -1,16 +1,7 @@
-import 'dart:convert';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
-import 'package:popwoot/src/main/config/constraints.dart';
-import 'package:popwoot/src/main/ui/widgets/add_review_widget.dart';
-import 'package:popwoot/src/main/ui/widgets/image_load_widget.dart';
-import 'package:popwoot/src/main/ui/widgets/rating_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/search_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
-import 'package:popwoot/src/main/utils/global.dart';
 
 import '../drawer_navigation.dart';
 
@@ -20,170 +11,36 @@ class Review extends StatefulWidget {
 }
 
 class _ReviewState extends State<Review> {
-  var _serachController = TextEditingController();
-  List items = [];
-  List _serachItem = [];
-  Dio dio;
-  bool _isLoading = true;
-
-  String barcodeScanRes,
-      _value = "What are you looking for";
-
-  Future scanBarcodeNormal() async {
-    barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
-        "#ff6666", "Cancel", true, ScanMode.DEFAULT);
-    setState(() {
-      _value = barcodeScanRes;
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    dio = Dio();
-    getReviewSearchAllAsync();
-  }
-
-  void getReviewSearchAllAsync() async {
-    try {
-      final response = await dio.get(Config.getDefaultReviewUrl+'/1/k');
-      if (response.statusCode == 200) {
-        final responseBody = jsonDecode(jsonEncode(response.data));
-        if (responseBody['status']) {
-          debugPrint("print: error :" + responseBody.toString());
-          hideLoader();
-          setState(() {
-            items = responseBody['data'];
-          });
-        }
-      }
-    } on DioError catch (e) {
-      var errorMessage = jsonDecode(jsonEncode(e.response.data));
-      var statusCode = e.response.statusCode;
-
-      debugPrint("print: error :" + errorMessage.toString());
-      debugPrint("print: statusCode :" + statusCode.toString());
-
-      if (statusCode == 400) {
-        hideLoader();
-        Global.toast(errorMessage['message']);
-      } else if (statusCode == 401) {
-        hideLoader();
-        Global.toast(errorMessage['message']);
-      } else {
-        hideLoader();
-        Global.toast('Something went wrong');
-      }
-    }
-  }
-
-  void hideLoader() {
-    setState(() {
-      _isLoading = false;
-    });
-  }
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        titleSpacing: 2.0,
-        title: TextSearchWidget(),
-        actions: <Widget>[
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.notifications),
-          )
-        ],
-      ),
-      drawer: NavigationDrawer(),
-      body: _isLoading
-          ? Container(
-        child: Center(
-          child: CircularProgressIndicator(),
-        ),
-      )
-          : Container(
-          color: Colors.white,
-          child: Column(
-            children: <Widget>[
-              Expanded(
-                  child: ListView.builder(
-                      itemCount: items?.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                            child: buildCardView(context, index),
-                            onTap: () =>
-                                Scaffold.of(context).showSnackBar(
-                                    SnackBar(content: Text(index.toString()))));
-                      })),
-            ],
-          )),
-    );
-  }
-
-  Widget buildCardView(BuildContext context, int index) {
-    final item = items[index];
-    return Container(
-        margin: EdgeInsets.only(left: 10, right: 10, top: 5),
-        child: Column(
-          children: <Widget>[
-            Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Expanded(
-                    child: getContent(item),
-                    flex: 1,
-                  ),
-                  Expanded(
-                    child: getImage(item),
-                    flex: -1,
-                  )
-                ]),
-            Divider(
-              height: 25.0,
-            ),
+      backgroundColor: Color(0xffFAFAFA),
+        appBar: AppBar(
+          titleSpacing: 2.0,
+          title: TextSearchWidget(),
+          actions: <Widget>[
+            IconButton(
+              onPressed: () {},
+              icon: Icon(Icons.notifications),
+            )
           ],
-        ));
+        ),
+        drawer: NavigationDrawer(),
+        body: emptyScreen());
   }
 
-  Widget getImage(item) {
-    return Container(
-        color: Colors.grey[100],
-        width: 110.0,
-        height: 90.0,
-        child: ImageLoadWidget(imageUrl: item['ipath']));
-  }
-
-  Widget getContent(item) {
-    return Container(
+  Widget emptyScreen() {
+    return Center(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          TextWidget(title: item['pname'], color: Colors.black, isBold: true),
-          TextWidget(
-              title: item['pdesc'],
-              fontSize: 13.0,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis),
-          ratingAndReview(item),
-          TextWidget(title: "mentioned in 0reviews"),
+          SizedBox(height: 100.0),
+          Image.asset(
+            'assets/images/empty_review.jpg',
+          ),
+          SizedBox(height: 10.0),
+          TextWidget(title: 'Search some products',),
         ],
       ),
     );
   }
-
-  Widget ratingAndReview(item) {
-    return Row(
-      children: <Widget>[
-        RatingWidget(rating: item['nrating']),
-        AddReviewWidget(
-            data: [item['pid'], item['pname'], item['pdesc'], item['ipath']])
-      ],
-    );
-  }
-
 }

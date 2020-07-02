@@ -3,9 +3,12 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:popwoot/src/main/api/model/category_model.dart';
 import 'package:popwoot/src/main/api/model/search_model.dart';
+import 'package:popwoot/src/main/api/repositories/category_repository.dart';
 import 'package:popwoot/src/main/api/repositories/search_repository.dart';
 import 'package:popwoot/src/main/ui/product/scanner_barcode.dart';
+import 'package:popwoot/src/main/ui/widgets/grid_category_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/image_load_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/rating_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
@@ -19,44 +22,58 @@ class GlobalSearch extends StatefulWidget {
 
 class _GlobalSearchState extends State<GlobalSearch> {
   bool _isVisible = false;
-  bool _isLoading = false;
+  bool _isLoading = true;
+  bool isEditValue = true;
   var _searchController = TextEditingController();
   final globalKey = GlobalKey<ScaffoldState>();
 
-  SearchRepository  _repository;
-  List<SearchList> items=[];
+  SearchRepository _repository;
+  List<SearchList> items = [];
+  List<DataList> categoryList = [];
+  CategoryRepository _catRepository;
 
   @override
   void initState() {
     super.initState();
-    _repository=SearchRepository(context);
+    _repository = SearchRepository(context);
+    _catRepository = CategoryRepository(context);
+     getCategory();
+  }
+
+  void getCategory() {
+    _catRepository.findAllCategory().then((value) {
+      setState(() {
+        _isLoading = false;
+        categoryList = value;
+      });
+    });
   }
 
   void _search(String query) {
     _repository.searchReviews(query).then((value) {
       setState(() {
-        _isLoading=false;
-        items=value;
+        _isLoading = false;
+        items = value;
       });
     });
   }
 
-
   onSearch(String text) async {
     setState(() {
       if (text.isEmpty) {
+        isEditValue = true;
         _isVisible = false;
         items.clear();
       } else {
-        if(text.length>3) {
-          _isLoading=true;
+        if (text.length > 3) {
+          isEditValue = false;
+          _isLoading = true;
           _search(text);
           _isVisible = true;
         }
       }
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +88,7 @@ class _GlobalSearchState extends State<GlobalSearch> {
               Expanded(
                   child: TextFieldWidget(
                     color: Colors.white,
-                    hintText: 'Search...',
+                    hintText: 'What are you looking for?',
                     controller: _searchController,
                     isRound: false,
                     onChanged: (value) {
@@ -95,7 +112,7 @@ class _GlobalSearchState extends State<GlobalSearch> {
               Expanded(
                   child: IconButton(
                     onPressed: () {
-                      ScannerController(context: context,globalKey: globalKey);
+                      ScannerController(context: context, globalKey: globalKey);
                     },
                     icon: Icon(AppIcons.ic_scanner, color: Colors.white),
                   ),
@@ -108,18 +125,20 @@ class _GlobalSearchState extends State<GlobalSearch> {
                 child: CircularProgressIndicator(),
               ),
             )
-          : items.length == 0
-              ? Container(
-                  child: Center(
-                  child: TextWidget(title:"No data available"),
-                ))
-              : Container(
-                  margin: EdgeInsets.only(top: 5, bottom: 5),
-                  child: ListView.builder(
-                      itemCount: items.length,
-                      itemBuilder: (context, index) =>
-                          buildCardView(context, index)),
-                ),
+          : isEditValue
+              ? GridCategory(categoryList:categoryList)
+              : items.length == 0
+                  ? Container(
+                      child: Center(
+                      child: TextWidget(title: "No data available"),
+                    ))
+                  : Container(
+                      margin: EdgeInsets.only(top: 5, bottom: 5),
+                      child: ListView.builder(
+                          itemCount: items.length,
+                          itemBuilder: (context, index) =>
+                              buildCardView(context, index)),
+                    ),
     );
   }
 
@@ -186,10 +205,9 @@ class _GlobalSearchState extends State<GlobalSearch> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           RatingWidget(rating: item.astar),
-         // AddReviewWidget(data: [item['pid'], item['pname'], item['pdesc'], item['ipath']])
+          // AddReviewWidget(data: [item['pid'], item['pname'], item['pdesc'], item['ipath']])
         ],
       ),
     );
   }
-
 }

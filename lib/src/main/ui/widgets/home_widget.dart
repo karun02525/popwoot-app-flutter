@@ -4,6 +4,7 @@ import 'package:popwoot/src/main/api/model/home_reviews_model.dart';
 import 'package:popwoot/src/main/ui/product/add_review.dart';
 import 'package:popwoot/src/main/ui/product/review_details.dart';
 import 'package:popwoot/src/main/ui/widgets/rating_widget.dart';
+import 'package:popwoot/src/main/ui/widgets/review_header_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
 import 'package:popwoot/src/res/app_icons.dart';
 
@@ -24,7 +25,7 @@ class HomeWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          getHeadTitle(),
+          ReviewHeaderWidget(item:item),
           ImageLoadWidget(imageUrl:item.imgarray[0]),
           paddingView(),
           Container(height: 10, color: Colors.grey[200]),
@@ -52,53 +53,4 @@ class HomeWidget extends StatelessWidget {
     );
   }
 
-
-  Widget getHeadTitle() {
-    return Container(
-      margin: EdgeInsets.all(5.0),
-      child: Row(
-        children: <Widget>[
-          ImageLoadWidget(imageUrl:item.userimg,name:item.user??'P',isProfile: true),
-          setContent(item.pid??'0', item.user??'', item.pname??'', item.rdate??'---')
-        ],
-      ),
-    );
-  }
-
-  Widget setContent(String pid, String name, String pname, String rdate) {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              TextWidget(
-                title: name.toString().toUpperCase(),
-                fontSize: 13.0,
-              ),
-              TextWidget(
-                title: '  reviewed   ',
-                fontSize: 12.0,
-              ),
-              TextWidget(
-                title: '@$rdate',
-                fontSize: 12.0,
-              )
-            ],
-          ),
-          InkWell(
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(
-                        builder: (context) => ReviewDetails(pid:item.pid,pname:item.pname)));
-              },
-              child: TextWidget(
-                title: pname,
-                isBold: true,
-              ))
-        ],
-      ),
-    );
-  }
 }

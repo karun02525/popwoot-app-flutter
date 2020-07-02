@@ -9,6 +9,7 @@ import 'package:popwoot/src/main/ui/profile/draft_widget.dart';
 import 'package:popwoot/src/main/ui/profile/myreviews_widget.dart';
 import 'package:popwoot/src/main/ui/profile/profile_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
+import 'package:popwoot/src/main/utils/global.dart';
 import 'package:popwoot/src/res/fonts.dart';
 
 class Profile extends StatefulWidget {
@@ -26,9 +27,14 @@ class _ProfileState extends State<Profile> {
   void initState() {
     isLogin = UserPreference().isLogin??false;
     super.initState();
-    _repository = ProfileRepository(context);
     if(isLogin) {
+       Global.toast(',,,,,'+isLogin.toString());
+      _repository = ProfileRepository(context);
       getDraftList();
+    }else{
+      setState(() {
+        isLogin=false;
+      });
     }
   }
 
