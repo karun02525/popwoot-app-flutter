@@ -6,14 +6,15 @@ class IconWidget extends StatelessWidget {
   final IconData icon;
   final String mgs;
   Function onTap;
+  bool isDisable;
 
-  IconWidget({this.icon,this.mgs,this.onTap});
+  IconWidget({this.icon,this.mgs,this.onTap,this.isDisable=true});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       child:InkWell(
-        onTap:onTap,
+        onTap:isDisable?onTap:null,
        splashColor: Colors.cyanAccent,
       child: Row(
         children: <Widget>[

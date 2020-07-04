@@ -7,7 +7,9 @@ import 'package:popwoot/src/main/api/model/category_model.dart';
 import 'package:popwoot/src/main/api/model/search_model.dart';
 import 'package:popwoot/src/main/api/repositories/category_repository.dart';
 import 'package:popwoot/src/main/api/repositories/search_repository.dart';
+import 'package:popwoot/src/main/ui/product/review_details.dart';
 import 'package:popwoot/src/main/ui/product/scanner_barcode.dart';
+import 'package:popwoot/src/main/ui/widgets/add_review_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/grid_category_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/image_load_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/rating_widget.dart';
@@ -37,7 +39,7 @@ class _GlobalSearchState extends State<GlobalSearch> {
     super.initState();
     _repository = SearchRepository(context);
     _catRepository = CategoryRepository(context);
-     getCategory();
+    getCategory();
   }
 
   void getCategory() {
@@ -126,7 +128,7 @@ class _GlobalSearchState extends State<GlobalSearch> {
               ),
             )
           : isEditValue
-              ? GridCategory(categoryList:categoryList)
+              ? GridCategory(categoryList: categoryList)
               : items.length == 0
                   ? Container(
                       child: Center(
@@ -157,7 +159,18 @@ class _GlobalSearchState extends State<GlobalSearch> {
                     flex: 1,
                   ),
                   Expanded(
-                    child: getImage(item),
+                    child: Column(
+                      children: [
+                        getImage(item),
+                        SizedBox(height: 5.0,),
+                        AddReviewWidget(data: {
+                          'pid': item.pid,
+                          'pname': item.pname,
+                          'pdesc': item.pdesc,
+                          'ipath': item.ipath,
+                        }),
+                      ],
+                    ),
                     flex: -1,
                   )
                 ]),
@@ -182,7 +195,17 @@ class _GlobalSearchState extends State<GlobalSearch> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          TextWidget(title: item.pname, color: Colors.black, isBold: true),
+
+          InkWell(
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => ReviewDetails(pid:item.pid,pname:item.pname)));
+              },
+              child: TextWidget(
+                title: item.pname??'N.A',
+                isBold: true,
+              )),
+
           SizedBox(height: 5.0),
           TextWidget(
               title: item.pdesc,
@@ -190,22 +213,9 @@ class _GlobalSearchState extends State<GlobalSearch> {
               maxLines: 2,
               overflow: TextOverflow.ellipsis),
           SizedBox(height: 5.0),
-          ratingAndReview(item),
+          RatingWidget(rating: item.astar),
           SizedBox(height: 5.0),
           TextWidget(title: "mentioned in 0 reviews"),
-        ],
-      ),
-    );
-  }
-
-  Widget ratingAndReview(SearchList item) {
-    return Container(
-      margin: EdgeInsets.only(right: 10.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          RatingWidget(rating: item.astar),
-          // AddReviewWidget(data: [item['pid'], item['pname'], item['pdesc'], item['ipath']])
         ],
       ),
     );

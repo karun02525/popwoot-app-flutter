@@ -158,7 +158,7 @@ class _AddCommentState extends State<AddComment> {
             ),
           ),
           Divider(),
-          HomeLikeCmt(item:item),
+          HomeLikeCmt(item:item,isComment:false),
           Container(height: 10.0, color: Colors.grey[200]),
 
         ],

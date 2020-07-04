@@ -15,7 +15,7 @@ class AddProductRepository {
   AddProductRepository(BuildContext cnt){
     this.context=cnt;
     pd = ProgressDialog(this.context, type: ProgressDialogType.Normal);
-    pd.style(message: 'Uploading file...');
+    pd.style(message: 'Loading...');
   }
 
   //Add Reviews

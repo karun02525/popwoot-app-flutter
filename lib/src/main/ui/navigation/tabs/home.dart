@@ -15,8 +15,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-
-  List<ReviewsModel> revieswList=[];
+  List<ReviewsModel> revieswList = [];
   ProfileRepository _repository;
   bool _isLoading = true;
 
@@ -28,15 +27,13 @@ class _HomeState extends State<Home> {
   }
 
   void getReviewList() {
-    _repository.findAllReview().then((value){
+    _repository.findAllReview().then((value) {
       setState(() {
         _isLoading = false;
-        revieswList=value;
+        revieswList = value;
       });
     });
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -58,13 +55,19 @@ class _HomeState extends State<Home> {
         drawer: NavigationDrawer(),
         body: _isLoading
             ? Container(child: Center(child: CircularProgressIndicator()))
-            : revieswList.length == 0
-                ? Container(child: Center(child: TextWidget(title: 'No items available',)))
-                : ListView.builder(
-                    itemCount: null == revieswList ? 0 : revieswList.length,
-                    itemBuilder: (context, index) =>
-                        HomeWidget(item:revieswList[index])));
+            : revieswList == null
+                ? Container(
+                    child:
+                        Center(child: TextWidget(title: 'No items available')))
+                : revieswList.length == 0
+                    ? Container(
+                        child: Center(
+                            child: TextWidget(
+                        title: 'No items available',
+                      )))
+                    : ListView.builder(
+                        itemCount: null == revieswList ? 0 : revieswList.length,
+                        itemBuilder: (context, index) =>
+                            HomeWidget(item: revieswList[index])));
   }
-
-
 }

@@ -11,7 +11,8 @@ import 'icon_widget.dart';
 
 class HomeLikeCmt extends StatefulWidget {
   final dynamic item;
-  HomeLikeCmt({Key key, this.item}) : super(key: key);
+  bool isComment;
+  HomeLikeCmt({Key key, this.item, this.isComment=true}) : super(key: key);
 
   @override
   _HomeLikeCmtState createState() => _HomeLikeCmtState(item);
@@ -117,6 +118,7 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
           IconWidget(
             icon: AppIcons.ic_comment,
             mgs: '$commentCount Comment',
+            isDisable:widget.isComment,
             onTap: () {
               Navigator.push(
                   context,

@@ -9,6 +9,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:popwoot/src/main/api/repositories/add_product_repository.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
 import 'package:popwoot/src/main/ui/learn/audio_test.dart';
+import 'package:popwoot/src/main/ui/navigation/tab_nav_controller.dart';
+import 'package:popwoot/src/main/ui/product/review_details.dart';
 import 'package:popwoot/src/main/ui/widgets/button_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/image_load_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/rating_widget.dart';
@@ -121,12 +123,24 @@ class _AddReviewState extends State<AddReview> {
     } else {
       params = param;
     }
+
+    print('__________________________________________________________');
+    print('___________________   Add Review Data           __________');
+    print('___________________      $params          __________');
+    print('__________________________________________________________');
+
+
     _repository.addReview(params).then((value) {
       if (value) {
         Global.hideKeyboard();
         setState(() {
           _clearAllItems();
         });
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+                builder: (BuildContext context) => TabNavController()
+            )
+        );
       }
     });
   }
@@ -155,7 +169,7 @@ class _AddReviewState extends State<AddReview> {
     ipath = data[3];
 
     setState(() {
-      editComment.text = data[4];
+      //editComment.text = data[4];
     });
 
     return Scaffold(
@@ -208,14 +222,24 @@ class _AddReviewState extends State<AddReview> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            TextWidget(title: pname, isBold: true),
+
+            InkWell(
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => ReviewDetails(pid:pid,pname:pname)));
+                },
+                child: TextWidget(
+                  title: pname??'N.A',
+                  isBold: true,
+                )),
+
+
+
             RatingWidget(
               rating: ratingValue,
               isDisable: true,
               onRatingUpdate: (value) {
-                setState(() {
                   ratingValue = value.toString();
-                });
               },
             ),
             TextWidget(title: pdesc),

@@ -27,13 +27,11 @@ class _ProfileState extends State<Profile> {
   void initState() {
     isLogin = UserPreference().isLogin??false;
     super.initState();
+    _repository = ProfileRepository(context);
+
     if(isLogin) {
-       Global.toast(',,,,,'+isLogin.toString());
-      _repository = ProfileRepository(context);
-      getDraftList();
-    }else{
       setState(() {
-        isLogin=false;
+        getDraftList();
       });
     }
   }
@@ -46,7 +44,6 @@ class _ProfileState extends State<Profile> {
           getDraftList();
           setState(() {
             isLogin = true;
-
           });
         }
       });
@@ -55,12 +52,12 @@ class _ProfileState extends State<Profile> {
 
   void getDraftList() {
 
-    _repository.findAllDraft().then((value) {
+   /* _repository.findAllDraft().then((value) {
       setState(() {
         draftList = value;
       });
     });
-
+*/
     _repository.findAllReview().then((value) {
       setState(() {
         reviewswList = value;
