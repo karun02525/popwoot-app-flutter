@@ -7,9 +7,9 @@ import 'package:popwoot/src/main/api/model/comment_model.dart';
 import 'package:popwoot/src/main/api/model/review_model.dart';
 import 'package:popwoot/src/main/api/repositories/reviews_repository.dart';
 import 'package:popwoot/src/main/services/shared_preferences.dart';
-import 'package:popwoot/src/main/ui/widgets/add_review_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/home_like_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/image_load_widget.dart';
+import 'package:popwoot/src/main/ui/widgets/image_slider_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/rating_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/review_header_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
@@ -35,10 +35,11 @@ class _AddCommentState extends State<AddComment> {
   List<CommentList> items = [];
   Idata productData;
   ReviewsRepository _repository;
+  UserPreference pref;
 
   @override
   void initState() {
-    var pref=UserPreference();
+    pref=UserPreference();
     name=pref.name;
     avatar=pref.avatar;
     super.initState();
@@ -137,7 +138,7 @@ class _AddCommentState extends State<AddComment> {
       child: Column(
         children: <Widget>[
           ReviewHeaderWidget(item:item),
-          ImageLoadWidget(imageUrl: productData.imgarray[0]),
+          ImageSliderWidget(imgList:item.imgarray??[]),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -256,7 +257,12 @@ class _AddCommentState extends State<AddComment> {
               margin: EdgeInsets.symmetric(horizontal: 4.0),
               child: IconButton(
                   icon: const Icon(Icons.send),
-                  onPressed: () => _handleSubmitted(_textController.text)),
+                  onPressed: (){
+                    if(pref.isLogin) {
+                      _handleSubmitted(_textController.text);
+                    }else{
+                      Global.handleSignOut(context);
+                    }}),
             )
           ],
         ),

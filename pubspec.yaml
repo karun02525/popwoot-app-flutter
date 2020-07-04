@@ -45,6 +45,7 @@ dependencies:
   audioplayers: ^0.15.1
   flutter_youtube: ^2.0.0
   get_it:
+  carousel_slider: ^2.2.1
 
 
 

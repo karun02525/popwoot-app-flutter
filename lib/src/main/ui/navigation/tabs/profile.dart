@@ -25,7 +25,7 @@ class _ProfileState extends State<Profile> {
 
   @override
   void initState() {
-    isLogin = UserPreference().isLogin??false;
+    isLogin = UserPreference().isLogin;
     super.initState();
     _repository = ProfileRepository(context);
 

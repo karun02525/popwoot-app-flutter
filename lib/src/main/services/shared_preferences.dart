@@ -50,11 +50,11 @@ class UserPreference {
   }
 
   set isLogin(bool value) {
-    _prefs.setBool('isLogin', value);
+    _prefs.setBool('isLogin', value??false);
   }
 
   get isLogin {
-    return _prefs.getBool('isLogin');
+    return _prefs.getBool('isLogin')??false;
   }
 
   Future<bool> clearSharedPreferences() async {

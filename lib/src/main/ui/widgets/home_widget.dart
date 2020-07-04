@@ -11,6 +11,7 @@ import 'package:popwoot/src/res/app_icons.dart';
 import 'add_review_widget.dart';
 import 'home_like_widget.dart';
 import 'image_load_widget.dart';
+import 'image_slider_widget.dart';
 
 class HomeWidget extends StatelessWidget {
   ReviewsModel item;
@@ -26,7 +27,7 @@ class HomeWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           ReviewHeaderWidget(item:item),
-          ImageLoadWidget(imageUrl:item.imgarray[0]),
+          ImageSliderWidget(imgList:item.imgarray??[]),
           paddingView(),
           Container(height: 10, color: Colors.grey[200]),
         ],

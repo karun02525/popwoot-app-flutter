@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:popwoot/src/main/api/model/home_reviews_model.dart';
 import 'package:popwoot/src/main/api/repositories/reviews_repository.dart';
+import 'package:popwoot/src/main/services/shared_preferences.dart';
 import 'package:popwoot/src/main/ui/product/add_comment.dart';
+import 'package:popwoot/src/main/utils/global.dart';
 import 'package:popwoot/src/main/utils/utils.dart';
 import 'package:popwoot/src/res/app_icons.dart';
 
@@ -113,7 +115,11 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
               icon: isLike ? Icons.favorite : Icons.favorite_border,
               mgs: '$likeCount $likeMsg',
               onTap: () {
-                doLikeToggle();
+                if(UserPreference().isLogin) {
+                  doLikeToggle();
+                }else{
+                  Global.handleSignOut(context);
+                }
               }),
           IconWidget(
             icon: AppIcons.ic_comment,
