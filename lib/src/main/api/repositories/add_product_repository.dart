@@ -18,9 +18,17 @@ class AddProductRepository {
     pd.style(message: 'Loading...');
   }
 
+
+  //Add Reviews
+   addReviewDraft(Map<String, dynamic> params){
+    var dio =CustomDio.withAuthentication().instance;
+    dio.post(Config.addReviewUrl, data: params);
+  }
+
+
   //Add Reviews
   Future<bool> addReview(Map<String, dynamic> params) async{
-    pd.show();
+     pd.show();
     var dio =CustomDio.withAuthentication().instance;
     return await dio.post(Config.addReviewUrl, data: params).then((res) async {
       if (res.statusCode == 200) {

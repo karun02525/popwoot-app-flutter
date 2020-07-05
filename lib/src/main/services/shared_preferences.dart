@@ -18,35 +18,35 @@ class UserPreference {
 
   //get y set name
   set name(String value) {
-    _prefs.setString('name', value);
+    _prefs.setString('name', value??'N.A');
   }
 
   get name {
-    return _prefs.getString('name');
+    return _prefs.getString('name')??'N.A';
   }
 
   set email(String value) {
-    _prefs.setString('email', value);
+    _prefs.setString('email', value??'N.A');
   }
 
   get email {
-    return _prefs.getString('email');
+    return _prefs.getString('email')??'N.A';
   }
 
   set avatar(String value) {
-    _prefs.setString('avatar', value);
+    _prefs.setString('avatar', value??'N.A');
   }
 
   get avatar {
-    return _prefs.getString('avatar');
+    return _prefs.getString('avatar')??'N.A';
   }
 
   set token(String value) {
-    _prefs.setString('token', value);
+    _prefs.setString('token', value??'');
   }
 
   get token {
-    return _prefs.getString('token') ?? '';
+    return _prefs.getString('token')??'N.A';
   }
 
   set isLogin(bool value) {

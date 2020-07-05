@@ -24,30 +24,23 @@ class AddReview extends StatefulWidget {
   _AddReviewState createState() => _AddReviewState();
 }
 
-class _AddReviewState extends State<AddReview> {
+class _AddReviewState extends State<AddReview> with WidgetsBindingObserver {
   final GlobalKey<AnimatedListState> _key = GlobalKey();
   ScrollController _scrollController = new ScrollController();
-
   final editComment = TextEditingController();
   final editYoutube = TextEditingController();
-  String ratingValue = "0";
-  String pid;
-  String pname;
-  String pdesc;
-  String ipath;
-
-  Dio dio;
+  String ratingValue = "0",pid,pname,pdesc,ipath;
   List<File> _items = [];
   File _image;
   final picker = ImagePicker();
-  bool isHide1 = true;
-  bool isHide2 = false;
+  bool isHide1 = true,isHide2 = false;
   var pickedFile;
 
   AddProductRepository _repository;
   @override
   void initState() {
     super.initState();
+     WidgetsBinding.instance.addObserver(this);
     _repository = AddProductRepository(context);
   }
 
@@ -55,7 +48,7 @@ class _AddReviewState extends State<AddReview> {
     if (isCamera) {
       pickedFile = await picker.getImage(
         source: ImageSource.camera,
-        maxHeight: 1062.0,
+        maxHeight: 720.0,
         maxWidth: 1500.0,
       );
     } else {
@@ -88,16 +81,32 @@ class _AddReviewState extends State<AddReview> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if(state==AppLifecycleState.paused){
+      print(editComment.text);
+      if(editComment.text.isNotEmpty){
+
+        Map<String, dynamic> draftParams = {
+          'pid': pid,
+          'pname': pname,
+          'pdesc': pdesc,
+          'comment': editComment.text,
+          'published': 0,
+        };
+        _repository.addReviewDraft(draftParams);
+        Global.toast('Message saved as draft');
+      }
+    }
+  }
+
+  @override
   void dispose() {
-    //  if(editComment.text.isNotEmpty){
-   // postApi(editComment.text, editYoutube.text, null, 0);
-    //}
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
-  void postApi(String comment, String youtubeurl, List<String> imagesData,
-      published) async {
-    dynamic params;
+  void postApi(String comment, String youtubeurl, List<String> imagesData, published) async {
     Map<String, dynamic> param = {
       'pid': pid,
       'pname': pname,
@@ -110,27 +119,7 @@ class _AddReviewState extends State<AddReview> {
       'imgarray': imagesData,
     };
 
-    Map<String, dynamic> draftParams = {
-      'pid': pid,
-      'pname': pname,
-      'pdesc': pdesc,
-      'comment': comment,
-      'published': published,
-    };
-
-    if (published == 0) {
-      params = draftParams;
-    } else {
-      params = param;
-    }
-
-    print('__________________________________________________________');
-    print('___________________   Add Review Data           __________');
-    print('___________________      $params          __________');
-    print('__________________________________________________________');
-
-
-    _repository.addReview(params).then((value) {
+    _repository.addReview(param).then((value) {
       if (value) {
         Global.hideKeyboard();
         setState(() {

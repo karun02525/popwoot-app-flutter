@@ -9,7 +9,6 @@ import 'package:popwoot/src/main/ui/profile/draft_widget.dart';
 import 'package:popwoot/src/main/ui/profile/myreviews_widget.dart';
 import 'package:popwoot/src/main/ui/profile/profile_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
-import 'package:popwoot/src/main/utils/global.dart';
 import 'package:popwoot/src/res/fonts.dart';
 
 class Profile extends StatefulWidget {
@@ -22,20 +21,20 @@ class _ProfileState extends State<Profile> {
   ProfileRepository _repository;
   List<DraftList> draftList;
   List<ReviewsModel> reviewswList;
-
+  bool isLoading = false;
+  UserPreference pref;
   @override
   void initState() {
-    isLogin = UserPreference().isLogin;
     super.initState();
     _repository = ProfileRepository(context);
+    isLogin =UserPreference().isLogin;
 
-    if(isLogin) {
+    if (isLogin) {
       setState(() {
         getDraftList();
       });
     }
   }
-
 
   void _handleSignIn() {
     signInWithGoogle().whenComplete(() {
@@ -50,30 +49,32 @@ class _ProfileState extends State<Profile> {
     });
   }
 
-  void getDraftList() {
+  void getDraftList() async {
+    isLoading = true;
 
-   /* _repository.findAllDraft().then((value) {
+    _repository.findAllDraft().then((value) {
       setState(() {
+        isLoading = false;
         draftList = value;
       });
     });
-*/
+
     _repository.findAllReview().then((value) {
       setState(() {
+        isLoading = false;
         reviewswList = value;
       });
     });
   }
 
-
   void _handleSignOut() {
     signOutGoogle();
-    UserPreference().clearSharedPreferences().then((value){
-       if(value){
-         setState(() {
-           isLogin = false;
-         });
-       }
+    UserPreference().clearSharedPreferences().then((value) {
+      if (value) {
+        setState(() {
+          isLogin = false;
+        });
+      }
     });
   }
 
@@ -81,9 +82,7 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme
-              .of(context)
-              .primaryColor,
+          backgroundColor: Theme.of(context).primaryColor,
           elevation: 0,
           automaticallyImplyLeading: false,
           titleSpacing: 2.0,
@@ -92,7 +91,20 @@ class _ProfileState extends State<Profile> {
               title: "Profile", fontSize: AppFonts.toolbarSize, isBold: true),
         ),
         backgroundColor: Colors.white,
-        body: isLogin ? alreadyLogin() : doLogin());
+        body: isLogin
+            ? Stack(
+                children: [
+                  alreadyLogin(),
+                  Visibility(
+                      visible: isLoading,
+                      child: Container(
+                          child: Center(
+                              child: CupertinoActivityIndicator(
+                        radius: 13.0,
+                      ))))
+                ],
+              )
+            : doLogin());
   }
 
   Widget alreadyLogin() {
@@ -107,7 +119,6 @@ class _ProfileState extends State<Profile> {
                 unselectedLabelColor: Colors.redAccent,
                 indicatorSize: TabBarIndicatorSize.label,
                 labelPadding: EdgeInsets.symmetric(horizontal: 10.0),
-
                 indicator: BoxDecoration(
                     borderRadius: BorderRadius.circular(50),
                     color: Colors.redAccent),
@@ -117,10 +128,13 @@ class _ProfileState extends State<Profile> {
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(50),
                           border:
-                          Border.all(color: Colors.redAccent, width: 1)),
+                              Border.all(color: Colors.redAccent, width: 1)),
                       child: Align(
                         alignment: Alignment.center,
-                        child: TextWidget(title: "Profile", isBold: true,),
+                        child: TextWidget(
+                          title: "Profile",
+                          isBold: true,
+                        ),
                       ),
                     ),
                   ),
@@ -129,10 +143,13 @@ class _ProfileState extends State<Profile> {
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(50),
                           border:
-                          Border.all(color: Colors.redAccent, width: 1)),
+                              Border.all(color: Colors.redAccent, width: 1)),
                       child: Align(
                         alignment: Alignment.center,
-                        child: TextWidget(title: "My Reviews", isBold: true,),
+                        child: TextWidget(
+                          title: "My Reviews",
+                          isBold: true,
+                        ),
                       ),
                     ),
                   ),
@@ -141,21 +158,25 @@ class _ProfileState extends State<Profile> {
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(50),
                           border:
-                          Border.all(color: Colors.redAccent, width: 1)),
+                              Border.all(color: Colors.redAccent, width: 1)),
                       child: Align(
                         alignment: Alignment.center,
-                        child: TextWidget(title: "Draft", isBold: true,),
+                        child: TextWidget(
+                          title: "Draft",
+                          isBold: true,
+                        ),
                       ),
                     ),
                   ),
                 ],
               )),
-          body: TabBarView(
-              children: [
-                ProfileWidget(handleSignOut: _handleSignOut,),
-                MyReviews(reviewswList: reviewswList),
-                DraftWidget(draftList: draftList),
-              ]),
+          body: TabBarView(children: [
+            ProfileWidget(
+              handleSignOut: _handleSignOut,
+            ),
+            MyReviews(reviewswList: reviewswList),
+            DraftWidget(draftList: draftList),
+          ]),
         ),
       ),
     );

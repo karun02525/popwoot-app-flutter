@@ -17,11 +17,13 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   String name, email, avatar;
   @override
   void initState() {
-    var pref=UserPreference();
-    name=pref.name;
-    email=pref.email;
-    avatar=pref.avatar;
     super.initState();
+    setState(() {
+      var pref=UserPreference();
+        name=pref.name.toString().toUpperCase();
+        email=pref.email;
+        avatar=pref.avatar;
+    });
   }
 
   @override

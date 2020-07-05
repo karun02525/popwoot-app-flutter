@@ -38,13 +38,17 @@ class ProfileRepository{
   }
 
 
-  Future<bool> loginUser(List data) {
+  Future<bool> loginUser(List data) async {
     var params = {
       "uname": data[0],
       "uemail": data[1],
       "avatar": data[2],
       "ltoken": data[3]
     };
+
+    print('---------------------------------------------');
+    print('Params Login :: $params');
+    print('______________________________________________');
 
     var dio = CustomDio().instance;
     return dio.post(Config.authenticateUrl, data: params).then((res) async {
