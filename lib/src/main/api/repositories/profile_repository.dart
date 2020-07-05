@@ -17,6 +17,20 @@ class ProfileRepository{
     this.context=cnt;
   }
 
+  //Check Login
+   loginCheck()  {
+      var dio =CustomDio.withAuthentication().instance;
+     return  dio.get(Config.loginCheckUrl).then((res){
+       if(res.statusCode==200) {
+         print('_______________________LoginCheck______________________________');
+         print(res.statusCode.toString());
+         print('_____________________________________________________');
+       }
+      }).catchError((e) {
+        ApiErrorHandel.errorHandel(context,e);
+     });
+  }
+
   //Profile Draft
   Future<List<DraftList>> findAllDraft() async {
       var dio =CustomDio.withAuthentication().instance;
@@ -45,10 +59,6 @@ class ProfileRepository{
       "avatar": data[2],
       "ltoken": data[3]
     };
-
-    print('---------------------------------------------');
-    print('Params Login :: $params');
-    print('______________________________________________');
 
     var dio = CustomDio().instance;
     return dio.post(Config.authenticateUrl, data: params).then((res) async {

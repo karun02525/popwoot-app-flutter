@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:popwoot/src/main/api/repositories/add_product_repository.dart';
+import 'package:popwoot/src/main/api/repositories/profile_repository.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
 import 'package:popwoot/src/main/ui/learn/audio_test.dart';
 import 'package:popwoot/src/main/ui/navigation/tab_nav_controller.dart';
@@ -52,13 +53,16 @@ class _AddReviewState extends State<AddReview> with WidgetsBindingObserver {
   final picker = ImagePicker();
   bool isHide1 = true, isHide2 = false;
   var pickedFile;
-
+  bool isCheckToken=false;
+  ProfileRepository _rep;
   AddProductRepository _repository;
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _repository = AddProductRepository(context);
+    _rep = ProfileRepository(context);
+    _rep.loginCheck();
 
     setState(() {
       if (comment != '') editComment.text = comment;

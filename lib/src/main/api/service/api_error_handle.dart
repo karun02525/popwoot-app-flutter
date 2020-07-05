@@ -20,7 +20,6 @@ class ApiErrorHandel{
       Global.toast(errorMessage['message']);
       return false;
     } else if (statusCode == 401) {
-      Global.toast(errorMessage['message']);
       Global.handleSignOut(context);
       return false;
     } else if (statusCode == 403) {

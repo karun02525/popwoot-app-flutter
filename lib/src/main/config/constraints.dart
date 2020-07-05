@@ -17,6 +17,7 @@ class Config{
 
     static const String doReviewLikeUrl=baseUrl+'/api/cauth/rlike';
     static const String doReviewCommentUrl=baseUrl+'/api/cauth/rcomment';
+    static const String loginCheckUrl=baseUrl+'/api/cauth/logincheck';
 
 
     static const String getHomeUrl=baseUrl+'/api/oauth/review/1';

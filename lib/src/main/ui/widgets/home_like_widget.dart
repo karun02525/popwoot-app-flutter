@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:popwoot/src/main/api/model/home_reviews_model.dart';
+import 'package:popwoot/src/main/api/repositories/profile_repository.dart';
 import 'package:popwoot/src/main/api/repositories/reviews_repository.dart';
 import 'package:popwoot/src/main/services/shared_preferences.dart';
 import 'package:popwoot/src/main/ui/product/add_comment.dart';
@@ -14,7 +15,7 @@ import 'icon_widget.dart';
 class HomeLikeCmt extends StatefulWidget {
   final dynamic item;
   bool isComment;
-  HomeLikeCmt({Key key, this.item, this.isComment=true}) : super(key: key);
+  HomeLikeCmt({Key key, this.item, this.isComment = true}) : super(key: key);
 
   @override
   _HomeLikeCmtState createState() => _HomeLikeCmtState(item);
@@ -34,11 +35,13 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
   int commentCount = 0;
 
   ReviewsRepository _repository;
+  ProfileRepository _rep;
 
   @override
   void initState() {
     super.initState();
     _repository = ReviewsRepository(context);
+    _rep = ProfileRepository(context);
     parseData();
   }
 
@@ -87,7 +90,7 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
         likeMsg = 'Likes';
       } else {
         likeCount--;
-        if(likeCount==0){
+        if (likeCount == 0) {
           likeMsg = 'Like';
         }
       }
@@ -115,21 +118,24 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
               icon: isLike ? Icons.favorite : Icons.favorite_border,
               mgs: '$likeCount $likeMsg',
               onTap: () {
-                if(UserPreference().isLogin) {
+                if (UserPreference().isLogin) {
                   doLikeToggle();
-                }else{
+                } else {
                   Global.handleSignOut(context);
                 }
               }),
           IconWidget(
             icon: AppIcons.ic_comment,
             mgs: '$commentCount Comment',
-            isDisable:widget.isComment,
+            isDisable: widget.isComment,
             onTap: () {
-              Navigator.push(
+             _rep.loginCheck();
+
+               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => AddComment(rid:item.id,rname:item.pname),
+                    builder: (context) =>
+                        AddComment(rid: item.id, rname: item.pname),
                   ));
             },
           ),
