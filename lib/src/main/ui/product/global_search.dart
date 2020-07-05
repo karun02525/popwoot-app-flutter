@@ -139,13 +139,12 @@ class _GlobalSearchState extends State<GlobalSearch> {
                       child: ListView.builder(
                           itemCount: items.length,
                           itemBuilder: (context, index) =>
-                              buildCardView(context, index)),
+                              buildCardView(context, items[index])),
                     ),
     );
   }
 
-  Widget buildCardView(BuildContext context, int index) {
-    final item = items[index];
+  Widget buildCardView(BuildContext context, SearchList item,) {
     return Container(
         margin: EdgeInsets.only(left: 10, right: 10, top: 5),
         child: Column(

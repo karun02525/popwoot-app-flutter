@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -20,28 +19,52 @@ import 'package:popwoot/src/main/utils/global.dart';
 import 'package:popwoot/src/res/fonts.dart';
 
 class AddReview extends StatefulWidget {
+  List<String> paramData;
+
+  AddReview({Key key, this.paramData}) : super(key: key);
+
   @override
-  _AddReviewState createState() => _AddReviewState();
+  _AddReviewState createState() => _AddReviewState(paramData);
 }
 
 class _AddReviewState extends State<AddReview> with WidgetsBindingObserver {
   final GlobalKey<AnimatedListState> _key = GlobalKey();
   ScrollController _scrollController = new ScrollController();
+
   final editComment = TextEditingController();
   final editYoutube = TextEditingController();
-  String ratingValue = "0",pid,pname,pdesc,ipath;
+  String ratingValue = "0", pid, pname, pdesc, ipath, comment, astar;
+  List<String> paramData;
+
+  _AddReviewState(param) {
+    this.paramData = param;
+
+    pid = paramData[0];
+    pname = paramData[1];
+    pdesc = paramData[2];
+    ipath = paramData[3];
+    comment = paramData[4];
+    astar = paramData[5];
+  }
+
   List<File> _items = [];
   File _image;
   final picker = ImagePicker();
-  bool isHide1 = true,isHide2 = false;
+  bool isHide1 = true, isHide2 = false;
   var pickedFile;
 
   AddProductRepository _repository;
   @override
   void initState() {
     super.initState();
-     WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     _repository = AddProductRepository(context);
+
+    setState(() {
+      if (comment != '') editComment.text = comment;
+
+      if (astar != '') ratingValue = astar;
+    });
   }
 
   Future _showPhotoLibrary(bool isCamera) async {
@@ -66,7 +89,8 @@ class _AddReviewState extends State<AddReview> with WidgetsBindingObserver {
       Global.toast("Please enter review");
     } /*else if (editYoutube.text.isEmpty) {
       Global.toast("Please enter youtube url");
-    }*/ else if (ratingValue == "0") {
+    }*/
+    else if (ratingValue == "0") {
       Global.toast("Please do at least one star");
     } else if (_items.length == 0) {
       Global.toast("Please upload at least one photo");
@@ -83,14 +107,15 @@ class _AddReviewState extends State<AddReview> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    if(state==AppLifecycleState.paused){
+    if (state == AppLifecycleState.paused) {
       print(editComment.text);
-      if(editComment.text.isNotEmpty){
-
+      if (editComment.text.isNotEmpty) {
         Map<String, dynamic> draftParams = {
           'pid': pid,
           'pname': pname,
           'pdesc': pdesc,
+          'astar': ratingValue,
+          'ipath': ipath,
           'comment': editComment.text,
           'published': 0,
         };
@@ -106,7 +131,8 @@ class _AddReviewState extends State<AddReview> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  void postApi(String comment, String youtubeurl, List<String> imagesData, published) async {
+  void postApi(String comment, String youtubeurl, List<String> imagesData,
+      published) async {
     Map<String, dynamic> param = {
       'pid': pid,
       'pname': pname,
@@ -125,11 +151,8 @@ class _AddReviewState extends State<AddReview> with WidgetsBindingObserver {
         setState(() {
           _clearAllItems();
         });
-        Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-                builder: (BuildContext context) => TabNavController()
-            )
-        );
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (BuildContext context) => TabNavController()));
       }
     });
   }
@@ -151,16 +174,6 @@ class _AddReviewState extends State<AddReview> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    List data = ModalRoute.of(context).settings.arguments;
-    pid = data[0];
-    pname = data[1];
-    pdesc = data[2];
-    ipath = data[3];
-
-    setState(() {
-      //editComment.text = data[4];
-    });
-
     return Scaffold(
         appBar: AppBar(
           titleSpacing: 2.0,
@@ -211,24 +224,23 @@ class _AddReviewState extends State<AddReview> with WidgetsBindingObserver {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-
             InkWell(
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(
-                      builder: (context) => ReviewDetails(pid:pid,pname:pname)));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              ReviewDetails(pid: pid, pname: pname)));
                 },
                 child: TextWidget(
-                  title: pname??'N.A',
+                  title: pname ?? 'N.A',
                   isBold: true,
                 )),
-
-
-
             RatingWidget(
               rating: ratingValue,
               isDisable: true,
               onRatingUpdate: (value) {
-                  ratingValue = value.toString();
+                ratingValue = value.toString();
               },
             ),
             TextWidget(title: pdesc),

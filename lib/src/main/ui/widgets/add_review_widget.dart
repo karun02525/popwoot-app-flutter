@@ -19,15 +19,14 @@ class AddReviewWidget extends StatelessWidget {
         onTap: () {
           Navigator.push(
               context,
-              MaterialPageRoute(
-                  builder: (context) => AddReview(),
-                  settings: RouteSettings(arguments: [
-                    data['pid']??'0',
-                    data['pname']??'N.A',
-                    data['pdesc']??'N.A',
-                    data['ipath']??'',
-                    data['comment']??'',
-                  ])));
+              MaterialPageRoute(builder: (context) => AddReview(paramData: [
+                data['pid']??'0',
+                data['pname']??'N.A',
+                data['pdesc']??'N.A',
+                data['ipath']??'',
+                data['comment']??'',
+                data['astar']??'',
+              ])));
         },
       ),
     );
