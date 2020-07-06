@@ -5,13 +5,16 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:popwoot/src/main/api/model/category_model.dart';
 import 'package:popwoot/src/main/api/repositories/add_product_repository.dart';
+import 'package:popwoot/src/main/api/repositories/category_repository.dart';
 import 'package:popwoot/src/main/api/repositories/profile_repository.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
 import 'package:popwoot/src/main/ui/learn/audio_test.dart';
 import 'package:popwoot/src/main/ui/navigation/tab_nav_controller.dart';
 import 'package:popwoot/src/main/ui/product/review_details.dart';
 import 'package:popwoot/src/main/ui/widgets/button_widget.dart';
+import 'package:popwoot/src/main/ui/widgets/dropdown_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/image_load_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/rating_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
@@ -21,6 +24,8 @@ import 'package:popwoot/src/res/fonts.dart';
 
 class AddReview extends StatefulWidget {
   List<String> paramData;
+
+
 
   AddReview({Key key, this.paramData}) : super(key: key);
 
@@ -54,19 +59,36 @@ class _AddReviewState extends State<AddReview> with WidgetsBindingObserver {
   bool isHide1 = true, isHide2 = false;
   var pickedFile;
   bool isCheckToken=false;
-  ProfileRepository _rep;
   AddProductRepository _repository;
+
+  String catId;
+  List<DataList> categoryList=[];
+  CategoryRepository _catRepository;
+
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _repository = AddProductRepository(context);
+    _catRepository = CategoryRepository(context);
     ProfileRepository(context).loginCheck();
 
     setState(() {
       if (comment != '') editComment.text = comment;
 
       if (astar != '') ratingValue = astar;
+    });
+
+    getCategory();
+  }
+
+  void getCategory() {
+    _catRepository.findAllCategory().then((value) {
+      setState(() {
+      //  _isLoading=false;
+        categoryList=value;
+      });
     });
   }
 
@@ -263,15 +285,34 @@ class _AddReviewState extends State<AddReview> with WidgetsBindingObserver {
 
   Widget getEditBox() {
     return Padding(
-      padding: const EdgeInsets.only(top: 8.0, left: 10.0, right: 10.0),
+      padding: const EdgeInsets.only(top: 18.0, left: 10.0, right: 10.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           TextFieldWidget(
+              bottom: 20,
               hintText: 'Tell us what you like or dislike about this product',
               minLine: 6,
               controller: editComment),
+          SizedBox(height: 5.0),
+
+          DropdownWidget(
+            hint: 'Select Store',
+            value: catId,
+            items: categoryList?.map((item) {
+              return DropdownMenuItem(
+                value: item.id??'',
+                child: TextWidget(title:item.cname??''),
+              );
+            })?.toList(),
+            onChanged: (newValue) {
+              setState(() {
+                catId = newValue;
+              });
+            },
+          ),
+
           SizedBox(height: 5.0),
           audioWidget(),
           SizedBox(height: 5.0),
@@ -324,7 +365,7 @@ class _AddReviewState extends State<AddReview> with WidgetsBindingObserver {
   Widget uploadPlaceHolderImage() {
     return Container(
         width: double.infinity,
-        height: 150.0,
+        height: 130.0,
         child: Container(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

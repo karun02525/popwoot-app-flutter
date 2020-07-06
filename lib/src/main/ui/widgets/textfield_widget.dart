@@ -9,6 +9,10 @@ class TextFieldWidget extends StatelessWidget {
   final Function onChanged;
   final TextEditingController controller;
   Color color;
+  double top;
+  double left;
+  double right;
+  double bottom;
 
   TextFieldWidget({
     this.isRound = true,
@@ -17,12 +21,17 @@ class TextFieldWidget extends StatelessWidget {
     this.onChanged,
     this.controller,
     this.color,
+    this.top = 0.0,
+    this.bottom = 0.0,
+    this.left = 0.0,
+    this.right = 0.0,
   });
 
   @override
   Widget build(BuildContext context) {
     if (isRound) {
       return Container(
+        margin: EdgeInsets.only(left: left,right: right,top: top,bottom: bottom),
         child: TextField(
           maxLines: minLine,
           onChanged: onChanged,
@@ -43,6 +52,7 @@ class TextFieldWidget extends StatelessWidget {
       );
     } else {
       return Container(
+          margin: EdgeInsets.only(left: left,right: right,top: top,bottom: bottom),
           child: TextField(
               minLines: 1,
               style: TextStyle(
