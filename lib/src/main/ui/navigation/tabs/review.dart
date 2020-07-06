@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:popwoot/src/main/ui/widgets/search_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
+import 'package:popwoot/src/main/utils/global.dart';
+
 
 import '../drawer_navigation.dart';
 
@@ -20,7 +22,7 @@ class _ReviewState extends State<Review> {
           title: TextSearchWidget(),
           actions: <Widget>[
             IconButton(
-              onPressed: () {},
+              onPressed: () {Global.naviNotification(context);},
               icon: Icon(Icons.notifications),
             )
           ],

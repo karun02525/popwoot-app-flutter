@@ -6,6 +6,8 @@ import 'package:popwoot/src/main/ui/product/product_list.dart';
 import 'package:popwoot/src/main/ui/widgets/image_load_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/search_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
+import 'package:popwoot/src/main/utils/global.dart';
+
 
 import '../drawer_navigation.dart';
 
@@ -57,7 +59,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
         title: TextSearchWidget(),
         actions: <Widget>[
           IconButton(
-            onPressed: () {},
+            onPressed: () {Global.naviNotification(context);},
             icon: Icon(Icons.notifications),
           )
         ],

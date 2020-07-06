@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:popwoot/src/main/api/repositories/add_product_repository.dart';
+import 'package:popwoot/src/main/api/repositories/profile_repository.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
 import 'package:popwoot/src/main/ui/navigation/drawer_navigation.dart';
 import 'package:popwoot/src/main/ui/widgets/button_widget.dart';
@@ -40,6 +41,7 @@ class _AddCategoryState extends State<AddCategory> {
   void initState() {
     super.initState();
     _repository = AddProductRepository(context);
+     ProfileRepository(context).loginCheck();
   }
 
   Future _showPhotoLibrary(bool isCamera) async {

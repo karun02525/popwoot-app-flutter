@@ -9,7 +9,6 @@ import 'package:popwoot/src/main/ui/product/review_details.dart';
 import 'package:popwoot/src/main/ui/widgets/search_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
 import 'package:popwoot/src/main/utils/global.dart';
-import 'package:popwoot/src/res/fonts.dart';
 
 import '../drawer_navigation.dart';
 
@@ -99,7 +98,7 @@ class _ScannerState extends State<Scanner> {
           title: TextSearchWidget(),
           actions: <Widget>[
             IconButton(
-              onPressed: () {},
+              onPressed: () {Global.naviNotification(context);},
               icon: Icon(Icons.notifications),
             )
           ],

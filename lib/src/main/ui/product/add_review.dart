@@ -61,8 +61,7 @@ class _AddReviewState extends State<AddReview> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _repository = AddProductRepository(context);
-    _rep = ProfileRepository(context);
-    _rep.loginCheck();
+    ProfileRepository(context).loginCheck();
 
     setState(() {
       if (comment != '') editComment.text = comment;
