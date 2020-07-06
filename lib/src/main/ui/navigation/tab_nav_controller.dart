@@ -55,8 +55,8 @@ class _TabNavControllerState extends State<TabNavController> {
             backgroundColor: Colors.blue,
           ),
           BottomNavigationBarItem(
-            icon: Icon(AppIcons.ic_scanner),
-            title: Text("Scanner"),
+            icon: Icon(Icons.map),
+            title: Text("Store"),
             backgroundColor: Colors.blue,
           ),
           BottomNavigationBarItem(

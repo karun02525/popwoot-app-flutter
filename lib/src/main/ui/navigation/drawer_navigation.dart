@@ -41,6 +41,9 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
           CustomListTile(Icons.playlist_add, "Add Product ",
               () => {Navigator.pushNamed(context, '/add_product')}),
           Divider(color: Colors.grey),
+          CustomListTile(Icons.map, "Add Store ",
+              () => {Navigator.pushNamed(context, '/add_store')}),
+          Divider(color: Colors.grey),
           CustomListTile(Icons.star, "Ratings", () => {}),
           Divider(color: Colors.grey),
           CustomListTile(Icons.wb_sunny, "V0.0.1", () => {}),
@@ -54,14 +57,14 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
   Widget getInfo() {
     return Column(
       children: <Widget>[
-        SizedBox(height: 50.0,),
+        SizedBox(height: 25.0,),
         Text(
-          name??'Guest User',
-          style: TextStyle(color: Colors.white, fontSize: 22.0),
+          name.toUpperCase(),
+          style: TextStyle(color: Colors.white, fontSize: 22.0,),
         ),
         Text(
           email??'',
-          style: TextStyle(color: Colors.white, fontSize: 12.0),
+          style: TextStyle(color: Colors.white, fontSize: 13.0),
         ),
       ],
     );

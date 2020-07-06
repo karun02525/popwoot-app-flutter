@@ -18,19 +18,19 @@ class UserPreference {
 
   //get y set name
   set name(String value) {
-    _prefs.setString('name', value??'N.A');
+    _prefs.setString('name', value??'Guest User');
   }
 
   get name {
-    return _prefs.getString('name')??'N.A';
+    return _prefs.getString('name')??'Guest User';
   }
 
   set email(String value) {
-    _prefs.setString('email', value??'N.A');
+    _prefs.setString('email', value??'');
   }
 
   get email {
-    return _prefs.getString('email')??'N.A';
+    return _prefs.getString('email')??'';
   }
 
   set avatar(String value) {
