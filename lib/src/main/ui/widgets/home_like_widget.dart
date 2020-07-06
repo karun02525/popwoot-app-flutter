@@ -33,15 +33,12 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
   bool _isYoutube = false;
   String youtubeLink = '';
   int commentCount = 0;
-
   ReviewsRepository _repository;
-  ProfileRepository _rep;
 
   @override
   void initState() {
     super.initState();
     _repository = ReviewsRepository(context);
-    _rep = ProfileRepository(context);
     parseData();
   }
 
@@ -129,8 +126,6 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
             mgs: '$commentCount Comment',
             isDisable: widget.isComment,
             onTap: () {
-             _rep.loginCheck();
-
                Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -150,22 +145,3 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
     );
   }
 }
-/*
-
-
-Expanded(
-flex: 5,
-child: FlatButton.icon(
-padding: EdgeInsets.all(0),
-color: Colors.green,
-onPressed: () {},
-splashColor: Colors.cyanAccent,
-icon: Icon(AppIcons.ic_comment,
-size: 20.0, color: Colors.grey[600]),
-label: TextWidget(
-title: "0 comments",
-color: Colors.grey[600],
-fontSize: 12.0))),
-Expanded(flex: 5, child: AddReviewWidget(data: item))
-
-*/

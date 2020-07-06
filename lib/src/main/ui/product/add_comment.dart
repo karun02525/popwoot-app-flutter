@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:popwoot/src/main/api/model/comment_model.dart';
 import 'package:popwoot/src/main/api/model/review_model.dart';
+import 'package:popwoot/src/main/api/repositories/profile_repository.dart';
 import 'package:popwoot/src/main/api/repositories/reviews_repository.dart';
 import 'package:popwoot/src/main/services/shared_preferences.dart';
 import 'package:popwoot/src/main/ui/widgets/home_like_widget.dart';
@@ -17,19 +18,19 @@ import 'package:popwoot/src/main/utils/global.dart';
 import 'package:popwoot/src/res/fonts.dart';
 
 class AddComment extends StatefulWidget {
-  final String rid,rname;
-  AddComment({Key key,this.rid,this.rname}): super(key: key);
+  final String rid, rname;
+  AddComment({Key key, this.rid, this.rname}) : super(key: key);
 
   @override
-  _AddCommentState createState() => _AddCommentState(rid,rname);
+  _AddCommentState createState() => _AddCommentState(rid, rname);
 }
 
 class _AddCommentState extends State<AddComment> {
-  String rid,rname;
-  _AddCommentState(this.rid,this.rname);
+  String rid, rname;
+  _AddCommentState(this.rid, this.rname);
 
   bool _isLoading = true;
-  String name,avatar;
+  String name, avatar;
   final _textController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   List<CommentList> items = [];
@@ -39,32 +40,30 @@ class _AddCommentState extends State<AddComment> {
 
   @override
   void initState() {
-    pref=UserPreference();
-    name=pref.name;
-    avatar=pref.avatar;
+    pref = UserPreference();
+    name = pref.name;
+    avatar = pref.avatar;
     super.initState();
-    _repository=ReviewsRepository(context);
+    _repository = ReviewsRepository(context);
 
-    Timer(Duration(seconds: 1), () => getOnlyReview(rid??'0'));
-
+    Timer(Duration(seconds: 1), () => getOnlyReview(rid ?? '0'));
   }
 
-  void getOnlyReview(String rid){
+  void getOnlyReview(String rid) {
     _repository.getOnlyReview(rid).then((value) {
-        loadCommentList();
-        productData = value;
+      loadCommentList();
+      productData = value;
     });
   }
 
-  void loadCommentList(){
+  void loadCommentList() {
     _repository.findAllComments(rid).then((value) {
       setState(() {
-        _isLoading=false;
-         items = value;
+        _isLoading = false;
+        items = value;
       });
     });
   }
-
 
   void postApiCall(String mgs) async {
     Map<String, dynamic> params = {
@@ -88,20 +87,15 @@ class _AddCommentState extends State<AddComment> {
             brightness: Brightness.light,
             titleSpacing: 2.0,
             centerTitle: true,
-            title: Row(children: [
-              TextWidget(
-                  title: rname??'',
-                  fontSize: AppFonts.toolbarSize,
-                  isBold: true),
-
-              TextWidget(
-                  title:'   @Reviewed',
-                  fontSize: 11.0,
-                  isBold: true)
-            ],)
-
-
-        ),
+            title: Row(
+              children: [
+                TextWidget(
+                    title: rname ?? '',
+                    fontSize: AppFonts.toolbarSize,
+                    isBold: true),
+                TextWidget(title: '   @Reviewed', fontSize: 11.0, isBold: true)
+              ],
+            )),
         body: _isLoading
             ? Container(
                 child: Center(
@@ -118,7 +112,7 @@ class _AddCommentState extends State<AddComment> {
                               return buildHeader(productData);
                             }
                             index -= 1;
-                            return buildProductCard(context,items[index]);
+                            return buildProductCard(context, items[index]);
                           })),
                   Divider(height: 1.0),
                   Container(
@@ -130,22 +124,20 @@ class _AddCommentState extends State<AddComment> {
               ));
   }
 
-
-
   Widget buildHeader(Idata item) {
     return Container(
       color: Colors.white,
       child: Column(
         children: <Widget>[
-          ReviewHeaderWidget(item:item),
-          ImageSliderWidget(imgList:item.imgarray??[]),
+          ReviewHeaderWidget(item: item),
+          ImageSliderWidget(imgList: item.imgarray ?? []),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.only(left: 5.0, top: 5.0),
-                child: RatingWidget(rating: item.astar??'0'),
+                child: RatingWidget(rating: item.astar ?? '0'),
               )
             ],
           ),
@@ -153,20 +145,16 @@ class _AddCommentState extends State<AddComment> {
             alignment: Alignment.topLeft,
             child: Padding(
               padding: EdgeInsets.only(left: 10.0, bottom: 10.0),
-              child: TextWidget(
-                  title:
-                  productData.comment??''),
+              child: TextWidget(title: productData.comment ?? ''),
             ),
           ),
           Divider(),
-          HomeLikeCmt(item:item,isComment:false),
+          HomeLikeCmt(item: item, isComment: false),
           Container(height: 10.0, color: Colors.grey[200]),
-
         ],
       ),
     );
   }
-
 
   Widget buildProductCard(BuildContext context, CommentList item) {
     return Container(
@@ -192,7 +180,7 @@ class _AddCommentState extends State<AddComment> {
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.only(left: 5.0, bottom: 8.0),
-            child: TextWidget(title: item.comment??'', fontSize: 14.0),
+            child: TextWidget(title: item.comment ?? '', fontSize: 14.0),
           ),
         ],
       ),
@@ -205,8 +193,8 @@ class _AddCommentState extends State<AddComment> {
       child: Row(
         children: <Widget>[
           ImageLoadWidget(
-              imageUrl: item.userimg, name: item.user??'', isProfile: true),
-          setContent(item.user??'', item.rdate??'----')
+              imageUrl: item.userimg, name: item.user ?? '', isProfile: true),
+          setContent(item.user ?? '', item.rdate ?? '----')
         ],
       ),
     );
@@ -233,7 +221,6 @@ class _AddCommentState extends State<AddComment> {
     ]);
   }
 
-
   Widget _buildTextComposer() {
     return IconTheme(
       data: IconThemeData(color: Theme.of(context).accentColor),
@@ -244,9 +231,12 @@ class _AddCommentState extends State<AddComment> {
             Padding(
                 padding: EdgeInsets.only(left: 5.0),
                 child: ImageLoadWidget(
-                    imageUrl:avatar, name: name??'P', isProfile: true)),
+                    imageUrl: avatar, name: name ?? 'P', isProfile: true)),
             Flexible(
               child: TextField(
+                onChanged:(v){
+                  ProfileRepository(context).loginCheck();
+                },
                 controller: _textController,
                 onSubmitted: _handleSubmitted,
                 decoration: InputDecoration.collapsed(hintText: 'Comment'),
@@ -257,12 +247,9 @@ class _AddCommentState extends State<AddComment> {
               margin: EdgeInsets.symmetric(horizontal: 4.0),
               child: IconButton(
                   icon: const Icon(Icons.send),
-                  onPressed: (){
-                    if(pref.isLogin) {
-                      _handleSubmitted(_textController.text);
-                    }else{
-                      Global.handleSignOut(context);
-                    }}),
+                  onPressed: () {
+                    _handleSubmitted(_textController.text);
+                  }),
             )
           ],
         ),
