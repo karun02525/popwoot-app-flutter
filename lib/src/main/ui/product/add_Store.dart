@@ -19,7 +19,6 @@ class _AddStoreState extends State<AddStore> {
   final GlobalKey<AnimatedListState> _key = GlobalKey();
 
   final editName = TextEditingController();
-  final editDesc = TextEditingController();
   final editUrl = TextEditingController();
   bool checkedValue = false;
 
@@ -33,34 +32,31 @@ class _AddStoreState extends State<AddStore> {
 
   void callApi() async {
     if (editName.text.isEmpty) {
-      Global.toast("Please enter store Name");
-    } else if (editDesc.text.isEmpty) {
-      Global.toast("Please enter  category description");
-    } else {}
+      Global.toast("Please enter store name");
+    } /*else if (editUrl.text.isEmpty) {
+      Global.toast("Please enter store url");
+    }*/ else {
+      Map<String, dynamic> params = {
+        'sname': editName.text,
+        'surl': editUrl.text,
+        'isMap':checkedValue,
+      };
+      _repository.addStore(params).then((value) {
+        if (value) {
+          Global.hideKeyboard();
+          setState(() {
+            _clearAllItems();
+          });
+        }
+      });
+    }
   }
 
-  void postApi(String txtName, String txtDesc, String txtUrl,
-      List<String> imagesData) async {
-    Map<String, dynamic> params = {
-      'cname': txtName,
-      'cdetails': txtDesc,
-      'burl': txtUrl,
-      'imgarray': imagesData,
-    };
-    _repository.addCategory(params).then((value) {
-      if (value) {
-        Global.hideKeyboard();
-        setState(() {
-          _clearAllItems();
-        });
-      }
-    });
-  }
 
   void _clearAllItems() {
     editName.clear();
-    editDesc.clear();
     editUrl.clear();
+    checkedValue=false;
   }
 
   @override
@@ -82,10 +78,9 @@ class _AddStoreState extends State<AddStore> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
 
-
           TextWidget(title: 'Store Name', isBold: true, top: 35.0, bottom: 3.0,left: 20,),
 
-          TextFieldWidget(hintText: 'Enter category name', controller: editName,left: 20,right: 20,bottom: 10,),
+          TextFieldWidget(hintText: 'Enter store name', controller: editName,left: 20,right: 20,bottom: 10,),
           Row(
             children: [
               Padding(
@@ -104,10 +99,8 @@ class _AddStoreState extends State<AddStore> {
               TextWidget(title:!checkedValue?'Map Enable':'Map Enabled',isBold:checkedValue?true:false,)
             ],
           ),
-          TextWidget(title: 'Category urls', isBold: true, top: 15.0, bottom: 3.0,left: 20,right: 20),
-
-
-          TextFieldWidget(hintText: 'Enter category urls', controller: editUrl,left: 20,right: 20),
+          TextWidget(title: 'Store url', isBold: true, top: 15.0, bottom: 3.0,left: 20,right: 20),
+          TextFieldWidget(hintText: 'Enter Store url', controller: editUrl,left: 20,right: 20),
 
 
           ButtonWidget(

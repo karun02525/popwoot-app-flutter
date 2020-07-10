@@ -6,12 +6,13 @@ class Config{
 
     static const api_youtube='AIzaSyAiSJV9ZHpFN8AwzpUDyorMVegUMS1corw';
     static const String base64Prefix='data:image/png;base64,';
-    static const baseUrl='http://192.168.1.2:8087';
-    static const baseImageUrl='http://192.168.1.2';
+    static const baseUrl='http://192.168.1.4:8080';
+    static const baseImageUrl='http://192.168.1.4';
 
     static const String authenticateUrl=baseUrl+'/api/oauth/authenticate';
     static const String addCategoryUrl=baseUrl+'/api/cauth/addcategory';
     static const String addProductUrl=baseUrl+'/api/cauth/addproduct';
+    static const String addStoreUrl=baseUrl+'/api/cauth/addstore';
     static const String addReviewUrl=baseUrl+'/api/cauth/addreview';
     static const String getScannerUrl=baseUrl+'/api/oauth/sproduct';
 
@@ -31,6 +32,7 @@ class Config{
     static const String getReviewCommentUrl=baseUrl+'/api/oauth/ireviewc';
     static const String getAllCommentUrl=baseUrl+'/api/oauth/allcomment';
 
+    static const String getAllStoreUrl=baseUrl+'/api/oauth/allstore';
     static const String getAllCategoryUrl=baseUrl+'/api/oauth/category';
     static const String getFollowUrl=baseUrl+'/api/cauth/cfollow';
 

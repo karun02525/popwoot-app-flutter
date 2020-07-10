@@ -5,7 +5,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:popwoot/src/main/api/model/category_model.dart';
+import 'package:popwoot/src/main/api/model/store_model.dart';
 import 'package:popwoot/src/main/api/repositories/add_product_repository.dart';
 import 'package:popwoot/src/main/api/repositories/category_repository.dart';
 import 'package:popwoot/src/main/api/repositories/profile_repository.dart';
@@ -62,7 +62,7 @@ class _AddReviewState extends State<AddReview> with WidgetsBindingObserver {
   AddProductRepository _repository;
 
   String catId;
-  List<DataList> categoryList=[];
+  List<StoreData> storeList=[];
   CategoryRepository _catRepository;
 
 
@@ -84,10 +84,10 @@ class _AddReviewState extends State<AddReview> with WidgetsBindingObserver {
   }
 
   void getCategory() {
-    _catRepository.findAllCategory().then((value) {
+    _catRepository.findAllStore().then((value) {
       setState(() {
-      //  _isLoading=false;
-        categoryList=value;
+       // _isLoading=false;
+        storeList=value;
       });
     });
   }
@@ -300,10 +300,10 @@ class _AddReviewState extends State<AddReview> with WidgetsBindingObserver {
           DropdownWidget(
             hint: 'Select Store',
             value: catId,
-            items: categoryList?.map((item) {
+            items: storeList?.map((item) {
               return DropdownMenuItem(
                 value: item.id??'',
-                child: TextWidget(title:item.cname??''),
+                child: TextWidget(title:item.sname??''),
               );
             })?.toList(),
             onChanged: (newValue) {

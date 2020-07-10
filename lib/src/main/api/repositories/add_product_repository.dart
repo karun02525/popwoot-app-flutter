@@ -26,6 +26,25 @@ class AddProductRepository {
   }
 
 
+  //Add Store
+  Future<bool> addStore(Map<String, dynamic> params) async{
+     pd.show();
+    var dio =CustomDio.withAuthentication().instance;
+    return await dio.post(Config.addStoreUrl, data: params).then((res) async {
+      if (res.statusCode == 200) {
+        pd.hide();
+        var result = jsonDecode(jsonEncode(res.data));
+        if (result['status']) {
+           messageAlert(context,result['message'], 'Add Store');
+          return true;
+        }
+      }
+    }).catchError((e) {
+      pd.hide();
+      return ApiErrorHandel.errorHandel(context,e);
+    });
+  }
+
   //Add Reviews
   Future<bool> addReview(Map<String, dynamic> params) async{
      pd.show();
