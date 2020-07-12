@@ -23,12 +23,23 @@ class ImageLoadWidget extends StatelessWidget {
             : Container(
                 height: 230.0,
                 width: double.infinity,
-                child: CachedNetworkImage(
-                  imageUrl: Config.baseImageUrl + imageUrl,
+                child: Image.network(
+                  Config.baseImageUrl + imageUrl,
                   fit: BoxFit.fill,
-                  errorWidget: (context, url, error) =>
-                      Image(image: AssetImage('assets/images/no_image.jpg')),
-                ));
+                  loadingBuilder: (BuildContext context, Widget child,
+                      ImageChunkEvent loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return Center(
+                      child: CircularProgressIndicator(
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes
+                            : null,
+                      ),
+                    );
+                  },
+                ),
+              );
   }
 
   Widget getProfileImage() {
@@ -38,17 +49,12 @@ class ImageLoadWidget extends StatelessWidget {
         margin: EdgeInsets.only(right: 5.0),
         child: imageUrl == null
             ? CircleAvatar(child: Text(name.toString().toUpperCase()[0]))
-            : CachedNetworkImage(
-                imageBuilder: (context, imageProvider) => Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                        image: imageProvider, fit: BoxFit.cover),
-                  ),
+            : CircleAvatar(
+                radius: 30.0,
+                backgroundImage: NetworkImage(
+                  imageUrl,
                 ),
-              //  placeholder: (context, url) => CircularProgressIndicator(),
-                imageUrl: imageUrl,
-                fit: BoxFit.fill,
+                backgroundColor: Colors.transparent,
               ));
   }
 }

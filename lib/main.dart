@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:popwoot/src/main/services/connectivity_service.dart';
 import 'package:popwoot/src/main/services/shared_preferences.dart';
@@ -11,14 +12,30 @@ import 'package:popwoot/src/main/ui/product/global_search.dart';
 import 'package:popwoot/src/res/colors.dart';
 import 'package:provider/provider.dart';
 
-void main() async{
-  WidgetsFlutterBinding.ensureInitialized();
-  await UserPreference().init();
+void main() {
+  debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
   runApp(LaunchApp());
 }
 
-class LaunchApp extends StatelessWidget {
-  final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
+class LaunchApp extends StatefulWidget {
+  @override
+  _LaunchAppState createState() => _LaunchAppState();
+}
+
+class _LaunchAppState extends State<LaunchApp> {
+
+  @override
+  void initState(){
+    m();
+    super.initState();
+  }
+
+  void m()async{
+    WidgetsFlutterBinding.ensureInitialized();
+    await UserPreference().init();
+  }
+
+   final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
   @override
   Widget build(BuildContext context) {
     return StreamProvider( create: (_) => ConnectivityService().connectionStatusController.stream,

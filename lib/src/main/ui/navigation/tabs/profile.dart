@@ -22,13 +22,11 @@ class _ProfileState extends State<Profile> {
   List<DraftList> draftList;
   List<ReviewsModel> reviewswList;
   bool isLoading = false;
-  UserPreference pref;
   @override
   void initState() {
     super.initState();
     _repository = ProfileRepository(context);
     isLogin =UserPreference().isLogin;
-
     if (isLogin) {
       setState(() {
         getDraftList();

@@ -18,47 +18,47 @@ class UserPreference {
 
   //get y set name
   set name(String value) {
-    _prefs.setString('name', value??'Guest User');
+    _prefs?.setString('name', value??'Guest User');
   }
 
   get name {
-    return _prefs.getString('name')??'Guest User';
+    return _prefs?.getString('name')??'Guest User';
   }
 
   set email(String value) {
-    _prefs.setString('email', value??'');
+    _prefs?.setString('email', value??'');
   }
 
   get email {
-    return _prefs.getString('email')??'';
+    return _prefs?.getString('email')??'';
   }
 
   set avatar(String value) {
-    _prefs.setString('avatar', value??'N.A');
+    _prefs?.setString('avatar', value??'N.A');
   }
 
   get avatar {
-    return _prefs.getString('avatar')??'N.A';
+    return _prefs?.getString('avatar')??'N.A';
   }
 
   set token(String value) {
-    _prefs.setString('token', value??'');
+    _prefs?.setString('token', value??'');
   }
 
   get token {
-    return _prefs.getString('token')??'N.A';
+    return _prefs?.getString('token')??'N.A';
   }
 
   set isLogin(bool value) {
-    _prefs.setBool('isLogin', value??false);
+    _prefs?.setBool('isLogin', value??false);
   }
 
   get isLogin {
-    return _prefs.getBool('isLogin')??false;
+    return _prefs?.getBool('isLogin')??false;
   }
 
   Future<bool> clearSharedPreferences() async {
-    _prefs.clear();
+    _prefs?.clear();
     print("preferences clear");
     return true;
   }

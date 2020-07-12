@@ -20,3 +20,5 @@ https://stackoverflow.com/questions/51845559/generate-sha-1-for-flutter-app
 
 Navigate to Android folder inside project, there is gradlew file. so we can use this like :
 gradlew signingReport
+
+//https://flatteredwithflutter.com/flutter-and-desktop/

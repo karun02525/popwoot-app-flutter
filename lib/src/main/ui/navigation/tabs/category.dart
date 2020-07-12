@@ -71,7 +71,11 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 child: CircularProgressIndicator(),
               ),
             )
-          : Container(
+          : categoryList==null? Container(
+        child: Center(
+          child: TextWidget(title: 'Category Not available',),
+        ),
+      ): Container(
               margin: EdgeInsets.only(top: 5, bottom: 5),
               child: ListView.builder(
                   itemCount: categoryList.length,
