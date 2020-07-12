@@ -46,6 +46,9 @@ dependencies:
   flutter_youtube: ^2.0.0
   get_it:
   carousel_slider: ^2.2.1
+  google_map_location_picker:
+  google_maps_flutter: ^0.5.28+1
+  geolocator: ^5.3.2+2
 
 
 

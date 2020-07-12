@@ -21,6 +21,9 @@ import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/textfield_widget.dart';
 import 'package:popwoot/src/main/utils/global.dart';
 import 'package:popwoot/src/res/fonts.dart';
+import 'package:google_map_location_picker/google_map_location_picker.dart';
+
+
 
 class AddReview extends StatefulWidget {
   List<String> paramData;
@@ -36,6 +39,8 @@ class AddReview extends StatefulWidget {
 class _AddReviewState extends State<AddReview> with WidgetsBindingObserver {
   final GlobalKey<AnimatedListState> _key = GlobalKey();
   ScrollController _scrollController = new ScrollController();
+  LocationResult _pickedLocation;
+
 
   final editComment = TextEditingController();
   final editYoutube = TextEditingController();
@@ -197,6 +202,24 @@ class _AddReviewState extends State<AddReview> with WidgetsBindingObserver {
     editYoutube.clear();
   }
 
+  _addLocation() async {
+    LocationResult result = await showLocationPicker(
+      context, Config.api_key,
+//    initialCenter: LatLng(31.1975844, 29.9598339),
+      automaticallyAnimateToCurrentLocation: true,
+//    mapStylePath: 'assets/mapStyle.json',
+      myLocationButtonEnabled: true,
+      layersButtonEnabled: true,
+      resultCardAlignment: Alignment.bottomCenter,
+    );
+    print("result = $result");
+    setState((){
+      _pickedLocation = result;
+      //_editAdress.text=_pickedLocation.address.toString();
+    });
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -308,13 +331,14 @@ class _AddReviewState extends State<AddReview> with WidgetsBindingObserver {
             })?.toList(),
             onChanged: (newValue) {
               setState(() {
+                _addLocation();
                 catId = newValue;
               });
             },
           ),
 
           SizedBox(height: 5.0),
-          audioWidget(),
+         // audioWidget(),
           SizedBox(height: 5.0),
           TextFieldWidget(
               hintText: 'Enter You Tube Url', controller: editYoutube),
@@ -599,4 +623,7 @@ class _AddReviewState extends State<AddReview> with WidgetsBindingObserver {
           );
         });
   }
+
+
+
 }

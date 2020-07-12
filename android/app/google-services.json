@@ -1,35 +1,50 @@
 {
   "project_info": {
-    "project_number": "794332702616",
-    "firebase_url": "https://poopwoot-a7a65.firebaseio.com",
-    "project_id": "poopwoot-a7a65",
-    "storage_bucket": "poopwoot-a7a65.appspot.com"
+    "project_number": "922565161806",
+    "firebase_url": "https://popwoot-9491a.firebaseio.com",
+    "project_id": "popwoot-9491a",
+    "storage_bucket": "popwoot-9491a.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:794332702616:android:b18d60bccbb3ed0164aded",
+        "mobilesdk_app_id": "1:922565161806:android:055dd4d71444dd70b1a41f",
         "android_client_info": {
           "package_name": "com.popwoot"
         }
       },
       "oauth_client": [
         {
-          "client_id": "794332702616-0mghqn0gv1vm0dknl07loskk81hfls28.apps.googleusercontent.com",
+          "client_id": "922565161806-pgtkdgs28ebmngsl4comp813tpkbf9n6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.popwoot",
+            "certificate_hash": "d27d15f9b5a7a5ab50fe7633229bb42e3e80e8b3"
+          }
+        },
+        {
+          "client_id": "922565161806-hop980rn178crcatjkh5n0fv71u0utfu.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAf6ggmAlV9h6WRhmnGnDsu8e_zMNC-ZYg"
+          "current_key": "AIzaSyDchPrSknVIotLbhby2gD5PodRIS5PCCn4"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "794332702616-0mghqn0gv1vm0dknl07loskk81hfls28.apps.googleusercontent.com",
+              "client_id": "922565161806-hop980rn178crcatjkh5n0fv71u0utfu.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "922565161806-53a8ko7nd04c6pdj27tkp2goh94g71ho.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.popwoot.popwoot"
+              }
             }
           ]
         }

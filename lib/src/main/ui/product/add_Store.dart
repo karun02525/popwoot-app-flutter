@@ -16,8 +16,6 @@ class AddStore extends StatefulWidget {
 }
 
 class _AddStoreState extends State<AddStore> {
-  final GlobalKey<AnimatedListState> _key = GlobalKey();
-
   final editName = TextEditingController();
   final editUrl = TextEditingController();
   bool checkedValue = false;
@@ -116,4 +114,5 @@ class _AddStoreState extends State<AddStore> {
         ],
     );
   }
+
 }

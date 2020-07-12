@@ -4,7 +4,9 @@ import 'package:popwoot/src/main/services/shared_preferences.dart';
 class Config{
 
 
-    static const api_youtube='AIzaSyAiSJV9ZHpFN8AwzpUDyorMVegUMS1corw';
+    static const api_youtube='AIzaSyAQqJa9GYg-1wS-7dpktyJFg_ksdO1bVlo';
+    static const api_key='AIzaSyAQqJa9GYg-1wS-7dpktyJFg_ksdO1bVlo';
+
     static const String base64Prefix='data:image/png;base64,';
     static const baseUrl='http://192.168.1.4:8080';
     static const baseImageUrl='http://192.168.1.4';
