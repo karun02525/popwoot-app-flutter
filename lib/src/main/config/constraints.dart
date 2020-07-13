@@ -2,10 +2,10 @@
 import 'package:popwoot/src/main/services/shared_preferences.dart';
 
 class Config{
+  //https://maps.googleapis.com/maps/api/place/autocomplete/json?input=1600+Amphitheatre&key=AIzaSyBFgb-c1pBbGK_iXOpDxY2voGYzWDvAuGE&sessiontoken=1234567890
 
-
-    static const api_youtube='AIzaSyAQqJa9GYg-1wS-7dpktyJFg_ksdO1bVlo';
-    static const api_key='AIzaSyAQqJa9GYg-1wS-7dpktyJFg_ksdO1bVlo';
+    static const api_youtube='AIzaSyCY-rwuiZrzlx6XRl3Vb1l8rPOsz7FcD9w';
+    static const api_key='AIzaSyBFgb-c1pBbGK_iXOpDxY2voGYzWDvAuGE';
 
     static const String base64Prefix='data:image/png;base64,';
     static const baseUrl='http://192.168.1.4:8080';

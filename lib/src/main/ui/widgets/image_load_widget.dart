@@ -24,19 +24,12 @@ class ImageLoadWidget extends StatelessWidget {
                 height: 230.0,
                 width: double.infinity,
                 child: Image.network(
-                  Config.baseImageUrl + imageUrl,
+                  imageUrl.contains('http')? imageUrl: Config.baseImageUrl + imageUrl,
                   fit: BoxFit.fill,
                   loadingBuilder: (BuildContext context, Widget child,
                       ImageChunkEvent loadingProgress) {
                     if (loadingProgress == null) return child;
-                    return Center(
-                      child: CircularProgressIndicator(
-                        value: loadingProgress.expectedTotalBytes != null
-                            ? loadingProgress.cumulativeBytesLoaded /
-                                loadingProgress.expectedTotalBytes
-                            : null,
-                      ),
-                    );
+                    return Image(image: AssetImage('assets/images/no_image.jpg'));
                   },
                 ),
               );

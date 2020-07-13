@@ -55,7 +55,7 @@ class _HomeState extends State<Home> {
         ),
         drawer: NavigationDrawer(),
         body: _isLoading
-            ? Container(child: Center(child: CircularProgressIndicator()))
+            ? Container(child: Center(child: CupertinoActivityIndicator(radius: 20,)))
             : revieswList == null
                 ? Container(
                     child:

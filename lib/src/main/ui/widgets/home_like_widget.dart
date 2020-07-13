@@ -28,7 +28,7 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
   dynamic likeData;
   bool isLike = false;
   int likeCount = 0;
-  String likeMsg = "Like";
+  String likeMsg = "Helpful";
   String rid = '';
   bool _isYoutube = false;
   String youtubeLink = '';
@@ -50,7 +50,6 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
 
     if (item.nrating == 'Y') {
       isLike = true;
-      likeMsg = 'Likes';
     } else {
       isLike = false;
     }
@@ -84,12 +83,8 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
     setState(() {
       if (flag) {
         likeCount++;
-        likeMsg = 'Likes';
       } else {
         likeCount--;
-        if (likeCount == 0) {
-          likeMsg = 'Like';
-        }
       }
     });
   }
@@ -112,7 +107,7 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
                   child: AppIcons.ic_youtube),
               visible: _isYoutube),
           IconWidget(
-              icon: isLike ? Icons.favorite : Icons.favorite_border,
+              icon: isLike ? AppIcons.ic_thumb:AppIcons.ic_outline_up ,
               mgs: '$likeCount $likeMsg',
               onTap: () {
                 if (UserPreference().isLogin) {

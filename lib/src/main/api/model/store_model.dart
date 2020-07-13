@@ -34,21 +34,18 @@ class StoreData {
     this.sname,
     this.surl,
     this.isMap,
-    this.createddate,
   });
 
   String id;
   String sname;
   String surl;
   bool isMap;
-  String createddate;
 
   factory StoreData.fromJson(Map<String, dynamic> json) => StoreData(
-    id: json["id"],
-    sname: json["sname"],
-    surl: json["surl"],
-    isMap: json["isMap"],
-    createddate: json["createddate"],
+    id: json["id"]??'',
+    sname: json["sname"]??'',
+    surl: json["surl"]??'',
+    isMap: json["isMap"]??false,
   );
 
   Map<String, dynamic> toJson() => {
@@ -56,6 +53,5 @@ class StoreData {
     "sname": sname,
     "surl": surl,
     "isMap": isMap,
-    "createddate": createddate,
   };
 }

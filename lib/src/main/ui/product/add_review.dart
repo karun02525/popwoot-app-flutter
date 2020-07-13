@@ -4,13 +4,13 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:popwoot/src/main/api/model/store_model.dart';
 import 'package:popwoot/src/main/api/repositories/add_product_repository.dart';
 import 'package:popwoot/src/main/api/repositories/category_repository.dart';
 import 'package:popwoot/src/main/api/repositories/profile_repository.dart';
 import 'package:popwoot/src/main/config/constraints.dart';
-import 'package:popwoot/src/main/ui/learn/audio_test.dart';
 import 'package:popwoot/src/main/ui/navigation/tab_nav_controller.dart';
 import 'package:popwoot/src/main/ui/product/review_details.dart';
 import 'package:popwoot/src/main/ui/widgets/button_widget.dart';
@@ -21,7 +21,6 @@ import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/textfield_widget.dart';
 import 'package:popwoot/src/main/utils/global.dart';
 import 'package:popwoot/src/res/fonts.dart';
-import 'package:google_map_location_picker/google_map_location_picker.dart';
 
 
 
@@ -41,7 +40,7 @@ class _AddReviewState extends State<AddReview> with WidgetsBindingObserver {
   ScrollController _scrollController = new ScrollController();
   LocationResult _pickedLocation;
 
-
+  bool _isLoading=true;
   final editComment = TextEditingController();
   final editYoutube = TextEditingController();
   String ratingValue = "0", pid, pname, pdesc, ipath, comment, astar;
@@ -66,7 +65,7 @@ class _AddReviewState extends State<AddReview> with WidgetsBindingObserver {
   bool isCheckToken=false;
   AddProductRepository _repository;
 
-  String catId;
+  String store_Id;
   List<StoreData> storeList=[];
   CategoryRepository _catRepository;
 
@@ -91,7 +90,7 @@ class _AddReviewState extends State<AddReview> with WidgetsBindingObserver {
   void getCategory() {
     _catRepository.findAllStore().then((value) {
       setState(() {
-       // _isLoading=false;
+        _isLoading=false;
         storeList=value;
       });
     });
@@ -130,7 +129,7 @@ class _AddReviewState extends State<AddReview> with WidgetsBindingObserver {
               Config.base64Prefix + base64Encode(item.readAsBytesSync()))
           .toList();
 
-      postApi(editComment.text, editYoutube.text, imagesData, 1);
+      postApi(editComment.text, editYoutube.text, imagesData);
     }
   }
 
@@ -161,20 +160,23 @@ class _AddReviewState extends State<AddReview> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  void postApi(String comment, String youtubeurl, List<String> imagesData,
-      published) async {
+  void postApi(String comment, String youtubeurl, List<String> imagesData) async {
     Map<String, dynamic> param = {
       'pid': pid,
       'pname': pname,
       'pdesc': pdesc,
       'comment': comment,
       'astar': ratingValue,
-      'published': published,
+      'published': 1,
       'youtubeurl': youtubeurl,
-      'audio': AppAudioTest.audio,
+      'latitude': _pickedLocation?.latLng?.latitude??0.0,
+      'longitude': _pickedLocation?.latLng?.longitude??0.0,
+      'sid':store_Id.split(',')[0],
       'imgarray': imagesData,
     };
 
+     print('_________Add Resview________________________');
+     print('params: '+param.toString());
     _repository.addReview(param).then((value) {
       if (value) {
         Global.hideKeyboard();
@@ -214,6 +216,7 @@ class _AddReviewState extends State<AddReview> with WidgetsBindingObserver {
     );
     print("result = $result");
     setState((){
+      Global.hideKeyboard();
       _pickedLocation = result;
       //_editAdress.text=_pickedLocation.address.toString();
     });
@@ -313,7 +316,14 @@ class _AddReviewState extends State<AddReview> with WidgetsBindingObserver {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
+
+          Visibility(
+            visible: _isLoading,
+            child:Center(child: CupertinoActivityIndicator(radius:14,))
+          ),
+
           TextFieldWidget(
+              top: 5,
               bottom: 20,
               hintText: 'Tell us what you like or dislike about this product',
               minLine: 6,
@@ -322,17 +332,36 @@ class _AddReviewState extends State<AddReview> with WidgetsBindingObserver {
 
           DropdownWidget(
             hint: 'Select Store',
-            value: catId,
+            value: store_Id,
             items: storeList?.map((item) {
               return DropdownMenuItem(
-                value: item.id??'',
-                child: TextWidget(title:item.sname??''),
+                value: item?.id+','+item?.isMap.toString(),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                          width: 35.0,
+                          height: 35.0,
+                          margin: EdgeInsets.only(right: 15.0, left: 10.0),
+                          child: ImageLoadWidget(
+                            imageUrl:item?.surl,
+                            isProfile: false,
+                          )),
+                      TextWidget(
+                        title:item?.sname??'',
+                        isBold: true,
+                      ),
+                    ],
+                  )
               );
             })?.toList(),
             onChanged: (newValue) {
-              setState(() {
+              if(newValue.toString().contains("true")){
                 _addLocation();
-                catId = newValue;
+              }
+              setState(() {
+                store_Id = newValue;
               });
             },
           ),

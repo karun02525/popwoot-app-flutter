@@ -16,8 +16,8 @@ class RatingWidget extends StatelessWidget {
       margin: EdgeInsets.only(right: 20.0),
       child: FlutterRatingBar(
         initialRating: double.parse(rating==null?"0":rating),
-        fillColor: Colors.amber,
-        borderColor: Colors.yellow[600],
+        fillColor: Colors.black87,
+        borderColor: Colors.black54,
         itemPadding: EdgeInsets.symmetric(horizontal: 1.0),
         itemSize: 20.0,
         ignoreGestures: !isDisable,

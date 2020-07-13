@@ -11,9 +11,21 @@ import 'package:popwoot/src/main/ui/product/add_Store.dart';
 import 'package:popwoot/src/main/ui/product/global_search.dart';
 import 'package:popwoot/src/res/colors.dart';
 import 'package:provider/provider.dart';
+import 'dart:io' show Platform;
+
 
 void main() {
-  debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
+
+  if (Platform.isAndroid) {
+    // Android-specific code
+  } else if (Platform.isIOS) {
+    // iOS-specific code
+  }else{
+    debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
+  }
+
+
+
   runApp(LaunchApp());
 }
 

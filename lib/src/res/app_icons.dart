@@ -11,6 +11,8 @@ class AppIcons{
   static const IconData ic_comment = MaterialCommunityIcons.comment_processing_outline;
   static const IconData ic_play = MaterialCommunityIcons.play_circle;
   static const IconData ic_send = MaterialCommunityIcons.send_circle;
+  static const IconData ic_outline_up = MaterialCommunityIcons.thumb_up_outline;
+  static const IconData ic_thumb = MaterialCommunityIcons.thumb_up;
   static const Icon ic_youtube =Icon(MaterialCommunityIcons.youtube,size: 20.0,color: Color(0xffFF0000));
 
 }
