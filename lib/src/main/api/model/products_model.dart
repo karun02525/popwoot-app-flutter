@@ -30,56 +30,36 @@ class ProductsModel {
 
 class ProductListData {
   ProductListData({
-    this.id,
+    this.pid,
     this.pname,
-    this.pdescription,
+    this.pdesc,
     this.pcode,
-    this.psearch,
-    this.imgpath,
-    this.burl,
-    this.category,
-    this.createddate,
+    this.avatar,
     this.imgarray,
-    this.dname,
   });
 
-  String id;
+  String pid;
   String pname;
-  String pdescription;
+  String pdesc;
   String pcode;
-  String psearch;
-  String imgpath;
-  String burl;
-  String category;
-  String createddate;
+  String avatar;
   List<String> imgarray;
-  String dname;
 
   factory ProductListData.fromJson(Map<String, dynamic> json) => ProductListData(
-    id: json["id"],
+    pid: json["pid"],
     pname: json["pname"],
-    pdescription: json["pdescription"],
+    pdesc: json["pdesc"],
     pcode: json["pcode"],
-    psearch: json["psearch"],
-    imgpath: json["imgpath"],
-    burl: json["burl"],
-    category: json["category"],
-    createddate: json["createddate"],
+    avatar: json["avatar"],
     imgarray: List<String>.from(json["imgarray"].map((x) => x)),
-    dname: json["dname"],
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
+    "pid": pid,
     "pname": pname,
-    "pdescription": pdescription,
+    "pdesc": pdesc,
     "pcode": pcode,
-    "psearch": psearch,
-    "imgpath": imgpath,
-    "burl": burl,
-    "category": category,
-    "createddate": createddate,
+    "avatar": avatar,
     "imgarray": List<dynamic>.from(imgarray.map((x) => x)),
-    "dname": dname,
   };
 }

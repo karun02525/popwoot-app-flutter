@@ -88,7 +88,7 @@ class ProductData {
     pdesc: json["pdesc"],
     comment: json["comment"],
     ipath: json["ipath"],
-    user: json["user"],
+    user: json["username"],
     userid: json["userid"],
     userimg: json["userimg"],
     astar: json["astar"],

@@ -35,10 +35,10 @@ class _ProfileState extends State<Profile> {
   }
 
   void _handleSignIn() {
-  // signInWithGoogle().whenComplete(() {
-     // _repository.loginUser([username, emailId, imageUrl, token]).then((value) {
+   signInWithGoogle().whenComplete(() {
+      _repository.loginUser([username, emailId, imageUrl, token]).then((value) {
 
-      _repository.loginUser(["Karun02525", 'karunkumar2023@gmail.com', 'https://images.indianexpress.com/2020/05/ak759-1.jpg', "no........"]).then((value) {
+     // _repository.loginUser(["Karun02525", 'karunkumar2023@gmail.com', 'https://images.indianexpress.com/2020/05/ak759-1.jpg', "no........"]).then((value) {
         if (value) {
           getDraftList();
           setState(() {
@@ -46,7 +46,7 @@ class _ProfileState extends State<Profile> {
           });
         }
       });
-    //});
+    });
   }
 
   void getDraftList() async {

@@ -72,23 +72,23 @@ class _ProductListState extends State<ProductList> {
           elevation: 3,
           child: ListTile(
             leading: SizedBox(
-                width: 80.0, child: ImageLoadWidget(imageUrl: item.imgpath)),
+                width: 80.0, child: ImageLoadWidget(imageUrl: item.avatar)),
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 TextWidget(title: item.pname??'', isBold: true, fontSize: 14.0),
                 AddReviewWidget(data: {
-                  "pid": item.id??'0',
+                  "pid": item.pid??'0',
                   "pname": item.pname??'',
-                  "pdesc": item.pdescription??'',
-                  "ipath": item.imgpath,
+                  "pdesc": item.pdesc??'',
+                  "ipath": item.avatar,
                 }),
               ],
             ),
             subtitle: Padding(
                 padding: const EdgeInsets.only(top:5.0,bottom: 5.0),
-                child: TextWidget(title: item.pdescription, fontSize: 12.0)),
+                child: TextWidget(title: item.pdesc, fontSize: 12.0)),
           ),
         ));
   }

@@ -114,14 +114,14 @@ class _AddProductState extends State<AddProduct> {
     }
   }
 
-  void postApi(String prodId,String name,String catId,String desc,String searchQ,String prodUrl, List<String> imagesData) async {
+  void postApi(String pcode,String pname,String cid,String pdesc,String psearch,String store_url, List<String> imagesData) async {
     Map<String, dynamic> params = {
-      'pcode':prodId,
-      'pname':name,
-      'category':catId,
-      'pdescription':desc,
-      'psearch':searchQ,
-      'burl':prodUrl,
+      'cid':cid,
+      'pcode':pcode,
+      'pname':pname,
+      'pdesc':pdesc,
+      'psearch':psearch,
+      'store_url':store_url,
       'imgarray':imagesData,
     };
 

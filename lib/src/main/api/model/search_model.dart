@@ -43,7 +43,6 @@ class SearchList {
     this.nrating,
     this.atype,
     this.nsearch,
-    this.audio,
     this.youtubeurl,
     this.published,
     this.imgarray,
@@ -70,7 +69,6 @@ class SearchList {
   dynamic nrating;
   int atype;
   int nsearch;
-  dynamic audio;
   dynamic youtubeurl;
   int published;
   dynamic imgarray;
@@ -88,7 +86,7 @@ class SearchList {
     pdesc: json["pdesc"],
     comment: json["comment"],
     ipath: json["ipath"],
-    user: json["user"],
+    user: json["username"],
     userid: json["userid"],
     userimg: json["userimg"],
     astar: json["astar"],
@@ -97,7 +95,6 @@ class SearchList {
     nrating: json["nrating"],
     atype: json["atype"],
     nsearch: json["nsearch"],
-    audio: json["audio"],
     youtubeurl: json["youtubeurl"],
     published: json["published"],
     imgarray: json["imgarray"],
@@ -116,7 +113,7 @@ class SearchList {
     "pdesc": pdesc,
     "comment": comment,
     "ipath": ipath,
-    "user": user,
+    "username": user,
     "userid": userid,
     "userimg": userimg,
     "astar": astar,
@@ -125,7 +122,6 @@ class SearchList {
     "nrating": nrating,
     "atype": atype,
     "nsearch": nsearch,
-    "audio": audio,
     "youtubeurl": youtubeurl,
     "published": published,
     "imgarray": imgarray,
