@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class RatingWidget extends StatelessWidget {
-  final String rating;
+  final double rating;
   double value;
   final Function onRatingUpdate;
   final bool isDisable;
@@ -15,7 +15,7 @@ class RatingWidget extends StatelessWidget {
     return Container(
       margin: EdgeInsets.only(right: 20.0),
       child: FlutterRatingBar(
-        initialRating: double.parse(rating==null?"0":rating),
+        initialRating: rating,
         fillColor: Colors.black87,
         borderColor: Colors.black54,
         itemPadding: EdgeInsets.symmetric(horizontal: 1.0),

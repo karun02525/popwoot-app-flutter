@@ -22,7 +22,7 @@ class ReviewHeaderWidget extends StatelessWidget {
       margin: EdgeInsets.all(5.0),
       child: Row(
         children: <Widget>[
-          ImageLoadWidget(imageUrl:item.userimg,name:item.user??'P',isProfile: true),
+          ImageLoadWidget(imageUrl:item.userimg,name:item.username??'P',isProfile: true),
           setContent()
         ],
       ),
@@ -39,7 +39,7 @@ class ReviewHeaderWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
               TextWidget(
-                title:item.user??'',
+                title:item.username??'',
                 fontSize: 13.0,
               ),
               TextWidget(

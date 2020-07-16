@@ -43,10 +43,11 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
   }
 
   void parseData() {
-    rid = item.id ?? '0';
+    rid = item.rid ?? '0';
     likeCount = item.nlike ?? 0;
     commentCount = item.ncomment ?? 0;
     youtubeLink = item.youtubeurl ?? '';
+
 
     if (item.nrating == 'Y') {
       isLike = true;
@@ -56,8 +57,8 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
 
     if (youtubeLink.toString().contains('https://youtu')) {
       _isYoutube = true;
-    } else
-      _isYoutube = false;
+    } else _isYoutube = false;
+
   }
 
   void doLikes() {
@@ -100,10 +101,7 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
           Visibility(
               child: InkWell(
                   splashColor: Colors.cyanAccent,
-                  onTap: () {
-                    Utils.plaYoutube(youtubeLink);
-                    // Utils.openYoutube(youtubeLink);
-                  },
+                  onTap: () {Utils.plaYoutube(youtubeLink);},
                   child: AppIcons.ic_youtube),
               visible: _isYoutube),
           IconWidget(
@@ -125,7 +123,7 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
                   context,
                   MaterialPageRoute(
                     builder: (context) =>
-                        AddComment(rid: item.id, rname: item.pname),
+                        AddComment(rid: item.rid, rname: item.pname),
                   ));
             },
           ),
@@ -133,7 +131,7 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
             "pid": item.pid,
             "pname": item.pname,
             "pdesc": item.pdesc,
-            "ipath": item.ipath,
+            "ipath": item.avatar,
           }),
         ],
       ),

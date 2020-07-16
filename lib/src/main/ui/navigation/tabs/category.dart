@@ -84,12 +84,11 @@ class _CategoryScreenState extends State<CategoryScreen> {
                         onTap: () {
                           Navigator.push(
                               context,
-                              MaterialPageRoute(
-                                  builder: (context) => ProductList(),
-                                  settings: RouteSettings(arguments: [
+                              MaterialPageRoute(builder: (context) => ProductList([
                                     categoryList[index].cname,
                                     categoryList[index].id
-                                  ])));
+                                  ]
+                              )));
                         },
                         child: buildCardView(context, index));
                   }),

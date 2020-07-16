@@ -137,7 +137,7 @@ class _AddCommentState extends State<AddComment> {
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.only(left: 5.0, top: 5.0),
-                child: RatingWidget(rating: item.astar ?? '0'),
+                child: RatingWidget(rating: double.parse(item.astar)),
               )
             ],
           ),

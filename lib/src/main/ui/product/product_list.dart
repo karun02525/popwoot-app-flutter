@@ -8,24 +8,33 @@ import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
 import 'package:popwoot/src/res/fonts.dart';
 
 class ProductList extends StatefulWidget {
+  final List<String> data;
+  ProductList(this.data);
+
   @override
-  _ProductListState createState() => _ProductListState();
+  _ProductListState createState() => _ProductListState(data);
 }
 
 class _ProductListState extends State<ProductList> {
+  List<String> data;
+
   List<ProductListData> productList = [];
   bool _isLoading = true;
   ProductRepository _repository;
 
+  _ProductListState(List<String> data) {
+    this.data = data;
+  }
 
   @override
   void initState() {
     super.initState();
-    _repository=ProductRepository(context);
+    _repository = ProductRepository(context);
+     getOnlyProducts(data[1]??'');
   }
 
 
-  void getOnlyProducts(String cid){
+  void getOnlyProducts(String cid) {
     _repository.findAllProducts(cid).then((value) {
       setState(() {
         _isLoading = false;
@@ -36,32 +45,30 @@ class _ProductListState extends State<ProductList> {
 
   @override
   Widget build(BuildContext context) {
-    List data = ModalRoute.of(context).settings.arguments;
-    getOnlyProducts(data[1]??'0');
-
     return Scaffold(
       appBar: AppBar(
           titleSpacing: 2.0,
+          centerTitle: true,
           title: TextWidget(
-              title: data[0], fontSize: AppFonts.toolbarSize, isBold: true)),
+              title: data[0]??'Products', fontSize: AppFonts.toolbarSize, isBold: true)),
       body: _isLoading
           ? Container(
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
-            )
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      )
           : productList.length == 0
-              ? Container(
-                  child: Center(
-                  child: TextWidget(title: "No data available"),
-                ))
-              : Container(
-                  margin: EdgeInsets.only(top: 5, bottom: 5),
-                  child: ListView.builder(
-                      itemCount: productList.length,
-                      itemBuilder: (context, index) =>
-                          buildCardView(context,productList[index])),
-                ),
+          ? Container(
+          child: Center(
+            child: TextWidget(title: "No data available"),
+          ))
+          : Container(
+        margin: EdgeInsets.only(top: 5, bottom: 5),
+        child: ListView.builder(
+            itemCount: productList.length,
+            itemBuilder: (context, index) =>
+                buildCardView(context, productList[index])),
+      ),
     );
   }
 
@@ -77,17 +84,18 @@ class _ProductListState extends State<ProductList> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                TextWidget(title: item.pname??'', isBold: true, fontSize: 14.0),
+                TextWidget(
+                    title: item.pname ?? '', isBold: true, fontSize: 14.0),
                 AddReviewWidget(data: {
-                  "pid": item.pid??'0',
-                  "pname": item.pname??'',
-                  "pdesc": item.pdesc??'',
+                  "pid": item.pid ?? '0',
+                  "pname": item.pname ?? '',
+                  "pdesc": item.pdesc ?? '',
                   "ipath": item.avatar,
                 }),
               ],
             ),
             subtitle: Padding(
-                padding: const EdgeInsets.only(top:5.0,bottom: 5.0),
+                padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
                 child: TextWidget(title: item.pdesc, fontSize: 12.0)),
           ),
         ));

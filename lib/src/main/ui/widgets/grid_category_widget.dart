@@ -38,8 +38,7 @@ class GridCategory extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => ProductList(),
-                        settings: RouteSettings(arguments: [
+                        builder: (context) => ProductList([
                           categoryList[index].cname,
                           categoryList[index].id
                         ])));

@@ -101,7 +101,7 @@ class _DraftWidgetState extends State<DraftWidget> {
               maxLines: 2,
               overflow: TextOverflow.ellipsis),
           SizedBox(height: 5.0),
-          RatingWidget(rating: item.astar),
+          RatingWidget(rating:double.parse( item.astar)),
           SizedBox(height: 5.0),
           TextWidget(title: " " + item.rdate ?? '',fontSize: 12,),
           SizedBox(height: 5.0),

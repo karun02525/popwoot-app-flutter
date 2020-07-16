@@ -14,7 +14,7 @@ import 'image_load_widget.dart';
 import 'image_slider_widget.dart';
 
 class HomeWidget extends StatelessWidget {
-  ReviewsModel item;
+  final ReviewsModel item;
   BuildContext context;
   HomeWidget({this.item});
 
@@ -27,7 +27,7 @@ class HomeWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           ReviewHeaderWidget(item:item),
-          ImageSliderWidget(imgList:item.imgarray??[]),
+          ImageSliderWidget(imgList:item?.reviewsImgarray??[]),
           paddingView(),
           Container(height: 10, color: Colors.grey[200]),
         ],
@@ -42,10 +42,10 @@ class HomeWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          RatingWidget(rating: item.astar??'0'),
+          RatingWidget(rating:item.rating),
           Padding(
             padding: const EdgeInsets.only(left: 5.0),
-            child: TextWidget(title: item.rdname??'---', fontSize: 14.0),
+            child: TextWidget(title: item.comment??'---', fontSize: 14.0),
           ),
           Divider(),
           HomeLikeCmt(item: item),

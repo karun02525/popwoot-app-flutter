@@ -60,7 +60,7 @@ class AddProductRepository {
       }
     }).catchError((e) {
       pd.hide();
-      return ApiErrorHandel.errorHandel(context,e);
+      ApiErrorHandel.errorHandel(context,e);
     });
   }
 

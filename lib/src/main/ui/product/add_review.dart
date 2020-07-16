@@ -143,8 +143,8 @@ class _AddReviewState extends State<AddReview> with WidgetsBindingObserver {
           'pid': pid,
           'pname': pname,
           'pdesc': pdesc,
-          'astar': ratingValue,
-          'ipath': ipath,
+          'rating': ratingValue,
+          'avatar': ipath,
           'comment': editComment.text,
           'published': 0,
         };
@@ -163,14 +163,15 @@ class _AddReviewState extends State<AddReview> with WidgetsBindingObserver {
   void postApi(String comment, String youtubeurl, List<String> imagesData) async {
     Map<String, dynamic> param = {
       'pid': pid,
-      'pname': pname,
-      'pdesc': pdesc,
       'comment': comment,
-      'astar': ratingValue,
+      'rating': ratingValue,
       'published': 1,
       'youtubeurl': youtubeurl,
       'latitude': _pickedLocation?.latLng?.latitude??0.0,
       'longitude': _pickedLocation?.latLng?.longitude??0.0,
+      'clatitude': _pickedLocation?.latLng?.latitude??0.0,
+      'clongitude': _pickedLocation?.latLng?.longitude??0.0,
+      'caddress': 'Bangalore',
       'sid':store_Id.split(',')[0],
       'imgarray': imagesData,
     };
@@ -288,7 +289,7 @@ class _AddReviewState extends State<AddReview> with WidgetsBindingObserver {
                   isBold: true,
                 )),
             RatingWidget(
-              rating: ratingValue,
+              rating:double.parse(ratingValue),
               isDisable: true,
               onRatingUpdate: (value) {
                 ratingValue = value.toString();
