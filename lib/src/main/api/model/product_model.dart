@@ -1,141 +1,93 @@
 import 'dart:convert';
 
-ProductModel productModelFromJson(String str) => ProductModel.fromJson(json.decode(str));
+ProductModel storeModelFromJson(String str) => ProductModel.fromJson(json.decode(str));
 
-String productModelToJson(ProductModel data) => json.encode(data.toJson());
+String storeModelToJson(ProductModel data) => json.encode(data.toJson());
 
 class ProductModel {
   ProductModel({
     this.status,
     this.message,
-    this.idata,
+    this.data,
   });
 
   bool status;
   String message;
-  ProductData idata;
+  ProductData data;
 
   factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
     status: json["status"],
     message: json["message"],
-    idata: ProductData.fromJson(json["idata"]),
+    data: ProductData.fromJson(json["data"]),
   );
 
   Map<String, dynamic> toJson() => {
     "status": status,
     "message": message,
-    "idata": idata.toJson(),
+    "data": data.toJson(),
   };
 }
 
 class ProductData {
   ProductData({
-    this.id,
-    this.pdesc,
-    this.comment,
-    this.ipath,
-    this.user,
-    this.userid,
-    this.userimg,
-    this.astar,
+    this.pid,
     this.pname,
+    this.pdesc,
+    this.pcode,
+    this.psearch,
+    this.avatar,
+    this.storeUrl,
+    this.cid,
+    this.cname,
     this.ncomment,
     this.nrating,
     this.atype,
-    this.nsearch,
-    this.audio,
-    this.youtubeurl,
-    this.published,
     this.imgarray,
-    this.pid,
-    this.createddate,
-    this.pcode,
-    this.cid,
-    this.rdate,
-    this.nreview,
-    this.nlike,
-    this.rdname,
   });
 
-  String id;
-  String pdesc;
-  dynamic comment;
-  String ipath;
-  dynamic user;
-  dynamic userid;
-  dynamic userimg;
-  dynamic astar;
+  String pid;
   String pname;
+  String pdesc;
+  String pcode;
+  String psearch;
+  String avatar;
+  String storeUrl;
+  String cid;
+  String cname;
   int ncomment;
   dynamic nrating;
   int atype;
-  int nsearch;
-  dynamic audio;
-  dynamic youtubeurl;
-  int published;
-  dynamic imgarray;
-  String pid;
-  String createddate;
-  String pcode;
-  dynamic cid;
-  String rdate;
-  dynamic nreview;
-  dynamic nlike;
-  dynamic rdname;
+  List<String> imgarray;
 
   factory ProductData.fromJson(Map<String, dynamic> json) => ProductData(
-    id: json["id"],
-    pdesc: json["pdesc"],
-    comment: json["comment"],
-    ipath: json["ipath"],
-    user: json["username"],
-    userid: json["userid"],
-    userimg: json["userimg"],
-    astar: json["astar"],
+    pid: json["pid"],
     pname: json["pname"],
+    pdesc: json["pdesc"],
+    pcode: json["pcode"],
+    psearch: json["psearch"],
+    avatar: json["avatar"],
+    storeUrl: json["store_url"],
+    cid: json["cid"],
+    cname: json["cname"],
     ncomment: json["ncomment"],
     nrating: json["nrating"],
     atype: json["atype"],
-    nsearch: json["nsearch"],
-    audio: json["audio"],
-    youtubeurl: json["youtubeurl"],
-    published: json["published"],
-    imgarray: json["imgarray"],
-    pid: json["pid"],
-    createddate: json["createddate"],
-    pcode: json["pcode"],
-    cid: json["cid"],
-    rdate: json["rdate"],
-    nreview: json["nreview"],
-    nlike: json["nlike"],
-    rdname: json["rdname"],
+    imgarray: List<String>.from(json["imgarray"].map((x) => x)),
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "pdesc": pdesc,
-    "comment": comment,
-    "ipath": ipath,
-    "user": user,
-    "userid": userid,
-    "userimg": userimg,
-    "astar": astar,
+    "pid": pid,
     "pname": pname,
+    "pdesc": pdesc,
+    "pcode": pcode,
+    "psearch": psearch,
+    "avatar": avatar,
+    "store_url": storeUrl,
+    "cid": cid,
+    "cname": cname,
     "ncomment": ncomment,
     "nrating": nrating,
     "atype": atype,
-    "nsearch": nsearch,
-    "audio": audio,
-    "youtubeurl": youtubeurl,
-    "published": published,
-    "imgarray": imgarray,
-    "pid": pid,
-    "createddate": createddate,
-    "pcode": pcode,
-    "cid": cid,
-    "rdate": rdate,
-    "nreview": nreview,
-    "nlike": nlike,
-    "rdname": rdname,
+    "imgarray": List<dynamic>.from(imgarray.map((x) => x)),
   };
 }

@@ -37,6 +37,8 @@ class _AddCommentState extends State<AddComment> {
   Idata productData;
   ReviewsRepository _repository;
   UserPreference pref;
+  bool _progress=false;
+
 
   @override
   void initState() {
@@ -52,15 +54,20 @@ class _AddCommentState extends State<AddComment> {
   void getOnlyReview(String rid) {
     _repository.getOnlyReview(rid).then((value) {
       loadCommentList();
-      productData = value;
+      setState(() {
+        productData = value;
+      });
     });
   }
 
   void loadCommentList() {
     _repository.findAllComments(rid).then((value) {
       setState(() {
-        _isLoading = false;
-        items = value;
+        if(value !=null) {
+          _progress = false;
+           _isLoading = false;
+          items = value;
+        }
       });
     });
   }
@@ -130,14 +137,14 @@ class _AddCommentState extends State<AddComment> {
       child: Column(
         children: <Widget>[
           ReviewHeaderWidget(item: item),
-          ImageSliderWidget(imgList: item.imgarray ?? []),
+          ImageSliderWidget(imgList: item.reviewsImgarray ?? []),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.only(left: 5.0, top: 5.0),
-                child: RatingWidget(rating: double.parse(item.astar)),
+                child: RatingWidget(rating:item.rating),
               )
             ],
           ),
@@ -150,7 +157,11 @@ class _AddCommentState extends State<AddComment> {
           ),
           Divider(),
           HomeLikeCmt(item: item, isComment: false),
-          Container(height: 10.0, color: Colors.grey[200]),
+          Visibility(
+            visible: _progress,
+            child: CupertinoActivityIndicator(radius: 12),
+          ),
+          Container(height: 5.0, color: Colors.grey[200]),
         ],
       ),
     );
@@ -258,6 +269,9 @@ class _AddCommentState extends State<AddComment> {
   }
 
   void _handleSubmitted(String text) {
+    setState(() {
+      _progress=true;
+    });
     if (text.isEmpty) {
       Global.toast('Please type some comment');
     } else {

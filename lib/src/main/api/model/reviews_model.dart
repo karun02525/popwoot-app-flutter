@@ -1,145 +1,173 @@
 import 'dart:convert';
 
-ReviewsModel reviewsModelFromJson(String str) => ReviewsModel.fromJson(json.decode(str));
+ReviewsModel storeModelFromJson(String str) => ReviewsModel.fromJson(json.decode(str));
 
-String reviewsModelToJson(ReviewsModel data) => json.encode(data.toJson());
+String storeModelToJson(ReviewsModel data) => json.encode(data.toJson());
 
 class ReviewsModel {
   ReviewsModel({
     this.status,
     this.message,
     this.data,
-    this.idata,
   });
 
   bool status;
   String message;
   List<ReviewsList> data;
-  dynamic idata;
 
   factory ReviewsModel.fromJson(Map<String, dynamic> json) => ReviewsModel(
     status: json["status"],
     message: json["message"],
     data: List<ReviewsList>.from(json["data"].map((x) => ReviewsList.fromJson(x))),
-    idata: json["idata"],
   );
 
   Map<String, dynamic> toJson() => {
     "status": status,
     "message": message,
     "data": List<dynamic>.from(data.map((x) => x.toJson())),
-    "idata": idata,
   };
 }
 
 class ReviewsList {
   ReviewsList({
-    this.id,
-    this.pdesc,
-    this.comment,
-    this.ipath,
-    this.user,
-    this.userid,
+    this.uid,
+    this.username,
+    this.email,
+    this.mobile,
     this.userimg,
-    this.astar,
+    this.pid,
     this.pname,
+    this.pdesc,
+    this.pcode,
+    this.avatar,
+    this.productImgarray,
+    this.sid,
+    this.sname,
+    this.savatar,
+    this.cid,
+    this.cname,
+    this.rid,
+    this.rating,
+    this.comment,
+    this.latitude,
+    this.longitude,
+    this.clatitude,
+    this.clongitude,
+    this.caddress,
+    this.published,
+    this.youtubeurl,
+    this.reviewsImgarray,
     this.ncomment,
     this.nrating,
-    this.atype,
-    this.nsearch,
-    this.audio,
-    this.youtubeurl,
-    this.published,
-    this.imgarray,
-    this.pid,
-    this.createddate,
-    this.pcode,
-    this.cid,
-    this.rdate,
-    this.nreview,
     this.nlike,
-    this.rdname,
+    this.atype,
+    this.rdate,
+    this.map,
   });
 
-  String id;
-  String pdesc;
-  String comment;
-  String ipath;
-  String user;
-  String userid;
+  String uid;
+  String username;
+  String email;
+  String mobile;
   String userimg;
-  String astar;
+  String pid;
   String pname;
+  String pdesc;
+  String pcode;
+  String avatar;
+  List<String> productImgarray;
+  String sid;
+  String sname;
+  String savatar;
+  String cid;
+  String cname;
+  String rid;
+  double rating;
+  String comment;
+  double latitude;
+  double longitude;
+  double clatitude;
+  double clongitude;
+  String caddress;
+  int published;
+  String youtubeurl;
+  List<String> reviewsImgarray;
   int ncomment;
   dynamic nrating;
-  int atype;
-  int nsearch;
-  String audio;
-  String youtubeurl;
-  int published;
-  List<String> imgarray;
-  String pid;
-  String createddate;
-  String pcode;
-  String cid;
-  String rdate;
-  dynamic nreview;
   int nlike;
-  String rdname;
+  int atype;
+  String rdate;
+  bool map;
 
   factory ReviewsList.fromJson(Map<String, dynamic> json) => ReviewsList(
-    id: json["id"],
-    pdesc: json["pdesc"],
-    comment: json["comment"],
-    ipath: json["ipath"],
-    user: json["username"],
-    userid: json["userid"],
+    uid: json["uid"],
+    username: json["username"],
+    email: json["email"],
+    mobile: json["mobile"],
     userimg: json["userimg"],
-    astar: json["astar"],
+    pid: json["pid"],
     pname: json["pname"],
+    pdesc: json["pdesc"],
+    pcode: json["pcode"],
+    avatar: json["avatar"],
+    productImgarray: List<String>.from(json["product_imgarray"].map((x) => x)),
+    sid: json["sid"],
+    sname: json["sname"],
+    savatar: json["savatar"],
+    cid: json["cid"],
+    cname: json["cname"],
+    rid: json["rid"],
+    rating: json["rating"],
+    comment: json["comment"],
+    latitude: json["latitude"].toDouble(),
+    longitude: json["longitude"].toDouble(),
+    clatitude: json["clatitude"].toDouble(),
+    clongitude: json["clongitude"].toDouble(),
+    caddress: json["caddress"],
+    published: json["published"],
+    youtubeurl: json["youtubeurl"],
+    reviewsImgarray: List<String>.from(json["reviews_imgarray"].map((x) => x)),
     ncomment: json["ncomment"],
     nrating: json["nrating"],
-    atype: json["atype"],
-    nsearch: json["nsearch"],
-    audio: json["audio"],
-    youtubeurl: json["youtubeurl"],
-    published: json["published"],
-    imgarray: List<String>.from(json["imgarray"].map((x) => x)),
-    pid: json["pid"],
-    createddate: json["createddate"],
-    pcode: json["pcode"],
-    cid: json["cid"],
-    rdate: json["rdate"],
-    nreview: json["nreview"],
     nlike: json["nlike"],
-    rdname: json["rdname"],
+    atype: json["atype"],
+    rdate: json["rdate"] == null ? null : json["rdate"],
+    map: json["map"],
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "pdesc": pdesc,
-    "comment": comment,
-    "ipath": ipath,
-    "user": user,
-    "userid": userid,
+    "uid": uid,
+    "username": username,
+    "email": email,
+    "mobile": mobile,
     "userimg": userimg,
-    "astar": astar,
+    "pid": pid,
     "pname": pname,
+    "pdesc": pdesc,
+    "pcode": pcode,
+    "avatar": avatar,
+    "product_imgarray": List<dynamic>.from(productImgarray.map((x) => x)),
+    "sid": sid,
+    "sname": sname,
+    "savatar": savatar,
+    "cid": cid,
+    "cname": cname,
+    "rid": rid,
+    "rating": rating,
+    "comment": comment,
+    "latitude": latitude,
+    "longitude": longitude,
+    "clatitude": clatitude,
+    "clongitude": clongitude,
+    "caddress": caddress,
+    "published": published,
+    "youtubeurl": youtubeurl,
+    "reviews_imgarray": List<dynamic>.from(reviewsImgarray.map((x) => x)),
     "ncomment": ncomment,
     "nrating": nrating,
-    "atype": atype,
-    "nsearch": nsearch,
-    "audio": audio,
-    "youtubeurl": youtubeurl,
-    "published": published,
-    "imgarray": List<dynamic>.from(imgarray.map((x) => x)),
-    "pid": pid,
-    "createddate": createddate,
-    "pcode": pcode,
-    "cid": cid,
-    "rdate": rdate,
-    "nreview": nreview,
     "nlike": nlike,
-    "rdname": rdname,
+    "atype": atype,
+    "rdate": rdate == null ? null : rdate,
+    "map": map,
   };
 }

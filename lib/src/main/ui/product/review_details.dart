@@ -107,7 +107,7 @@ class _ReviewDetailsState extends State<ReviewDetails> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          RatingWidget(rating:double.parse(item.astar)),
+          RatingWidget(rating:item.rating),
           Padding(
             padding: const EdgeInsets.only(left: 5.0),
             child: TextWidget(title: item.comment??'', fontSize: 14.0),
@@ -127,8 +127,8 @@ class _ReviewDetailsState extends State<ReviewDetails> {
       margin: EdgeInsets.all(5.0),
       child: Row(
         children: <Widget>[
-          ImageLoadWidget(imageUrl:item.userimg,name:item.user??'',isProfile: true),
-          setContent(item.user??'', item.pname??'', item.rdate??'---')
+          ImageLoadWidget(imageUrl:item.userimg,name:item.username??'',isProfile: true),
+          setContent(item.username??'', item.pname??'', item.rdate??'---')
         ],
       ),
     );
@@ -168,14 +168,14 @@ class _ReviewDetailsState extends State<ReviewDetails> {
       color: Colors.white,
       child: Column(
          children: <Widget>[
-          ImageLoadWidget(imageUrl:productData.ipath),
+          ImageLoadWidget(imageUrl:productData.avatar),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.only(left:5.0,top: 5.0),
-                child: RatingWidget(rating:item.astar??'0'),
+                child: RatingWidget(rating:item.nrating??0.0),
               ),
               Padding(
                 padding: const EdgeInsets.only(right:10.0,top: 5.0),
@@ -183,7 +183,7 @@ class _ReviewDetailsState extends State<ReviewDetails> {
                   'pid':productData.pid,
                   'pname':productData.pname,
                   'pdesc':productData.pdesc,
-                  'ipath':productData.ipath,
+                  'ipath':productData.avatar,
                 }),
               )
             ],

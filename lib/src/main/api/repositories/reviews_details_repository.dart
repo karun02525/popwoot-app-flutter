@@ -18,7 +18,7 @@ class ReviewsDetailsRepository {
     var dio = CustomDio.withAuthentication().instance;
     return await dio.get('${Config.getReviewDetailsUrl}/$pid').then((res) {
       if (res.statusCode == 200) {
-        return ProductModel.fromJson(res.data).idata;
+        return ProductModel.fromJson(res.data).data;
       }
     }).catchError((e) {
       return ApiErrorHandel.errorHandel(context, e);
