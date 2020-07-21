@@ -5,16 +5,19 @@ import 'package:popwoot/src/main/api/repositories/profile_repository.dart';
 import 'package:popwoot/src/main/api/repositories/reviews_repository.dart';
 import 'package:popwoot/src/main/services/shared_preferences.dart';
 import 'package:popwoot/src/main/ui/product/add_comment.dart';
+import 'package:popwoot/src/main/utils/MapUtils.dart';
 import 'package:popwoot/src/main/utils/global.dart';
 import 'package:popwoot/src/main/utils/utils.dart';
 import 'package:popwoot/src/res/app_icons.dart';
 
 import 'add_review_widget.dart';
 import 'icon_widget.dart';
+import 'image_load_widget.dart';
 
 class HomeLikeCmt extends StatefulWidget {
   final dynamic item;
   bool isComment;
+
   HomeLikeCmt({Key key, this.item, this.isComment = true}) : super(key: key);
 
   @override
@@ -23,6 +26,7 @@ class HomeLikeCmt extends StatefulWidget {
 
 class _HomeLikeCmtState extends State<HomeLikeCmt> {
   dynamic item;
+
   _HomeLikeCmtState(this.item);
 
   dynamic likeData;
@@ -34,6 +38,8 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
   String youtubeLink = '';
   int commentCount = 0;
   ReviewsRepository _repository;
+  bool isMap = true;
+  double lat,lng;
 
   @override
   void initState() {
@@ -47,7 +53,9 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
     likeCount = item.nlike ?? 0;
     commentCount = item.ncomment ?? 0;
     youtubeLink = item.youtubeurl ?? '';
-
+    isMap = item.map ?? true;
+    lat = item.latitude ?? 0.0;
+    lng = item.longitude ?? 0.0;
 
     if (item.nrating == 'Y') {
       isLike = true;
@@ -57,8 +65,8 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
 
     if (youtubeLink.toString().contains('https://youtu')) {
       _isYoutube = true;
-    } else _isYoutube = false;
-
+    } else
+      _isYoutube = false;
   }
 
   void doLikes() {
@@ -98,14 +106,8 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Visibility(
-              child: InkWell(
-                  splashColor: Colors.cyanAccent,
-                  onTap: () {Utils.plaYoutube(youtubeLink);},
-                  child: AppIcons.ic_youtube),
-              visible: _isYoutube),
           IconWidget(
-              icon: isLike ? AppIcons.ic_thumb:AppIcons.ic_outline_up ,
+              icon: isLike ? AppIcons.ic_thumb : AppIcons.ic_outline_up,
               mgs: '$likeCount $likeMsg',
               onTap: () {
                 if (UserPreference().isLogin) {
@@ -119,7 +121,7 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
             mgs: '$commentCount Comment',
             isDisable: widget.isComment,
             onTap: () {
-               Navigator.push(
+              Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) =>
@@ -127,6 +129,24 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
                   ));
             },
           ),
+          Visibility(
+              child: InkWell(
+                  splashColor: Colors.cyanAccent,
+                  onTap: () {
+                    Utils.plaYoutube(youtubeLink);
+                  },
+                  child: AppIcons.ic_youtube),
+              visible: _isYoutube),
+          isMap
+              ? InkWell(
+                  splashColor: Colors.cyanAccent,
+                  onTap: () {MapUtils.openMap(lat,lng);},
+                  child: AppIcons.ic_map)
+              : Container(
+                  height: 20,
+                  width: 20,
+                  child: Image.network(item?.savatar??''),
+                ),
           AddReviewWidget(data: {
             "pid": item.pid,
             "pname": item.pname,

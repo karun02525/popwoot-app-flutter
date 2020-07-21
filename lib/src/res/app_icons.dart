@@ -14,5 +14,6 @@ class AppIcons{
   static const IconData ic_outline_up = MaterialCommunityIcons.thumb_up_outline;
   static const IconData ic_thumb = MaterialCommunityIcons.thumb_up;
   static const Icon ic_youtube =Icon(MaterialCommunityIcons.youtube,size: 20.0,color: Color(0xffFF0000));
+  static const Icon ic_map =Icon(MaterialCommunityIcons.map_marker,size: 20.0,color: Color(0xffA9A9A9));
 
 }
