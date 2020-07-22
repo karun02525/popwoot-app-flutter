@@ -21,6 +21,8 @@ import 'package:popwoot/src/main/ui/widgets/text_widget.dart';
 import 'package:popwoot/src/main/ui/widgets/textfield_widget.dart';
 import 'package:popwoot/src/main/utils/global.dart';
 import 'package:popwoot/src/res/fonts.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geolocator/geolocator.dart';
 
 
 
@@ -39,6 +41,10 @@ class _AddReviewState extends State<AddReview> with WidgetsBindingObserver {
   final GlobalKey<AnimatedListState> _key = GlobalKey();
   ScrollController _scrollController = new ScrollController();
   LocationResult _pickedLocation;
+
+  final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
+  Position _currentPosition;
+  String _currentAddress;
 
   bool _isLoading=true;
   final editComment = TextEditingController();
@@ -85,6 +91,7 @@ class _AddReviewState extends State<AddReview> with WidgetsBindingObserver {
     });
 
     getCategory();
+    _getCurrentLocation();
   }
 
   void getCategory() {
@@ -112,6 +119,39 @@ class _AddReviewState extends State<AddReview> with WidgetsBindingObserver {
       _addItem(_items);
     });
   }
+
+  _getCurrentLocation() {
+    geolocator
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
+        .then((Position position) {
+      setState(() {
+        _currentPosition = position;
+      });
+
+      _getAddressFromLatLng();
+    }).catchError((e) {
+      print(e);
+    });
+  }
+
+  _getAddressFromLatLng() async {
+    try {
+      List<Placemark> p = await geolocator.placemarkFromCoordinates(
+          _currentPosition.latitude, _currentPosition.longitude);
+
+      Placemark place = p[0];
+
+      setState(() {
+        _currentAddress =
+        "${place?.name} ${place?.locality}, ${place?.postalCode}, ${place?.country}";
+          print(_currentAddress);
+      });
+    } catch (e) {
+      print("error : "+e);
+    }
+  }
+
+
 
   void callApi() async {
     if (editComment.text.isEmpty) {
@@ -169,9 +209,9 @@ class _AddReviewState extends State<AddReview> with WidgetsBindingObserver {
       'youtubeurl': youtubeurl,
       'latitude': _pickedLocation?.latLng?.latitude??0.0,
       'longitude': _pickedLocation?.latLng?.longitude??0.0,
-      'clatitude': _pickedLocation?.latLng?.latitude??0.0,
-      'clongitude': _pickedLocation?.latLng?.longitude??0.0,
-      'caddress': 'Bangalore',
+      'clatitude': _currentPosition?.latitude??0.0,
+      'clongitude': _currentPosition?.longitude??0.0,
+      'caddress': _currentAddress,
       'sid':store_Id.split(',')[0],
       'imgarray': imagesData,
     };
