@@ -1,18 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:popwoot/src/main/api/model/home_reviews_model.dart';
-import 'package:popwoot/src/main/api/repositories/profile_repository.dart';
 import 'package:popwoot/src/main/api/repositories/reviews_repository.dart';
 import 'package:popwoot/src/main/services/shared_preferences.dart';
 import 'package:popwoot/src/main/ui/product/add_comment.dart';
-import 'package:popwoot/src/main/utils/MapUtils.dart';
+import 'package:popwoot/src/main/utils/dialog_bottomsheet.dart';
 import 'package:popwoot/src/main/utils/global.dart';
 import 'package:popwoot/src/main/utils/utils.dart';
 import 'package:popwoot/src/res/app_icons.dart';
 
 import 'add_review_widget.dart';
 import 'icon_widget.dart';
-import 'image_load_widget.dart';
 
 class HomeLikeCmt extends StatefulWidget {
   final dynamic item;
@@ -140,7 +137,8 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
           isMap
               ? InkWell(
                   splashColor: Colors.cyanAccent,
-                  onTap: () {MapUtils.openMap(lat,lng);},
+                  onTap: () {
+                    _modalBottomSheetMenu(context);},
                   child: AppIcons.ic_map)
               : Container(
                   height: 20,
@@ -156,5 +154,20 @@ class _HomeLikeCmtState extends State<HomeLikeCmt> {
         ],
       ),
     );
+  }
+
+  void _modalBottomSheetMenu(context){
+    final double height = MediaQuery.of(context).size.height;
+    showModalBottomSheet(
+        context: context,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+        ),
+        builder: (BuildContext context) {
+          return Container(
+            height: height/2,
+            child: BottomSheetDialog(),
+          );
+        });
   }
 }
