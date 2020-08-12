@@ -1,9 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:popwoot/src/main/services/shared_preferences.dart';
+import 'package:popwoot/src/main/utils/ip_address_shared_preferences.dart';
 
 class CustomDio{
   var _dio;
   CustomDio(){
+
     _dio=Dio();
   }
 

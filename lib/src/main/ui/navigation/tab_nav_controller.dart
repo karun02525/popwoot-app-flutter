@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:popwoot/src/main/config/constraints.dart';
 import 'package:popwoot/src/main/ui/navigation/tabs/category.dart';
 import 'package:popwoot/src/main/ui/navigation/tabs/home.dart';
 import 'package:popwoot/src/main/ui/navigation/tabs/profile.dart';
 import 'package:popwoot/src/main/ui/navigation/tabs/review.dart';
 import 'package:popwoot/src/main/ui/navigation/tabs/scanner.dart';
+import 'package:popwoot/src/main/utils/ip_address_shared_preferences.dart';
 import 'package:popwoot/src/res/app_icons.dart';
 
 
@@ -27,6 +29,12 @@ class _TabNavControllerState extends State<TabNavController> {
     Scanner(),
     Profile()
   ];
+  @override
+  void initState() {
+    super.initState();
+    Config.ipAdd=IpAddress().ip;
+
+  }
 
   @override
   Widget build(BuildContext context) {

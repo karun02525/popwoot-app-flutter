@@ -1,7 +1,8 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:popwoot/src/main/config/constraints.dart';
 import 'package:popwoot/src/main/services/shared_preferences.dart';
+import 'package:popwoot/src/main/utils/ip_address_shared_preferences.dart';
 
 class NavigationDrawer extends StatefulWidget {
   @override
@@ -10,19 +11,26 @@ class NavigationDrawer extends StatefulWidget {
 
 class _NavigationDrawerState extends State<NavigationDrawer> {
   String name, email, avatar;
-
+  TextEditingController _editController = new TextEditingController();
+  IpAddress ipAddress;
   @override
   void initState() {
     name=UserPreference().name;
     email=UserPreference().email;
+    ipAddress=IpAddress();
+
     super.initState();
+    setState(() {
+      _editController.text =  ipAddress.ip;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
         child: Drawer(
-      child: Column(
+      child: Wrap(
+
         children: <Widget>[
           Container(
               width: double.infinity,
@@ -48,6 +56,8 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
           Divider(color: Colors.grey),
           CustomListTile(Icons.wb_sunny, "V0.0.1", () => {}),
           Divider(color: Colors.grey),
+          CustomListTile(Icons.settings, "Setting", () => {_showDialog(context)}),
+          Divider(color: Colors.grey),
         ],
       ),
     ));
@@ -69,6 +79,45 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
       ],
     );
   }
+
+  _showDialog(context) async {
+    await showDialog<String>(
+      context: context,
+      barrierDismissible: false,
+      child: new AlertDialog(
+        contentPadding: const EdgeInsets.all(16.0),
+        content: new Row(
+          children: <Widget>[
+            new Expanded(
+              child: new TextField(
+                autofocus: true,
+                controller: _editController,
+                keyboardType: TextInputType.number,
+                decoration: new InputDecoration(
+                    labelText: 'IP Address', hintText: 'Enter localhost ip',
+                ),
+              ),
+            )
+          ],
+        ),
+        actions: <Widget>[
+          new FlatButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.pop(context);
+              }),
+          new FlatButton(
+              child: const Text('Submit'),
+              onPressed: () {
+                ipAddress.ip=_editController.text.toString().trim();
+                Config.ipAdd=ipAddress.ip;
+                Navigator.pop(context);
+              })
+        ],
+      ),
+    );
+  }
+
 }
 
 class CustomListTile extends StatelessWidget {
@@ -99,4 +148,5 @@ class CustomListTile extends StatelessWidget {
       ),
     );
   }
+
 }
